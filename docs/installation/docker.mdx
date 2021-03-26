@@ -1,0 +1,106 @@
+---
+title: Docker
+description: Unmanic Installation - Docker
+id: docker
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Supported Architectures
+
+The Unmanic docker image is built for the following architectures:
+
+:::note
+It may work on others such as Windows or MacOS but they will not be officially supported.
+:::
+
+* linux/amd64
+* ~~linux/arm/v7~~
+* ~~linux/arm64~~
+
+:::info
+ARM builds have been removed until further notice. If you wish to run Unmanic on ARM architectures, 
+it would be my suggestion to run it natively.
+:::
+
+## Running Unmanic
+
+There are a number of ways you may start Unmanic with Docker.
+
+The most basic method is shown below:
+
+
+<Tabs
+  defaultValue="docker_run"
+  values={[
+    {label: 'Docker run', value: 'docker_run'},
+    {label: 'Docker-compose', value: 'docker_compose'},
+  ]}>
+  <TabItem value="docker_run">
+
+  ```bash
+    PUID=$(id -u)
+    PGID=$(id -g)
+
+    # CONFIG_DIR - Where you settings are saved
+    CONFIG_DIR=/config
+
+    # TZ - Your time zone
+    TZ=Pacific/Auckland
+
+    # LIBRARY_DIR - The location/locations of your library
+    LIBRARY_DIR=/library
+
+    # CACHE_DIR - A tmpfs or and folder for temporary conversion files
+    CACHE_DIR=/tmp/unmanic
+
+    docker run -ti --rm \
+        -e PUID=${PUID} \
+        -e PGID=${PGID} \
+        -e TZ=${TZ} \
+        -p 8888:8888 \
+        -v ${CONFIG_DIR}:/config \
+        -v ${LIBRARY_DIR}:/library \
+        -v ${CACHE_DIR}:/tmp/unmanic \
+        josh5/unmanic:latest
+  ```
+
+  </TabItem>
+  <TabItem value="docker_compose">
+
+  ```yaml
+    # Variables that will need to be changed:
+    #     <PUID>                            -  User id for folder/file permissions
+    #     <PGID>                            -  Group id for folder/file permissions
+    #     <TZ>                              -  Your time zone, eg - Pacific/Auckland
+    #     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
+    #     <PATH_TO_LIBRARY>                 -  Path where you store the files that Unmanic will scan
+    #     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
+    #
+
+    ---
+    version: '2.4'
+    services:
+      unmanic:
+        container_name: unmanic
+        image: josh5/unmanic:latest
+        ports:
+          - 8888:8888
+        environment:
+          - PUID=<PUID>
+          - PGID=<PGID>
+          - TZ=<TZ>
+        volumes:
+          - <PATH_TO_CONFIG>:/config
+          - <PATH_TO_LIBRARY>:/library
+          - <PATH_TO_ENCODE_CACHE>:/tmp/unmanic
+  ```
+
+  </TabItem>
+</Tabs>
+
+For more advanced methods using hardware acceleration, see these articles:
+
+* [NVENC Hardware Acceleration](/docs/advanced/hardware_accelerated_encoding_nvenc)
+* [VAAPI Hardware Acceleration](/docs/advanced/hardware_accelerated_encoding_vaapi)
+

@@ -1,0 +1,87 @@
+---
+title: Python pip
+description: Unmanic Installation - PIP
+id: pip
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Instructions
+
+```bash
+python3 -m pip install unmanic
+```
+
+
+## Running Unmanic
+
+To run unmanic, simply run:
+
+```bash
+unmanic
+```
+
+
+## Automatically starting Unmanic
+
+You may wish to automatically start Unmanic when you PC starts.
+
+This can be achieved in a few ways:
+
+
+<Tabs
+  defaultValue="systemd"
+  values={[
+    {label: 'Systemd', value: 'systemd'},
+  ]}>
+  <TabItem value="systemd">
+
+Run the following commands as root
+
+```bash
+mkdir -p \
+/usr/local/lib/systemd/system \
+/opt/unmanic
+
+chown -R nobody:video /opt/unmanic
+
+cat << EOF > /usr/local/lib/systemd/system/unmanic.service
+[Unit]
+Description= Unmanic - Library Optimiser
+After=network-online.target
+StartLimitInterval=200
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=nobody
+Group=video
+Environment="HOME_DIR=/opt/unmanic"
+WorkingDirectory=/opt/unmanic
+ExecStart=/usr/local/bin/unmanic
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable unmanic.service
+systemctl start unmanic.service
+```
+
+You can view the status of the running process with
+```bash
+systemctl status unmanic.service
+```
+
+:::note
+This example runs unmanic as the user:group nobody:video.
+Make sure that your library is accessible by this group.
+
+Alternatively, if you already have a user:group configured
+for accessing your library, modify the above systemd unit with those details.
+:::
+
+  </TabItem>
+</Tabs>
