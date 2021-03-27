@@ -27,7 +27,7 @@ At these specific stages of the library optimisation process, Unmanic will call
 each enabled Plugin in turn and then, upon completion of the Plugin execution,
 Unmanic will continue with subsequent process for that stage.
 
-During a call to a Plugin, said plugin may be given a set of data pertaining to the state 
+During a call to a Plugin, said plugin will be given a set of data pertaining to the state 
 of a task or the information regarding the process about to be carried out. 
 A Plugin may use this data to:
 
@@ -44,11 +44,11 @@ only a single task.
 The current list of supported types:
 
 
-| Stage             | Type                         | Runner                         | Ducumentation                                                  |
+| Stage             | Type                         | Runner                         | Documentation                                                  |
 |-------------------|------------------------------|--------------------------------|----------------------------------------------------------------|
 | Worker            | Processing file              | on_worker_process              | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#worker---processing-file) |
-| Post-processor    | File movements               | on_postprocessor_file_movement | [LINK](/plugins/writing_plugins/runner_on_worker_process)      |
-| Post-processor    | Marking task success/failure | on_postprocessor_task_results  | [LINK](/plugins/writing_plugins/runner_on_worker_process)      |
+| Post-processor    | File movements               | on_postprocessor_file_movement | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---file-movements)      |
+| Post-processor    | Marking task success/failure | on_postprocessor_task_results  | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---marking-task-successfailure)      |
 
 
 

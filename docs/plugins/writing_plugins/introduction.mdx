@@ -34,13 +34,13 @@ This file should be used to record changes made to the plugin.
 A JSON file containing the metadata of your plugin.
 This JSON file should contain the following data:
 
-  - `id` - A string identifier for your Plugin. Should only contain lowercase `a-z` or `_` characters.
-  - `name` - A very short name for your Plugin.
-  - `author` - Your name.
-  - `version` - The version of your plugin.
-  - `description` - A long description of your Plugin detailing what it does. To include line-breaks, insert a `\n`.
-  - `icon` - A URI to an image. If no icon is provided, the default Plugin icon will be used in the WebUI.
-  - `tags` - A comma separated list able to be used as keywords when searching for Plugins.
+  - **`id`** - A string identifier for your Plugin. Should only contain lowercase `a-z` or `_` characters.
+  - **`name`** - A very short name for your Plugin.
+  - **`author`** - Your name.
+  - **`version`** - The version of your plugin.
+  - **`description`** - A long description of your Plugin detailing what it does. To include line-breaks, insert a `\n`.
+  - **`icon`** - A URI to an image. If no icon is provided, the default Plugin icon will be used in the WebUI.
+  - **`tags`** - A comma separated list able to be used as keywords when searching for Plugins.
 
 ##### Example:
 ```json
@@ -97,10 +97,10 @@ def on_worker_process(data):
 ```
 
 
-| Runner Type                    | Ducumentation                                                  |
+| Runner Type                    | Documentation                                                  |
 |--------------------------------|----------------------------------------------------------------|
-| on_worker_process              | [LINK](/docs/plugins/writing_plugins/runner_on_worker_process) |
-| on_postprocessor_file_movement | [LINK](/plugins/writing_plugins/runner_on_worker_process)      |
-| on_postprocessor_task_results  | [LINK](/plugins/writing_plugins/runner_on_worker_process)      |
+| on_worker_process              | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#worker---processing-file) |
+| on_postprocessor_file_movement | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---file-movements)      |
+| on_postprocessor_task_results  | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---marking-task-successfailure)      |
 
 

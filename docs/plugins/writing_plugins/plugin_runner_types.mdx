@@ -23,11 +23,11 @@ Just prior to the execution of the FFMPEG subprocess within a Unmanic Worker pro
 `on_worker_process(data)`
 
 ##### Provided data:
-  - **exec_ffmpeg** - Boolean, should Unmanic run FFMPEG with the data returned from this plugin.
-  - **file_probe** - A dictionary object containing the current file probe state.
-  - **ffmpeg_args** - A list of Unmanic's default FFMPEG args.
-  - **file_in** - The source file to be processed by the FFMPEG command.
-  - **file_out** - The destination that the FFMPEG command will output.
+  - **`exec_ffmpeg`** - Boolean, should Unmanic run FFMPEG with the data returned from this plugin.
+  - **`file_probe`** - A dictionary object containing the current file probe state.
+  - **`ffmpeg_args`** - A list of Unmanic's default FFMPEG args.
+  - **`file_in`** - The source file to be processed by the FFMPEG command.
+  - **`file_out`** - The destination that the FFMPEG command will output.
 
 ##### Example:
 
@@ -113,10 +113,10 @@ Just prior to file copy operation from cached output file to source file's direc
 `on_postprocessor_file_movement(data)`
 
 ##### Provided data:
-  - **remove_source_file** - Boolean, should Unmanic remove the original source file after all copy operations are complete.
-  - **copy_file** - Boolean, should Unmanic run a copy operation with the returned data variables.
-  - **file_in** - The converted cache file to be copied by the postprocessor.
-  - **file_out** - The destination file that the file will be copied to.
+  - **`remove_source_file`** - Boolean, should Unmanic remove the original source file after all copy operations are complete.
+  - **`copy_file`** - Boolean, should Unmanic run a copy operation with the returned data variables.
+  - **`file_in`** - The converted cache file to be copied by the postprocessor.
+  - **`file_out`** - The destination file that the file will be copied to.
 
 ##### Example:
 
@@ -167,8 +167,8 @@ Just prior to the task cache directory cleanup.
 `on_postprocessor_task_results(data)`
 
 ##### Provided data:
-  - **task_processing_success** - Boolean, did all task processes complete successfully.
-  - **file_move_processes_success** - Boolean, did all postprocessor movement tasks complete successfully.
+  - **`task_processing_success`** - Boolean, did all task processes complete successfully.
+  - **`file_move_processes_success`** - Boolean, did all postprocessor movement tasks complete successfully.
 
 ##### Example:
 
