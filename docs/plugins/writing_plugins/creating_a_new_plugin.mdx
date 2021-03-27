@@ -1,0 +1,34 @@
+---
+title: Creating a New Plugin
+id: creating_a_new_plugin
+---
+
+
+The best option for creating a new Plugin for Unmanic is through the
+[**Plugin Manager CLI**](/docs/plugins/plugin_manager_cli).
+
+Once you have the Plugin Manager CLI installed, carry on.
+
+
+## Generating a new Plugin
+```bash
+unmanic --manage_plugins
+```
+
+From here you will see a terminal output listing a number of options.
+
+Select the option **"Create new plugin"** and follow the prompts.
+
+Once this is complete, a new Plugin directory structure will be created
+in your `~/.unmanic/plugins/` directory. Open this in your IDE of choice
+and begin editing the files as necessary.
+
+Be sure to test your Plugin with the [**Plugin Manager CLI**](#) as required.
+
+:::tip
+
+You can run the Plugin test functionality within the Plugin Manager CLI to 
+`print(data)` or to test the functionality of your Plugin without needing
+to run the main Unmanic process.
+
+:::

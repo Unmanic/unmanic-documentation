@@ -1,0 +1,99 @@
+---
+title: Accessing Plugin Settings
+description: Unmanic Writing Plugins > Accessing Plugin Settings
+id: plugin_settings
+---
+
+
+All plugins are able to be configured using a "PluginSettings" class.
+
+This job of this class is to hold a dictionary of settings accessible to the Plugin
+class and able to be configured by users from within the Unmanic WebUI.
+
+The `Settings` class should be included in your Plugin's `plugin.py` file if you wish 
+to have the option of enabling configuration options for the Plugin's users.
+
+
+##### Example
+
+```python
+from unmanic.libs.unplugins.settings import PluginSettings
+
+
+class Settings(PluginSettings):
+    """
+    An object to hold a dictionary of settings accessible to the Plugin
+    module and able to be configured by users from within the Unmanic WebUI.
+
+    This class has a number of methods available to it for accessing these settings:
+
+        > get_setting(<key>)            - Fetch a single setting value. Or leave the 
+                                        key argument empty and return the full dictionary.
+        > set_setting(<key>, <value>)   - Set a singe setting value.
+                                        Used by the Unmanic WebUI to save user settings.
+                                        Settings are stored on disk in order to be persistent.
+
+    """
+    settings = {
+        "Boolean Option (will become checkbox in WebUI)": True,
+        "Custom String Option (will become text input in WebUI)": "",
+    }
+```
+
+
+## Available methods
+
+The PluginSettings class has a couple of methods available to it for accessing these settings.
+
+:::caution
+
+Warning! Do not access The Settings class attributes directly. Use the provided methods.
+Not using the provided methods will lead to always receiving the default values and not
+the user configured options.
+
+:::
+
+
+---
+#### *classmethod* **get_setting(** [*key*] **)**
+
+Parameters:
+
+ - key (str) – the configuration option key.
+
+Fetches a configuration value from the Settings object.
+If no key is provided, this method will return a full dictionary
+of all configured options.
+
+##### Example:
+```
+    settings = Settings()
+
+    # Fetch a single value
+    enable_feature = settings.get_setting('Enable Feature')
+
+    # Fetch all options as a dictionary
+    all_options = settings.get_setting()
+```
+
+
+---
+#### *classmethod* **set_setting(** *key*, *value* **)**
+
+Parameters:
+
+ - key (str) – the configuration option key.
+ - value – the configuration option value.
+
+The `set_setting` method is used by the Unmanic WebUI to save 
+user settings. However you are able to access this method from
+your Plugin's functions also.
+
+Settings are stored on disk in order to be persistent across restarts.
+
+
+##### Example:
+```
+    settings = Settings()
+    enable_feature = settings.set_setting('Enable Feature', False)
+```

@@ -1,0 +1,40 @@
+---
+title: Plugin Manager CLI
+id: plugin_manager_cli
+---
+
+
+Unmanic has a built-in **Plugin Manager CLI**.
+To access this, run:
+
+```
+unmanic --manage_plugins
+```
+
+This will not run the main Unmanic service and may be run while already
+running the Unmanic service without any interference.
+
+
+You will be presented with the main menu
+```
+$ unmanic --manage_plugins
+Starting migrations
+There is nothing to migrate
+UnmanicLogger - SETUP LOGGER
+[?] What would you like to do?: Test installed plugins
+ > Test installed plugins
+   List installed plugins
+   Create new plugin
+   Exit
+```
+
+From here you may select on of the available options.
+
+
+| Option                    | Description                                                           |
+|---------------------------|-----------------------------------------------------------------------|
+| Test installed plugins    | Executes tests against all runners of all currently installed Plugins |
+| List installed plugins    | Lists all currently installed Plugins                                 |
+| Create new plugin         | Executes a guided process to generate a new Plugin template           |
+| Exit                      | Exits the Plugin Manager CLI                                          |
+

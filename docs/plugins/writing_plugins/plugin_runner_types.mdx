@@ -1,0 +1,194 @@
+---
+title: Plugin Runners
+id: plugin_runner_types
+---
+import TOCInline from '@theme/TOCInline';
+
+
+This page outlines the various Plugin types and their 
+[**runners**](/docs/plugins/writing_plugins/introduction#runners).
+
+
+<TOCInline toc={toc} />
+
+---
+
+
+## Worker - Processing file
+
+##### Executed:
+Just prior to the execution of the FFMPEG subprocess within a Unmanic Worker process.
+
+##### Function:
+`on_worker_process(data)`
+
+##### Provided data:
+  - **exec_ffmpeg** - Boolean, should Unmanic run FFMPEG with the data returned from this plugin.
+  - **file_probe** - A dictionary object containing the current file probe state.
+  - **ffmpeg_args** - A list of Unmanic's default FFMPEG args.
+  - **file_in** - The source file to be processed by the FFMPEG command.
+  - **file_out** - The destination that the FFMPEG command will output.
+
+##### Example:
+
+<details>
+<summary>plugin.py</summary>
+
+For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/custom_ffmpeg_process/plugin.py)
+
+```python
+from unmanic.libs.unplugins.settings import PluginSettings
+from unmanic.libs.system import System
+
+
+class Settings(PluginSettings):
+    """
+    An object to hold a dictionary of settings accessible to the Plugin
+    class and able to be configured by users from within the Unmanic WebUI.
+
+    This class has a number of methods available to it for accessing these settings:
+
+        > get_setting(<key>)            - Fetch a single setting value. Or leave the 
+                                        key argument empty and return the full dictionary.
+        > set_setting(<key>, <value>)   - Set a singe setting value.
+                                        Used by the Unmanic WebUI to save user settings.
+                                        Settings are stored on disk in order to be persistent.
+
+    """
+    settings = {
+        "Execute FFMPEG": True,
+        "Insert string into cache file name": "custom-string"
+    }
+
+
+def on_worker_process(data):
+    """
+    Runner function - carries out additional processing during the worker stages of a task.
+
+    The 'data' object argument includes:
+        exec_ffmpeg             - Boolean, should Unmanic run FFMPEG with the data returned from this plugin.
+        file_probe              - A dictionary object containing the current file probe state.
+        ffmpeg_args             - A list of Unmanic's default FFMPEG args.
+        file_in                 - The source file to be processed by the FFMPEG command.
+        file_out                - The destination that the FFMPEG command will output.
+
+    :param data:
+    :return:
+    """
+    settings = Settings()
+    system = System()
+    system_info = system.info()
+
+    custom_string = settings.get_setting('Insert string into cache file name')
+    if custom_string:
+        tmp_file_out = os.path.splitext(data['file_out'])
+        data['file_out'] = "{}-{}-{}{}".format(tmp_file_out[0], custom_string, tmp_file_out[1])
+
+    if not settings.get_setting('Execute FFMPEG'):
+        data['exec_ffmpeg'] = False
+
+        
+
+    return data
+```
+</details>
+
+
+##### Details:
+
+This Plugin runner should be used for carrying any custom FFMpeg command execution stages. 
+The runner itself is only required to configure the parameters of the FFMpeg command execution.
+The main Unmanic process will take the data dictionary returned from this runner and execute
+the FFMpeg command within it's own shell.
+
+---
+
+
+## Post-processor - File movements
+
+##### Executed:
+Just prior to file copy operation from cached output file to source file's directory.
+
+##### Function:
+`on_postprocessor_file_movement(data)`
+
+##### Provided data:
+  - **remove_source_file** - Boolean, should Unmanic remove the original source file after all copy operations are complete.
+  - **copy_file** - Boolean, should Unmanic run a copy operation with the returned data variables.
+  - **file_in** - The converted cache file to be copied by the postprocessor.
+  - **file_out** - The destination file that the file will be copied to.
+
+##### Example:
+
+<details>
+<summary>plugin.py</summary>
+
+For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/)
+
+```python
+def on_postprocessor_file_movement(data):
+    """
+    Runner function - configures additional postprocessor file movements during the postprocessor stage of a task.
+
+    The 'data' object argument includes:
+        remove_source_file      - Boolean, should Unmanic remove the original source file after all copy operations are complete.
+        copy_file               - Boolean, should Unmanic run a copy operation with the returned data variables.
+        file_in                 - The converted cache file to be copied by the postprocessor.
+        file_out                - The destination file that the file will be copied to.
+
+    :param data:
+    :return:
+    """
+
+    return data
+```
+</details>
+
+
+##### Details:
+
+This Plugin runner should be used for executing additional file movements of a completed task.
+
+:::note
+
+This Plugin runner is only executed on a successfully completed task.
+
+:::
+
+---
+
+
+## Post-processor - Marking task success/failure
+
+##### Executed:
+Just prior to the task cache directory cleanup.
+
+##### Function:
+`on_postprocessor_task_results(data)`
+
+##### Provided data:
+  - **task_processing_success** - Boolean, did all task processes complete successfully.
+  - **file_move_processes_success** - Boolean, did all postprocessor movement tasks complete successfully.
+
+##### Example:
+
+<details>
+<summary>plugin.py</summary>
+
+For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/)
+
+```python
+def on_postprocessor_task_results(data):
+    """
+    Runner function - provides a means for additional postprocessor functions based on the task success.
+
+    The 'data' object argument includes:
+        task_processing_success         - Boolean, did all task processes complete successfully.
+        file_move_processes_success     - Boolean, did all postprocessor movement tasks complete successfully.
+
+    :param data:
+    :return:
+    """
+    return data
+```
+</details>
