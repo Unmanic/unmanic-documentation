@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 const features = [
     {
         title: 'Quick to configure',
-        imageUrl: 'img/configure.svg',
+        imageUrl: 'img/configure.png',
         description: (
             <>
                 Unmanic's basic features can be configured in under 2 minutes.
@@ -19,7 +19,7 @@ const features = [
     },
     {
         title: 'Easy to Use',
-        imageUrl: 'img/thumbs-up.svg',
+        imageUrl: 'img/thumbs-up.png',
         description: (
             <>
                 Unmanic has been designed to be simple to install and
@@ -29,7 +29,7 @@ const features = [
     },
     {
         title: 'Powerful for advanced users',
-        imageUrl: 'img/advanced-settings.svg',
+        imageUrl: 'img/advanced-settings.png',
         description: (
             <>
                 Unmanic has been built with advanced features that allow more advanced
@@ -48,7 +48,7 @@ const features = [
     },
     {
         title: 'Extensions',
-        imageUrl: 'img/plugins.svg',
+        imageUrl: 'img/plugins.png',
         description: (
             <>
                 Unmanic's feature set can be extended with installable plug-ins.
@@ -60,7 +60,7 @@ const features = [
         imageUrl: 'img/opensource.svg',
         description: (
             <>
-                Unmanic's code is opensource under GPL v3.
+                Unmanic's code is released opensource under GPL v3.
             </>
         ),
     },
@@ -90,8 +90,9 @@ export default function Home() {
             description="Description will go into a meta tag in <head />">
             <header className={clsx('hero hero--primary', styles.heroBanner)}>
                 <div className="container">
-                    <h1 className="hero__title">{siteConfig.title}</h1>
-                    <p className="hero__subtitle">{siteConfig.tagline}</p>
+                    <img src="/img/unmanic-logo-bluewhite.png" alt="Unmanic Logo" />
+                    <br />
+                    <br />
                     <div className={styles.buttons}>
                         <Link
                             className={clsx(

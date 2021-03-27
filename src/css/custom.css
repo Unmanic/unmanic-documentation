@@ -7,19 +7,28 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #337ab7;
-  --ifm-color-primary-dark: #2e6ea5;
-  --ifm-color-primary-darker: #2b689c;
-  --ifm-color-primary-darkest: #245580;
-  --ifm-color-primary-light: #3986c8;
-  --ifm-color-primary-lighter: #438cca;
-  --ifm-color-primary-lightest: #5e9cd2;
-  --ifm-code-font-size: 95%;
+    --ifm-color-primary: #009fdd;
+    --ifm-color-primary-dark: #008fc7;
+    --ifm-color-primary-darker: #0087bc;
+    --ifm-color-primary-darkest: #006f9b;
+    --ifm-color-primary-light: #00aff3;
+    --ifm-color-primary-lighter: #00b7fe;
+    --ifm-color-primary-lightest: #20c1ff;
+    --ifm-code-font-size: 95%;
+}
+
+.hero--primary {
+    --ifm-hero-background-color: #37393f;
+    --ifm-hero-text-color: var(--ifm-font-color-base-inverse);
 }
 
 .docusaurus-highlight-code-line {
-  background-color: rgb(72, 77, 91);
-  display: block;
-  margin: 0 calc(-1 * var(--ifm-pre-padding));
-  padding: 0 var(--ifm-pre-padding);
+    background-color: rgb(72, 77, 91);
+    display: block;
+    margin: 0 calc(-1 * var(--ifm-pre-padding));
+    padding: 0 var(--ifm-pre-padding);
+}
+
+.button.button--secondary.button--outline:not(.button--active):not(:hover) {
+    color: var(--ifm-color-gray-300);
 }
