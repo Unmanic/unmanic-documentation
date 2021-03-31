@@ -14,6 +14,64 @@ This page outlines the various Plugin types and their
 ---
 
 
+## Library Management - File test
+
+##### Executed:
+After Unmanic carries out tests on a file to determine if it should be added to the task queue. Prior to returning a result of said tests.
+
+##### Function:
+`on_library_management_file_test(data)`
+
+##### Provided data:
+  - **`path`** - String containing the full path to the file being tested.
+  - **`issues`** - List of currently found issues for not processing the file.
+  - **`add_file_to_pending_tasks`** - Boolean, is the file currently marked to be added to the queue for processing.
+
+##### Example:
+
+<details>
+<summary>plugin.py</summary>
+
+For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/custom_ffmpeg_process/plugin.py)
+
+```python
+import os
+
+
+def on_library_management_file_test(data):
+    """
+    Runner function - enables additional actions during the library management file tests.
+    The 'data' object argument includes:
+        path                            - String containing the full path to the file being tested.
+        issues                          - List of currently found issues for not processing the file.
+        add_file_to_pending_tasks       - Boolean, is the file currently marked to be added to the queue for processing.
+    :param data:
+    :return:
+    """
+
+    # Get the file extension
+    file_extension = os.path.splitext(data.get('path'))[-1][1:]
+
+    # Ensure the file's extension is lowercase
+    file_extension = file_extension.lower()
+
+    # If this is flash video file, add it to pending tasks
+    if file_extension.lower() in ['flv']:
+        data['add_file_to_pending_tasks'] = True
+
+    return data
+```
+</details>
+
+
+##### Details:
+
+This Plugin runner should be used when you wish to create custom actions or tests to be carried
+out on a file during the file test triggered by either the Library scan or the Library event watcher.
+
+---
+
+
 ## Worker - Processing file
 
 ##### Executed:
@@ -124,7 +182,7 @@ Just prior to file copy operation from cached output file to source file's direc
 <details>
 <summary>plugin.py</summary>
 
-For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/)
+For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/example_postprocessor_file_movement/plugin.py)
 
 ```python
 def on_postprocessor_file_movement(data):
@@ -177,7 +235,7 @@ Just prior to the task cache directory cleanup.
 <details>
 <summary>plugin.py</summary>
 
-For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/)
+For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/example_postprocessor_task_results/plugin.py)
 
 ```python
 def on_postprocessor_task_results(data):
