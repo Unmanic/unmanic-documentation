@@ -27,7 +27,7 @@ module.exports = {
             type: 'category',
             label: 'Configuration',
             items: [
-                'configuration/general',
+                'configuration/overview_and_general_settings',
             ],
         },
         {
