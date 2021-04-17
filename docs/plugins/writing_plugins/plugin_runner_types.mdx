@@ -86,6 +86,7 @@ Just prior to the execution of the FFMPEG subprocess within a Unmanic Worker pro
   - **`ffmpeg_args`** - A list of Unmanic's default FFMPEG args.
   - **`file_in`** - The source file to be processed by the FFMPEG command.
   - **`file_out`** - The destination that the FFMPEG command will output.
+  - **`original_file_path`** - The absolute path to the original library file.
 
 ##### Example:
 
@@ -129,6 +130,7 @@ def on_worker_process(data):
         ffmpeg_args             - A list of Unmanic's default FFMPEG args.
         file_in                 - The source file to be processed by the FFMPEG command.
         file_out                - The destination that the FFMPEG command will output.
+        original_file_path      - The absolute path to the original library file.
 
     :param data:
     :return:
