@@ -47,10 +47,10 @@ module.exports = {
                 {
                     title: "Community",
                     items: [
-                        /*{
-                          label: 'Discord',
-                          href: 'https://discordapp.com/invite/',
-                        },*/
+                        {
+                            label: "Discord",
+                            href: "https://unmanic.app/discord",
+                        },
                         {
                             label: "Twitter",
                             href: "https://twitter.com/jsunnex",
