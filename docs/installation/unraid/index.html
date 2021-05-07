@@ -7,15 +7,15 @@
 <link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="Unmanic Blog RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="Unmanic Blog Atom Feed"><title data-react-helmet="true">Installation on Unraid | Unmanic</title><meta data-react-helmet="true" property="og:url" content="http://docs.unmanic.app//docs/installation/unraid"><meta data-react-helmet="true" name="docusaurus_locale" content="en"><meta data-react-helmet="true" name="docusaurus_version" content="current"><meta data-react-helmet="true" name="docusaurus_tag" content="docs-default-current"><meta data-react-helmet="true" property="og:title" content="Installation on Unraid | Unmanic"><meta data-react-helmet="true" name="description" content="Unmanic Installation on Unraid"><meta data-react-helmet="true" property="og:description" content="Unmanic Installation on Unraid"><link data-react-helmet="true" rel="shortcut icon" href="/img/favicon.ico"><link data-react-helmet="true" rel="canonical" href="http://docs.unmanic.app//docs/installation/unraid"><link data-react-helmet="true" rel="alternate" href="http://docs.unmanic.app//docs/installation/unraid" hreflang="en"><link data-react-helmet="true" rel="alternate" href="http://docs.unmanic.app//docs/installation/unraid" hreflang="x-default"><link rel="stylesheet" href="/assets/css/styles.e31d9186.css">
 <link rel="preload" href="/assets/js/styles.a5bc47a3.js" as="script">
-<link rel="preload" href="/assets/js/runtime~main.c6d11719.js" as="script">
-<link rel="preload" href="/assets/js/main.f3f94247.js" as="script">
+<link rel="preload" href="/assets/js/runtime~main.0cbd8992.js" as="script">
+<link rel="preload" href="/assets/js/main.169f275c.js" as="script">
 <link rel="preload" href="/assets/js/1.ff9f28de.js" as="script">
 <link rel="preload" href="/assets/js/2.b4d397c9.js" as="script">
 <link rel="preload" href="/assets/js/23.6d76e095.js" as="script">
 <link rel="preload" href="/assets/js/24.6949f8c6.js" as="script">
 <link rel="preload" href="/assets/js/935f2afb.70e40972.js" as="script">
 <link rel="preload" href="/assets/js/17896441.78f2487f.js" as="script">
-<link rel="preload" href="/assets/js/f205d5b9.ef0bbdc6.js" as="script">
+<link rel="preload" href="/assets/js/f205d5b9.fdb6f4ef.js" as="script">
 </head>
 <body>
 <script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){var t=null;try{t=localStorage.getItem("theme")}catch(t){}return t}();t(null!==e?e:"light")}()</script><div id="__docusaurus">
@@ -25,14 +25,14 @@ Setting this to /dev/shm/unmanic will cause the files to be written to a RAM tmp
 The latest version of Unraid that ships with NVIDIA drivers already installed)</p></div></div><p>To use your NVIDIA GPU for hardware encoding in this container, follow these steps:</p><ol><li><p>Install the Unraid Nvidia Plugin to install a version of Unraid with the Nvidia Drivers installed.
 <a href="https://forums.unraid.net/topic/77813-plugin-linuxserverio-unraid-nvidia/" target="_blank" rel="noopener noreferrer">Linuxserverio Unraid NVIDIA Plugin</a></p></li><li><p>Toggle this Docker Container template editor to &quot;Advanced View&quot;.</p></li><li><p>In the &quot;Extra Parameters&quot; field, add &quot;--runtime=nvidia&quot;.</p></li></ol><p><img alt="Unraid NVIDIA Plugin" src="/assets/images/unraid-nvidia-plugin_6.8-da64a318fd36d8aa6910ec45acbcd2c0.png" title="unraid-nvidia-plugin_6.8"></p><ol start="4"><li>Expand the template &quot;Show more settings...&quot; section near the bottom.</li><li>In the &quot;NVIDIA_VISIBLE_DEVICES&quot; variable, copy your GPU UUID (can be found in the Unraid Nvidia Plugin. See that forum thread for details)</li></ol><p><img alt="Unraid Unmanic Template NVIDIA GPU" src="/assets/images/unraid-unmanic-template-nvidia-gpu-1f2d09896e31d11bb4a5ab75e4d13c58.png" title="unraid-unmanic-template-nvidia-gpu"></p><p>Once you have completed these steps, you should be able to use the <strong>h264_nvenc</strong> and <strong>hvec_nvenc</strong> encoders.</p></div></article><div class="margin-vert--lg"><nav class="pagination-nav" aria-label="Docs pages navigation"><div class="pagination-nav__item"><a class="pagination-nav__link" href="/docs/installation/docker"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">« Installation via Docker</div></a></div><div class="pagination-nav__item pagination-nav__item--next"><a class="pagination-nav__link" href="/docs/configuration/overview_and_general_settings"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">General Settings »</div></a></div></nav></div></div></div><div class="col col--3"><div class="tableOfContents_35-E thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#video-guide" class="table-of-contents__link">Video Guide:</a></li><li><a href="#instructions" class="table-of-contents__link">Instructions:</a></li><li><a href="#some-optional-configuration-steps" class="table-of-contents__link">Some optional configuration steps:</a><ul><li><a href="#multiple-libraries" class="table-of-contents__link">Multiple libraries:</a></li><li><a href="#nvidia-gpu-hardware-encoding-deprecated" class="table-of-contents__link">Nvidia GPU hardware encoding: DEPRECATED</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container"><div class="row footer__links"><div class="col footer__col"><h4 class="footer__title">Docs</h4><ul class="footer__items"><li class="footer__item"><a class="footer__link-item" href="/docs/">Getting Started</a></li></ul></div><div class="col footer__col"><h4 class="footer__title">Community</h4><ul class="footer__items"><li class="footer__item"><a href="https://unmanic.app/discord" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord</a></li><li class="footer__item"><a href="https://twitter.com/jsunnex" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter</a></li></ul></div><div class="col footer__col"><h4 class="footer__title">More</h4><ul class="footer__items"><li class="footer__item"><a href="https://github.com/Unmanic" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub</a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2021 Josh Sunnex. Built with Docusaurus.</div></div></div></footer></div>
 <script src="/assets/js/styles.a5bc47a3.js"></script>
-<script src="/assets/js/runtime~main.c6d11719.js"></script>
-<script src="/assets/js/main.f3f94247.js"></script>
+<script src="/assets/js/runtime~main.0cbd8992.js"></script>
+<script src="/assets/js/main.169f275c.js"></script>
 <script src="/assets/js/1.ff9f28de.js"></script>
 <script src="/assets/js/2.b4d397c9.js"></script>
 <script src="/assets/js/23.6d76e095.js"></script>
 <script src="/assets/js/24.6949f8c6.js"></script>
 <script src="/assets/js/935f2afb.70e40972.js"></script>
 <script src="/assets/js/17896441.78f2487f.js"></script>
-<script src="/assets/js/f205d5b9.ef0bbdc6.js"></script>
+<script src="/assets/js/f205d5b9.fdb6f4ef.js"></script>
 </body>
 </html>
