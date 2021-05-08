@@ -69,6 +69,16 @@ def on_library_management_file_test(data):
 This Plugin runner should be used when you wish to create custom actions or tests to be carried
 out on a file during the file test triggered by either the Library scan or the Library event watcher.
 
+When you fail a test, you should also update the `issues` list provided in the `data` dictionary.
+
+For example:
+```python
+data['issues'].append({
+    'id':      '<PLUGIN NAME>',
+    'message': "File should be ignored because <X>",
+})
+```
+
 ---
 
 
