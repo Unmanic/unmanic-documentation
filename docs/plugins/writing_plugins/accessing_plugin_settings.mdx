@@ -34,9 +34,57 @@ class Settings(PluginSettings):
                                         Settings are stored on disk in order to be persistent.
 
     """
+
+    """
+    settings
+
+    A dictionary of settings accessible to the Plugin class and able
+    to be configured by users from within the Unmanic WebUI.
+
+    In the blow settings:
+        Boolean Option                      - will become 'checkbox' in WebUI
+        Custom String Option                - will become text 'input' in WebUI
+        Advanced - Select dropdown          - will become 'select' input in WebUI
+        Advanced - Text area input          - will become 'textarea' input in WebUI
+
+    """
     settings = {
-        "Boolean Option (will become checkbox in WebUI)": True,
-        "Custom String Option (will become text input in WebUI)": "",
+        "Boolean Option ":                               True,
+        "Custom String Option":                          "",
+        "Advanced - Select dropdown with custom label ": "opt2",
+        "Advanced - Text area input ":                   "default value",
+    }
+
+
+    """
+    form_settings
+
+    A dictionary of form settings used by Unmanic's WebUI to configure
+    the plugin's settings form.
+    """
+    form_settings = {
+        "Advanced - Select dropdown with custom label (will become 'select' input in WebUI)": {
+            "input_type":     "select",
+            "select_options": [
+                {
+                    "value": 'opt1',
+                    "label": 'option 1',
+                },
+                {
+                    "value": 'opt2',
+                    "label": 'option 2',
+                },
+                {
+                    "value": 'opt3',
+                    "label": 'option 3',
+                },
+            ],
+            "label":          "Dropdown selection",
+        },
+        "Advanced - Text area input (will become 'textarea' input in WebUI)":                 {
+            "input_type": "textarea",
+            "label":      "Multi-line text area input",
+        },
     }
 ```
 
@@ -97,3 +145,141 @@ Settings are stored on disk in order to be persistent across restarts.
     settings = Settings()
     enable_feature = settings.set_setting('Enable Feature', False)
 ```
+
+
+## Adding settings to your plugin
+
+To add settings to your Plugin, simply add a `settings` dictionary to your `Settings` class.
+
+There are two basic settings options. Boolean (True/False) and String.
+
+If you enter a default value that is a Boolean, then Unmanic will treat it as such and will
+present this option to the user as a `<input type="checkbox">` in the Unmanic web UI.
+
+If you enter a default value that is a String, then Unmanic will present this option to the 
+user as a `<input type="text">` in the Unmanic web UI.
+
+
+##### Example:
+
+If you are to create a settings class with the following values.
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "Boolean Option ":                               True,
+        "Custom String Option":                          "",
+    }
+```
+
+Then it will be displayed in the browser as:
+
+![Unmanic Plugins - Settings](/img/unmanic-plugin-settings-basic.png "unmanic-plugin-settings-basic")
+
+
+
+
+## Advanced form input in WebUI
+
+You can use a basic text and checkbox input form for your plugin as shown above. In most cases, this 
+should be enough. However, sometimes you may wish to include more advanced form input options to configure 
+your plugin.
+
+You can overwrite the default form elements with the `form_settings` class variable.
+This class variable can be used to:
+  - [Overwrite the input labels](#overwriting-labels)
+  - [Create select drop-down inputs](#select-drop-downs)
+  - [Create textarea inputs](#textarea)
+
+
+### Overwriting labels
+
+You may wish to have a long, descriptive label for your input field.
+
+Adding a `label` entry to your `form_settings` dictionary will overwrite this value in the WebUI
+
+
+##### Example:
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "my_checkbox": False,
+    }
+    form_settings = {
+        "my_checkbox": {
+            "label": "Would you like to have this checkbox selected?",
+        },
+    }
+```
+
+![Unmanic Plugins - Settings Advanced Labels](/img/unmanic-plugin-settings-advanced-labels.png "unmanic-plugin-settings-advanced-labels")
+
+
+
+### Select drop-downs
+
+You can use form input select elements if you configure a `input_type` as "select" entry to your `form_settings` dictionary.
+When you set the `input_type` as "select", you must also add a list of `select_options`.
+
+Each `select_options` should consist of a dictionary containing a `value` and a `label`.
+
+
+##### Example:
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "NVENC Encoder Quality Preset": "p4",
+    }
+    form_settings = {
+        "NVENC Encoder Quality Preset": {
+            "input_type":     "select",
+            "select_options": [
+                {
+                    'value': "p6",
+                    'label': "Fast",
+                },
+                {
+                    'value': "p4",
+                    'label': "Medium",
+                },
+                {
+                    'value': "p2",
+                    'label': "Slow",
+                },
+            ],
+        },
+    }
+```
+
+![Unmanic Plugins - Settings Advanced Select](/img/unmanic-plugin-settings-advanced-select.png "unmanic-plugin-settings-advanced-select")
+
+
+
+### Textarea
+
+You may wish to allow multi-line input for your string variables. 
+
+By default, Unmanic's WebUI will treat a string input as a "text" input type. This will generate a `<input type="text">` element.
+
+You can override this in Unmanic's WebUI by setting the `input_type` as "textarea" in your `form_settings` dictionary.
+
+
+##### Example:
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "Patterns": "",
+    }
+
+    form_settings = {
+        "Patterns": {
+            "input_type": "textarea",
+        },
+    }
+```
+
+![Unmanic Plugins - Settings Advanced Textarea](/img/unmanic-plugin-settings-advanced-textarea.png "unmanic-plugin-settings-advanced-textarea")
+
