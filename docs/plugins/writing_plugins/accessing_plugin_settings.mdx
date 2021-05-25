@@ -190,6 +190,7 @@ This class variable can be used to:
   - [Overwrite the input labels](#overwriting-labels)
   - [Create select drop-down inputs](#select-drop-downs)
   - [Create textarea inputs](#textarea)
+  - [Create directory browser inputs](#select-directory)
 
 
 ### Overwriting labels
@@ -219,7 +220,7 @@ class Settings(PluginSettings):
 
 ### Select drop-downs
 
-You can use form input select elements if you configure a `input_type` as "select" entry to your `form_settings` dictionary.
+You can use form input select elements if you configure an `input_type` as "select" entry to your `form_settings` dictionary.
 When you set the `input_type` as "select", you must also add a list of `select_options`.
 
 Each `select_options` should consist of a dictionary containing a `value` and a `label`.
@@ -282,4 +283,32 @@ class Settings(PluginSettings):
 ```
 
 ![Unmanic Plugins - Settings Advanced Textarea](/img/unmanic-plugin-settings-advanced-textarea.png "unmanic-plugin-settings-advanced-textarea")
+
+
+
+### Select directory
+*(since v0.0.8)*
+
+If you intend to use a text input for specifying a path to a directory, you could use Unmanic's directory select browser popup rather 
+than require the path to be entered manually.
+
+This can be done by setting an `input_type` as "browse_directory" entry to your `form_settings` dictionary.
+
+
+##### Example:
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "destination directory": "/library",
+    }
+    form_settings = {
+        "destination directory": {
+            "input_type": "browse_directory",
+        },
+    }
+```
+
+![Unmanic Plugins - Settings Advanced Browse Directory](/img/unmanic-plugin-settings-advaced-browse-directory.png "unmanic-plugin-settings-advaced-browse-directory")
+
 
