@@ -85,17 +85,17 @@ data['issues'].append({
 ## Worker - Processing file
 
 ##### Executed:
-Just prior to the execution of the FFMPEG subprocess within a Unmanic Worker process.
+Just prior to the execution of the FFmpeg subprocess within a Unmanic Worker process.
 
 ##### Function:
 `on_worker_process(data)`
 
 ##### Provided data:
-  - **`exec_ffmpeg`** - Boolean, should Unmanic run FFMPEG with the data returned from this plugin.
+  - **`exec_ffmpeg`** - Boolean, should Unmanic run FFmpeg with the data returned from this plugin.
   - **`file_probe`** - A dictionary object containing the current file probe state.
-  - **`ffmpeg_args`** - A list of Unmanic's default FFMPEG args.
-  - **`file_in`** - The source file to be processed by the FFMPEG command.
-  - **`file_out`** - The destination that the FFMPEG command will output.
+  - **`ffmpeg_args`** - A list of Unmanic's default FFmpeg args.
+  - **`file_in`** - The source file to be processed by the FFmpeg command.
+  - **`file_out`** - The destination that the FFmpeg command will output.
   - **`original_file_path`** - The absolute path to the original library file.
 
 ##### Example:
@@ -125,7 +125,7 @@ class Settings(PluginSettings):
 
     """
     settings = {
-        "Execute FFMPEG": True,
+        "Execute FFmpeg": True,
         "Insert string into cache file name": "custom-string"
     }
 
@@ -135,11 +135,11 @@ def on_worker_process(data):
     Runner function - carries out additional processing during the worker stages of a task.
 
     The 'data' object argument includes:
-        exec_ffmpeg             - Boolean, should Unmanic run FFMPEG with the data returned from this plugin.
+        exec_ffmpeg             - Boolean, should Unmanic run FFmpeg with the data returned from this plugin.
         file_probe              - A dictionary object containing the current file probe state.
-        ffmpeg_args             - A list of Unmanic's default FFMPEG args.
-        file_in                 - The source file to be processed by the FFMPEG command.
-        file_out                - The destination that the FFMPEG command will output.
+        ffmpeg_args             - A list of Unmanic's default FFmpeg args.
+        file_in                 - The source file to be processed by the FFmpeg command.
+        file_out                - The destination that the FFmpeg command will output.
         original_file_path      - The absolute path to the original library file.
 
     :param data:
@@ -154,7 +154,7 @@ def on_worker_process(data):
         tmp_file_out = os.path.splitext(data['file_out'])
         data['file_out'] = "{}-{}-{}{}".format(tmp_file_out[0], custom_string, tmp_file_out[1])
 
-    if not settings.get_setting('Execute FFMPEG'):
+    if not settings.get_setting('Execute FFmpeg'):
         data['exec_ffmpeg'] = False
 
         
@@ -166,10 +166,10 @@ def on_worker_process(data):
 
 ##### Details:
 
-This Plugin runner should be used for carrying any custom FFMpeg command execution stages. 
-The runner itself is only required to configure the parameters of the FFMpeg command execution.
+This Plugin runner should be used for carrying any custom FFmpeg command execution stages. 
+The runner itself is only required to configure the parameters of the FFmpeg command execution.
 The main Unmanic process will take the data dictionary returned from this runner and execute
-the FFMpeg command within it's own shell.
+the FFmpeg command within it's own shell.
 
 ---
 

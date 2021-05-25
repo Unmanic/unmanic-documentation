@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 ## Overview
 
-Unmanic supports hardware acceleration (HWA) of video decoding using FFMpeg. FFMpeg and Unmanic can support multiple hardware acceleration implementations such as nVidia NVENC and MediaCodec through Video Acceleration API's.
+Unmanic supports hardware acceleration (HWA) of video decoding using FFmpeg. FFmpeg and Unmanic can support multiple hardware acceleration implementations such as nVidia NVENC and MediaCodec through Video Acceleration API's.
 
 
 VAAPI is a Video Acceleration API that uses libva to interface with local drivers to provide HWA.
@@ -112,7 +112,7 @@ values={[
 
 ## Enable VAAPI in Unmanic Settings
 
-To enable the VAAPI FFMpeg encoder, you must select it in the Unmanic's settings. Follow these steps to do this.
+To enable the VAAPI FFmpeg encoder, you must select it in the Unmanic's settings. Follow these steps to do this.
 
 1. Navigate to the **Video Encoding** section of Unmanic's settings.
 
@@ -133,8 +133,8 @@ To enable the VAAPI FFMpeg encoder, you must select it in the Unmanic's settings
 ```
 -vf format=nv12|vaapi,hwupload 
 ```
-> NOTE: For more details on filtering for VAAPI encoders, see the [FFMPEG VAAPI Docs](https://trac.ffmpeg.org/wiki/Hardware/VAAPI)
-> and the [FFMPEG Filtering Guide Docs](https://trac.ffmpeg.org/wiki/FilteringGuide).
+> NOTE: For more details on filtering for VAAPI encoders, see the [FFmpeg VAAPI Docs](https://trac.ffmpeg.org/wiki/Hardware/VAAPI)
+> and the [FFmpeg Filtering Guide Docs](https://trac.ffmpeg.org/wiki/FilteringGuide).
 
 7. Click **SUBMIT**
 
