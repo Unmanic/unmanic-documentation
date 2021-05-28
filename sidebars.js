@@ -28,6 +28,8 @@ module.exports = {
             label: 'Configuration',
             items: [
                 'configuration/overview_and_general_settings',
+                'configuration/container_settings',
+                'configuration/video_encoder_settings',
             ],
         },
         {
