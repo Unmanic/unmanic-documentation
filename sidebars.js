@@ -48,6 +48,14 @@ module.exports = {
                         'plugins/writing_plugins/plugin_runner_types',
                     ],
                 },
+                {
+                    type: 'category',
+                    label: 'Plugin Repositories',
+                    items: [
+                        'plugins/plugin_repos/adding_a_custom_repo',
+                        'plugins/plugin_repos/creating_your_own_repo',
+                    ],
+                },
                 'plugins/plugin_manager_cli',
             ],
         },
