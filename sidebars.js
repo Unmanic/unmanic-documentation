@@ -37,6 +37,7 @@ module.exports = {
             label: 'Plugins',
             items: [
                 'plugins/overview',
+                'plugins/adding_a_custom_plugin_repo',
                 {
                     type: 'category',
                     label: 'Writing Plugins',
@@ -52,7 +53,6 @@ module.exports = {
                     type: 'category',
                     label: 'Plugin Repositories',
                     items: [
-                        'plugins/plugin_repos/adding_a_custom_repo',
                         'plugins/plugin_repos/creating_your_own_repo',
                     ],
                 },
