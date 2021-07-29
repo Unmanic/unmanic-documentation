@@ -25,19 +25,19 @@ my_new_plugin
 ---
 #### File: changelog.json
 
-This file should be used to record changes made to the plugin.
+This file should be used to record changes made to the Plugin.
 
 
 ---
 #### File: info.json
 
-A JSON file containing the metadata of your plugin.
+A JSON file containing the metadata of your Plugin.
 This JSON file should contain the following data:
 
   - **`id`** - A string identifier for your Plugin. Should only contain lowercase `a-z` or `_` characters.
   - **`name`** - A very short name for your Plugin.
   - **`author`** - Your name.
-  - **`version`** - The version of your plugin.
+  - **`version`** - The version of your Plugin.
   - **`description`** - A long description of your Plugin detailing what it does. To include line-breaks, insert a `\n`.
   - **`icon`** - A URI to an image. If no icon is provided, the default Plugin icon will be used in the WebUI.
   - **`tags`** - A comma separated list able to be used as keywords when searching for Plugins.
@@ -74,7 +74,7 @@ of your Plugin.
 ---
 #### Runners
 
-The Plugin module is made up of defined **runner** functions. A plugin may include multiple
+The Plugin module is made up of defined **runner** functions. A Plugin may include multiple
 runner functions such that it is executed at multiple stages of the library optimisation process,
 however it is recommended that a Plugin carry out only a single task and therefore only include
 a single runner function.
@@ -85,7 +85,7 @@ Whatever data schema is provided to a Plugin runner must also be returned at the
 function. During the function, that data may be manipulated as you see fit. However, a Plugin 
 runner may fail if data is removed from that data dictionary.
 
-Plugins should be tested with the [**Plugin Manager CLI**](/docs/plugins/plugin_manager_cli) before publishing changes to ensure
+Plugins should be tested with the [**Plugin Manager CLI**](/docs/development/plugin_manager_cli) before publishing changes to ensure
 that the returned data matches the required schema for all included runner functions.
 
 
@@ -99,9 +99,9 @@ def on_worker_process(data):
 
 | Runner Type                     | Documentation                                                  |
 |---------------------------------|----------------------------------------------------------------|
-| on_library_management_file_test | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#library-management---file-test) |
-| on_worker_process               | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#worker---processing-file) |
-| on_postprocessor_file_movement  | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---file-movements)      |
-| on_postprocessor_task_results   | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---marking-task-successfailure)      |
+| on_library_management_file_test | [LINK](/docs/development/writing_plugins/plugin_runner_types#library-management---file-test) |
+| on_worker_process               | [LINK](/docs/development/writing_plugins/plugin_runner_types#worker---processing-file) |
+| on_postprocessor_file_movement  | [LINK](/docs/development/writing_plugins/plugin_runner_types#post-processor---file-movements)      |
+| on_postprocessor_task_results   | [LINK](/docs/development/writing_plugins/plugin_runner_types#post-processor---marking-task-successfailure)      |
 
 

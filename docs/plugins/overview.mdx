@@ -1,72 +1,21 @@
 ---
 title: Plugins Overview
-description: Unmanic Plugins > Overview
+description: An Overview of Unmanic Plugins
 id: overview
 ---
 
 ![plugins overview](/img/unmanic-plugins-overview.gif "plugins overview")
 
 
-Unmanic features a Plugin system that enables extensibility to various sections of 
-Unmnanic's task processing.
+Unmanic features a Plugin system to extend Unmanic's capabilities.
+Plugins are stand-alone programs that are executed by Unmanic at defined stages during its task processing.
 
-This site hosts an official repository of Plugins available to download within the 
-Unmanic application.
+Usually, Plugins are designed to carry out one function only.
+However some Plugins are designed to be executed at multiple stages of task processing.
 
-Users are able to [develop their own Plugins](/docs/plugins/writing_plugins/introduction)
-and either host them within their own repo or submit them to be included into the 
-[official repository](https://github.com/Unmanic/unmanic-plugins/tree/official).
+For example, you may install a Plugin that will run during the library scan process to detect files that need to be added to the [Pending Tasks queue](/docs/dashboard/pending_tasks) due to an incorrect video codec.
+When the [Worker](/docs/dashboard/workers) picks up the task, it may execute that same Plugin again which will now handle the job of transcoding the video streams to the configured codec.
 
+In this example the Plugin has carried out two separate jobs at different stages of Unmanic's task processing.
 
-## What is a Plugin
-
-Plugins are stand-alone Python modules that are executed at defined stages during
-the library optimisation process.
-
-At these specific stages of the library optimisation process, Unmanic will call
-each enabled Plugin in turn and then, upon completion of the Plugin execution,
-Unmanic will continue with subsequent process for that stage.
-
-During a call to a Plugin, said plugin will be given a set of data pertaining to the state 
-of a task or the information regarding the process about to be carried out. 
-A Plugin may use this data to:
-
-  - Manipulate the subsequent process.
-  - Use that data to carry out functions outside of the scope of the Unmanic application.
-
-A Plugin may be written such that it is executed at multiple stages of the library
-optimisation process, however it is best practice to write a Plugin to carry out
-only a single task.
-
-
-## Types of Plugins
-
-The current list of supported types:
-
-
-| Stage              | Type                         | Runner                          | Documentation                                                  |
-|--------------------|------------------------------|---------------------------------|----------------------------------------------------------------|
-| Library Management | File test                    | on_library_management_file_test | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#library-management---file-test) |
-| Worker             | Processing file              | on_worker_process               | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#worker---processing-file) |
-| Post-processor     | File movements               | on_postprocessor_file_movement  | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---file-movements)      |
-| Post-processor     | Marking task success/failure | on_postprocessor_task_results   | [LINK](/docs/plugins/writing_plugins/plugin_runner_types#post-processor---marking-task-successfailure)      |
-
-
-## Plugins repositories
-
-Unmanic hosts an official repository of plugins for Unmanic.
-
-This is hosted on [GitHub](https://github.com/Unmanic/unmanic-plugins/tree/official) under the "*official*" branch.
-
-Anyone is able to provide Pull Request to update existing plugins or add new plugins to this repository.
-Any additions will be vetted and tested to ensure they uphold the standard expected of official plugins.
-
-If you wish to create your own repository to host or develop your own plugins, follow the guide here:
-
-* [Creating Your Own Repository](/docs/plugins/plugin_repos/creating_your_own_repo)
-* [Adding a Custom Repository to Unmanic](/docs/plugins/plugin_repos/adding_a_custom_repo)
-
-
-
-
-
+Use Plugins to build powerful library optimisation flows.

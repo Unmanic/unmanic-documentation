@@ -1,0 +1,61 @@
+---
+title: Plugin Development Overview
+description: An Overview of Unmanic Plugins
+id: developing_plugins
+---
+
+Users are able to [develop their own Plugins](/docs/development/writing_plugins/introduction)
+and either host them within their own repo or submit them to be included into the 
+[official repository](https://github.com/Unmanic/unmanic-plugins/tree/official).
+
+
+## More in-depth look at what a Plugin is
+
+Plugins are stand-alone Python modules that are executed at defined stages during
+the library optimisation process.
+
+At these specific stages of the library optimisation process, Unmanic will call
+each enabled Plugin in turn and then, upon completion of the Plugin execution,
+Unmanic will continue with subsequent process for that stage.
+
+During a call to a Plugin, said plugin will be given a set of data pertaining to the state 
+of a task or the information regarding the process about to be carried out. 
+A Plugin may use this data to:
+
+  - Manipulate the subsequent process.
+  - Use that data to carry out functions outside of the scope of the Unmanic application.
+
+A Plugin may be written such that it is executed at multiple stages of the library
+optimisation process, however it is best practice to write a Plugin to carry out
+only a single task.
+
+
+## Types of Plugins
+
+The current list of supported types:
+
+| Type                         | Stage              | Documentation                                                  |
+|------------------------------|--------------------|----------------------------------------------------------------|
+| File test                    | Library Management | [LINK](/docs/development/writing_plugins/plugin_runner_types#library-management---file-test) |
+| Processing file              | Worker             | [LINK](/docs/development/writing_plugins/plugin_runner_types#worker---processing-file) |
+| File movements               | Post-processor     | [LINK](/docs/development/writing_plugins/plugin_runner_types#post-processor---file-movements) |
+| Marking task success/failure | Post-processor     | [LINK](/docs/development/writing_plugins/plugin_runner_types#post-processor---marking-task-successfailure) |
+
+
+## Plugins repositories
+
+Unmanic hosts an official repository of plugins for Unmanic.
+
+This is hosted on [GitHub](https://github.com/Unmanic/unmanic-plugins/tree/official) under the "*official*" branch.
+
+Anyone is able to provide Pull Request to update existing plugins or add new plugins to this repository.
+Any additions will be vetted and tested to ensure they uphold the standard expected of official plugins.
+
+If you wish to create your own repository to host or develop your own plugins, follow the guide here:
+
+* [Creating Your Own Repository](/docs/development/plugin_repos/creating_your_own_repo)
+* [Adding a Custom Repository to Unmanic](/docs/development/plugin_repos/adding_a_custom_repo)
+
+
+
+

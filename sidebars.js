@@ -25,38 +25,67 @@ module.exports = {
         },
         {
             type: 'category',
-            label: 'Configuration',
+            label: 'Using Unmanic',
             items: [
-                'configuration/overview_and_general_settings',
-                'configuration/container_settings',
-                'configuration/video_encoder_settings',
+                {
+                    type: 'category',
+                    label: 'Dashboard',
+                    items: [
+                        'dashboard/task_flow_chart',
+                        'dashboard/workers',
+                        'dashboard/pending_tasks',
+                    ],
+                },
+                {
+                    type: 'category',
+                    label: 'Configuration',
+                    items: [
+                        'configuration/overview_and_general_settings',
+                        'configuration/container_settings',
+                        'configuration/video_encoder_settings',
+                    ],
+                },
+                {
+                    type: 'category',
+                    label: 'Plugins',
+                    items: [
+                        'plugins/overview',
+                        'plugins/installing_plugins',
+                        'plugins/adding_a_custom_plugin_repo',
+                    ],
+                },
             ],
         },
         {
             type: 'category',
-            label: 'Plugins',
+            label: 'Development',
             items: [
-                'plugins/overview',
-                'plugins/adding_a_custom_plugin_repo',
                 {
                     type: 'category',
-                    label: 'Writing Plugins',
+                    label: 'Plugins',
                     items: [
-                        'plugins/writing_plugins/introduction',
-                        'plugins/writing_plugins/creating_a_new_plugin',
-                        'plugins/writing_plugins/plugin_settings',
-                        'plugins/writing_plugins/system_info',
-                        'plugins/writing_plugins/plugin_runner_types',
+                        'development/developing_plugins',
+                        {
+                            type: 'category',
+                            label: 'Writing Plugins',
+                            items: [
+                                'development/writing_plugins/introduction',
+                                'development/writing_plugins/creating_a_new_plugin',
+                                'development/writing_plugins/plugin_settings',
+                                'development/writing_plugins/system_info',
+                                'development/writing_plugins/plugin_runner_types',
+                            ],
+                        },
+                        {
+                            type: 'category',
+                            label: 'Plugin Repositories',
+                            items: [
+                                'development/plugin_repos/creating_your_own_repo',
+                            ],
+                        },
+                        'development/plugin_manager_cli',
                     ],
                 },
-                {
-                    type: 'category',
-                    label: 'Plugin Repositories',
-                    items: [
-                        'plugins/plugin_repos/creating_your_own_repo',
-                    ],
-                },
-                'plugins/plugin_manager_cli',
             ],
         },
         {
