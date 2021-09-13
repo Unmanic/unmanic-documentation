@@ -54,9 +54,6 @@ values={[
     # CONFIG_DIR - Where you settings are saved
     CONFIG_DIR=/config
 
-    # TZ - Your time zone
-    TZ=Pacific/Auckland
-
     # LIBRARY_DIR - The location/locations of your library
     LIBRARY_DIR=/library
 
@@ -69,7 +66,6 @@ values={[
     docker run -ti --rm \
         -e PUID=${PUID} \
         -e PGID=${PGID} \
-        -e TZ=${TZ} \
         -e NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES} \
         --runtime=nvidia \
         -p 8888:8888 \
@@ -86,7 +82,6 @@ values={[
     # Variables that will need to be changed:
     #     <PUID>                            -  User id for folder/file permissions
     #     <PGID>                            -  Group id for folder/file permissions
-    #     <TZ>                              -  Your time zone, eg - Pacific/Auckland
     #     <NVIDIA_VISIBLE_DEVICES>          -  The GPUs that will be accessible to the container
     #                                          Options: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html#gpu-enumeration
     #     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
@@ -105,7 +100,6 @@ values={[
         environment:
           - PUID=<PUID>
           - PGID=<PGID>
-          - TZ=<TZ>
           - NVIDIA_VISIBLE_DEVICES=<NVIDIA_VISIBLE_DEVICES>
         volumes:
           - <PATH_TO_CONFIG>:/config

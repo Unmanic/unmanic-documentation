@@ -46,24 +46,16 @@ values={[
     # CONFIG_DIR - Where you settings are saved
     CONFIG_DIR=/config
 
-    # TZ - Your time zone
-    TZ=Pacific/Auckland
-
     # LIBRARY_DIR - The location/locations of your library
     LIBRARY_DIR=/library
 
     # CACHE_DIR - A tmpfs or and folder for temporary conversion files
     CACHE_DIR=/tmp/unmanic
 
-    # NVIDIA_VISIBLE_DEVICES - The GPUs that will be accessible to the container
-    NVIDIA_VISIBLE_DEVICES=all
-
     docker run -ti --rm \
         -e PUID=${PUID} \
         -e PGID=${PGID} \
-        -e TZ=${TZ} \
-        -e NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES} \
-        --runtime=nvidia \
+        --device=/dev/dri \
         -p 8888:8888 \
         -v ${CONFIG_DIR}:/config \
         -v ${LIBRARY_DIR}:/library \
@@ -78,9 +70,6 @@ values={[
     # Variables that will need to be changed:
     #     <PUID>                            -  User id for folder/file permissions
     #     <PGID>                            -  Group id for folder/file permissions
-    #     <TZ>                              -  Your time zone, eg - Pacific/Auckland
-    #     <NVIDIA_VISIBLE_DEVICES>          -  The GPUs that will be accessible to the container
-    #                                          Options: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html#gpu-enumeration
     #     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
     #     <PATH_TO_LIBRARY>                 -  Path where you store the files that Unmanic will scan
     #     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
@@ -97,13 +86,12 @@ values={[
         environment:
           - PUID=<PUID>
           - PGID=<PGID>
-          - TZ=<TZ>
-          - NVIDIA_VISIBLE_DEVICES=<NVIDIA_VISIBLE_DEVICES>
         volumes:
           - <PATH_TO_CONFIG>:/config
           - <PATH_TO_LIBRARY>:/library
           - <PATH_TO_ENCODE_CACHE>:/tmp/unmanic
-        runtime: nvidia       # For H/W transcoding using the NVENC encoder
+        devices:
+          - /dev/dri:/dev/dri       # For H/W transcoding using the VAAPI encoder
   ```
 
   </TabItem>

@@ -41,9 +41,6 @@ The most basic method is shown below:
     # CONFIG_DIR - Where you settings are saved
     CONFIG_DIR=/config
 
-    # TZ - Your time zone
-    TZ=Pacific/Auckland
-
     # LIBRARY_DIR - The location/locations of your library
     LIBRARY_DIR=/library
 
@@ -53,7 +50,6 @@ The most basic method is shown below:
     docker run -ti --rm \
         -e PUID=${PUID} \
         -e PGID=${PGID} \
-        -e TZ=${TZ} \
         -p 8888:8888 \
         -v ${CONFIG_DIR}:/config \
         -v ${LIBRARY_DIR}:/library \
@@ -68,7 +64,6 @@ The most basic method is shown below:
     # Variables that will need to be changed:
     #     <PUID>                            -  User id for folder/file permissions
     #     <PGID>                            -  Group id for folder/file permissions
-    #     <TZ>                              -  Your time zone, eg - Pacific/Auckland
     #     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
     #     <PATH_TO_LIBRARY>                 -  Path where you store the files that Unmanic will scan
     #     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
@@ -85,7 +80,6 @@ The most basic method is shown below:
         environment:
           - PUID=<PUID>
           - PGID=<PGID>
-          - TZ=<TZ>
         volumes:
           - <PATH_TO_CONFIG>:/config
           - <PATH_TO_LIBRARY>:/library
