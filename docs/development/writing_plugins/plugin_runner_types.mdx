@@ -23,9 +23,9 @@ After Unmanic carries out tests on a file to determine if it should be added to 
 `on_library_management_file_test(data)`
 
 ##### Provided data:
-  - **`path`** - String containing the full path to the file being tested.
-  - **`issues`** - List of currently found issues for not processing the file.
-  - **`add_file_to_pending_tasks`** - Boolean, is the file currently marked to be added to the queue for processing.
+  - **`path`** *[string]* - String containing the full path to the file being tested.
+  - **`issues`** *[list]* - List of currently found issues for not processing the file.
+  - **`add_file_to_pending_tasks`** *[boolean]* - Boolean, is the file currently marked to be added to the queue for processing.
 
 ##### Example:
 
@@ -85,18 +85,18 @@ data['issues'].append({
 ## Worker - Processing file
 
 ##### Executed:
-Just prior to the execution of the FFmpeg subprocess within a Unmanic Worker process.
+Just prior to the execution of the command subprocess within an Unmanic Worker process.
 
 ##### Function:
 `on_worker_process(data)`
 
 ##### Provided data:
-  - **`exec_ffmpeg`** - Boolean, should Unmanic run FFmpeg with the data returned from this plugin.
-  - **`file_probe`** - A dictionary object containing the current file probe state.
-  - **`ffmpeg_args`** - A list of Unmanic's default FFmpeg args.
-  - **`file_in`** - The source file to be processed by the FFmpeg command.
-  - **`file_out`** - The destination that the FFmpeg command will output.
-  - **`original_file_path`** - The absolute path to the original library file.
+  - **`exec_command`** *[list]* - A command that Unmanic should execute (can be empty).
+  - **`command_progress_parser`** *[callable]* - A function that Unmanic can use to parse the STDOUT of the command to collect progress stats (can be empty).
+  - **`file_in`** *[string]* - The source file to be processed by the command.
+  - **`file_out`** *[string]* - The destination that the command should output (can be the same as the *file_in* if necessary).
+  - **`original_file_path`** *[string]* - The absolute path to the original library file.
+  - **`repeat`** *[boolean]* - Sets if this runner should be executed again once completed with the same variables.
 
 ##### Example:
 
@@ -125,22 +125,22 @@ class Settings(PluginSettings):
 
     """
     settings = {
-        "Execute FFmpeg": True,
+        "Execute Command": True,
         "Insert string into cache file name": "custom-string"
     }
 
 
 def on_worker_process(data):
     """
-    Runner function - carries out additional processing during the worker stages of a task.
+    Runner function - enables additional configured processing jobs during the worker stages of a task.
 
     The 'data' object argument includes:
-        exec_ffmpeg             - Boolean, should Unmanic run FFmpeg with the data returned from this plugin.
-        file_probe              - A dictionary object containing the current file probe state.
-        ffmpeg_args             - A list of Unmanic's default FFmpeg args.
-        file_in                 - The source file to be processed by the FFmpeg command.
-        file_out                - The destination that the FFmpeg command will output.
-        original_file_path      - The absolute path to the original library file.
+        exec_command            - A command that Unmanic should execute. Can be empty.
+        command_progress_parser - A function that Unmanic can use to parse the STDOUT of the command to collect progress stats. Can be empty.
+        file_in                 - The source file to be processed by the command.
+        file_out                - The destination that the command should output (may be the same as the file_in if necessary).
+        original_file_path      - The absolute path to the original file.
+        repeat                  - Boolean, should this runner be executed again once completed with the same variables.
 
     :param data:
     :return:
@@ -154,8 +154,8 @@ def on_worker_process(data):
         tmp_file_out = os.path.splitext(data['file_out'])
         data['file_out'] = "{}-{}-{}{}".format(tmp_file_out[0], custom_string, tmp_file_out[1])
 
-    if not settings.get_setting('Execute FFmpeg'):
-        data['exec_ffmpeg'] = False
+    if not settings.get_setting('Execute Command'):
+        data['exec_command'] = False
 
         
 
@@ -166,10 +166,10 @@ def on_worker_process(data):
 
 ##### Details:
 
-This Plugin runner should be used for carrying any custom FFmpeg command execution stages. 
-The runner itself is only required to configure the parameters of the FFmpeg command execution.
+This Plugin runner should be used for carrying any custom command execution stages.
+The runner itself is only required to configure the parameters of the command execution.
 The main Unmanic process will take the data dictionary returned from this runner and execute
-the FFmpeg command within it's own shell.
+the command within it's own shell.
 
 ---
 
@@ -183,11 +183,11 @@ Just prior to file copy operation from cached output file to source file's direc
 `on_postprocessor_file_movement(data)`
 
 ##### Provided data:
-  - **`source_data`** - Dictionary containing data pertaining to the original source file.
-  - **`remove_source_file`** - Boolean, should Unmanic remove the original source file after all copy operations are complete.
-  - **`copy_file`** - Boolean, should Unmanic run a copy operation with the returned data variables.
-  - **`file_in`** - The converted cache file to be copied by the postprocessor.
-  - **`file_out`** - The destination file that the file will be copied to.
+  - **`source_data`** *[dictionary]* - Data pertaining to the original source file.
+  - **`remove_source_file`** *[boolean]* - Sets if Unmanic should remove the original source file after all copy operations are complete.
+  - **`copy_file`** *[boolean]* - Sets if Unmanic should run a copy operation with the returned data variables.
+  - **`file_in`** *[string]* - The converted cache file to be copied by the postprocessor.
+  - **`file_out`** *[string]* - The destination file that the file will be copied to.
 
 ##### Example:
 
@@ -239,8 +239,10 @@ Just prior to the task cache directory cleanup.
 `on_postprocessor_task_results(data)`
 
 ##### Provided data:
-  - **`task_processing_success`** - Boolean, did all task processes complete successfully.
-  - **`file_move_processes_success`** - Boolean, did all postprocessor movement tasks complete successfully.
+  - **`task_processing_success`** *[boolean]* - Specifies if all task processes complete successfully.
+  - **`file_move_processes_success`** *[boolean]* - Specifies if all postprocessor movement tasks complete successfully.
+  - **`destination_files`** *[list]* - All file paths created by postprocessor file movements.
+  - **`source_data`** *[dictionary]* - Data pertaining to the original source file.
 
 ##### Example:
 
@@ -257,6 +259,8 @@ def on_postprocessor_task_results(data):
     The 'data' object argument includes:
         task_processing_success         - Boolean, did all task processes complete successfully.
         file_move_processes_success     - Boolean, did all postprocessor movement tasks complete successfully.
+        destination_files               - List containing all file paths created by postprocessor file movements.
+        source_data                     - Dictionary containing data pertaining to the original source file.
 
     :param data:
     :return:

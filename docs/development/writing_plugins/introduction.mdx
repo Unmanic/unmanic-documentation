@@ -16,7 +16,7 @@ The directory structure of a Plugin should be:
 
 ```sh
 my_new_plugin
-├── changelog.txt
+├── changelog.md
 ├── info.json
 └── plugin.py
 ```
@@ -41,6 +41,8 @@ This JSON file should contain the following data:
   - **`description`** - A long description of your Plugin detailing what it does. To include line-breaks, insert a `\n`.
   - **`icon`** - A URI to an image. If no icon is provided, the default Plugin icon will be used in the WebUI.
   - **`tags`** - A comma separated list able to be used as keywords when searching for Plugins.
+  - **`compatibility`** - A list of Unmanic Plugin Handler versions that this Plugin is compatible with.
+  - **`priorities`** - A dictionary of the initial priority that this Plugin's runners within the Plugin flow.
 
 ##### Example:
 ```json
@@ -52,6 +54,13 @@ This JSON file should contain the following data:
     "description": "Specify a language tag for Unmanic to try and put as 1st subtitle track.\n\nIn the plugin settings, specify a 'Search String'. The plugin will search the files to find matching subtitle tracks. The matching subtitle tracks will be moved to the 1st subtitle track position.\n\nExamples of search strings:\n  - 'en'\n  - 'fr'\n  - 'de'",
     "icon": ""
     "tags": "subtitle,ffmpeg,worker",
+    "compatibility": [
+        1
+    ],
+    "priorities": {
+        "on_library_management_file_test": 99,
+        "on_worker_process": 1
+    }
 }
 ```
 
