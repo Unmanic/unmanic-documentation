@@ -268,3 +268,55 @@ def on_postprocessor_task_results(data):
     return data
 ```
 </details>
+
+---
+
+
+## Frontend - Data Panel
+*(since v0.1.0)*
+
+##### Executed:
+From front-end URL
+
+##### Function:
+`render_frontend_panel(data)`
+
+##### Provided data:
+- **`content_type`** *[string]* - The content type to be set when writing back to the browser.
+- **`content`** *[string]* - The content to print to the browser.
+- **`path`** *[string]* - The path received after the '/unmanic/panel' path.
+- **`arguments`** *[dictionary]* - A dictionary of GET arguments received.
+
+##### Example:
+
+<details>
+<summary>plugin.py</summary>
+
+```python
+def render_frontend_panel(data):
+    """
+    Runner function - display a custom data panel in the frontend.
+
+    The 'data' object argument includes:
+        content_type                    - The content type to be set when writing back to the browser.
+        content                         - The content to print to the browser.
+        path                            - The path received after the '/unmanic/panel' path.
+        arguments                       - A dictionary of GET arguments received.
+
+    :param data:
+    :return:
+    """
+
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'static', 'index.html'))) as f:
+        content = f.read()
+        data['content'] = content.replace("{cache_buster}", str(uuid.uuid4()))
+
+    return data
+```
+</details>
+
+
+##### Details:
+
+This Plugin runner type provides a *Data Panel* which will be displayed to the front-end.
+
