@@ -81,6 +81,7 @@ module.exports = {
                             label: 'Plugin Repositories',
                             items: [
                                 'development/plugin_repos/creating_your_own_repo',
+                                'development/plugin_repos/creating_a_pull_request'
                             ],
                         },
                         'development/plugin_manager_cli',

@@ -1,0 +1,82 @@
+---
+title: Creating a Pull Request to the Official Repository
+id: creating_a_pull_request
+---
+
+
+Submissions are encouraged for the plugin repository. However it is your responsibility to ensure that your plugin is compatible and meets all requirements prior to submission.
+Once a plugin is merged into the official repository, maintenance of that plugin will fall to the maintainer of the official repository.
+
+If you wish to merge your plugin into the official repository, follow these steps
+
+---
+
+
+# Opening PR
+
+These instructions assume you have [forked the official repository](creating_your_own_repo) and wish to merge in your own plugin.
+
+These instructions also assume that you have configured your locally cloned repo with a remote `upstream` pointing to the official repository.
+```
+git remote add upstream https://github.com/Unmanic/unmanic-plugins.git 
+```
+
+:::note
+It is a good idea to set the variable `$plugin_id` before starting these commands
+
+Eg:
+```
+plugin_id=path_ignore
+plugin_version=0.0.1
+```
+:::
+
+
+## Creating a New PR:
+
+### 1) Pull latest changes from official branch
+```
+git checkout official
+git pull upstream official
+```
+
+### 2) Create new PR branch from official
+```
+git checkout -b pr-${plugin_id}
+```
+
+### 3) Merge in the source files from your master branch
+```
+git read-tree --prefix=source/${plugin_id} -u master:source/${plugin_id}
+```
+
+### 4) Push to new branch and then open a PR
+```
+git commit -m "[${plugin_id}] ${plugin_version}"
+git push -f origin pr-${plugin_id}
+```
+
+### 5) Open the PR
+Open the PR from this new branch of your forked repo to the [Unmanic plugins official branch](https://github.com/Unmanic/unmanic-plugins/tree/official).
+
+
+## Updating existing PR:
+
+### 1) Pull latest changes from official branch
+```
+git checkout official
+git pull upstream official
+```
+
+### 2) Checkout CLEAN PR branch from official
+```
+git branch -D pr-${plugin_id}
+git checkout -b pr-${plugin_id}
+```
+
+### 3) Follow steps > 3 from [Creating a New PR:](#creating-a-new-pr) above
+Continue following steps 3+ from the *New PR:* steps above.
+
+:::note
+Take note of the force push in step 4. This is done so that we can squash the changes for the PR.
+:::
