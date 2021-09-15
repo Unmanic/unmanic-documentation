@@ -17,8 +17,8 @@ Unmanic provides you with the following main functions:
 
 - A folder watchdog. When a video file is modified or a new file is added in your library, Unmanic is able to check that video against your configured video presets. Like the first function, if this video is not formatted correctly it is added to a queue for conversion.
 
-- A handler to manage multiple file conversion tasks at a time using FFmpeg
+- A handler to manage running multiple file manipulation tasks at a time.
 
-- A Web UI to easily configure your preferred video presets and monitor the progress of your library conversion.
+- A Web UI to easily configure, manage and monitor the progress of your library optimisation.
 
-Simply point Unmanic at your library and let it manage it.
+Simply configure Unmanic pointing it at your library and let it manage that library for you.
