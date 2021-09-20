@@ -1,0 +1,70 @@
+---
+title: Installation on Synology
+description: Unmanic Installation on Synology
+id: synology
+---
+
+
+## Instructions:
+
+  1. Configure the container general settings as pictured:
+      - Enable high privilege
+      - Resource limitation is optional
+      - Auto-restart is optional
+
+![Unraid Synology General](/img/synology-container-general.jpg "synology-container-general")
+
+
+  2. Configure container volumes
+      - The /video mount points to your video library which you want to be able to access in Unmanic
+
+![Unraid Synology Volumes](/img/synology-container-volumes.jpg "synology-container-volumes")
+
+
+  3. Configure container ports
+      - Local Port 8888 can be changed to whatever you prefer. 
+      Example: If set to "38888" the Web-UI will be accessible on port 38888 (http://server_ip:38888).
+
+![Unraid Synology Ports](/img/synology-container-ports.jpg "synology-container-ports")
+
+
+  3. Configure container environment
+      - Set your PID and GID
+      - Set your TZ
+      - Add the LIBVA_DRIVER_NAME variable. Set to i965.
+
+![Unraid Synology Environment](/img/synology-container-env.jpg "synology-container-env")
+
+
+Finish setting up the container and run for the first time. Check if everything's running properly.
+
+
+## Some optional configuration steps:
+
+### Adding HW-Acceleration capabilities:
+
+Stop the container and export the settings to your local computer. 
+Delete the container afterwards.
+
+![Unraid Synology Export1](/img/synology-container-export1.png "synology-container-export1")
+![Unraid Synology Export2](/img/synology-container-export2.png "synology-container-export2")
+
+In the freshly downloaded .json file add the following text as shown in the picture below.
+```
+...
+
+"devices": [
+    {
+        "CgroupPermissions": "rwm", 
+        "PathInContainer": "\/dev\/dri", 
+        "PathOnHost": "\/dev\/dri"
+    }
+],
+
+...
+```
+![Unraid Synology Export3](/img/synology-container-export3.png "synology-container-export3")
+
+Import the modified .json file to your Synology NAS Docker Station and run the container.
+
+Your Unmanic container should now be able to use HW-Acceleration with any supported Plugins.

@@ -19,6 +19,7 @@ module.exports = {
                         'installation/pip',
                         'installation/docker',
                         'installation/unraid',
+                        'installation/synology',
                     ],
                 },
             ],
