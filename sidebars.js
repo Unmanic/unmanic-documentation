@@ -100,6 +100,7 @@ module.exports = {
                     items: [
                         'advanced/hardware_accelerated_encoding_nvenc',
                         'advanced/hardware_accelerated_encoding_vaapi',
+                        'advanced/docker_compose_cifs_mounts',
                     ],
                 },
             ],

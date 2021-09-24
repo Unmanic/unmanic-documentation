@@ -1,0 +1,100 @@
+---
+title: Docker-Compose SMB/CIFS mounts
+description: Unmanic Installation - Docker-Compose with CIFS mounts
+id: docker_compose_cifs_mounts
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Overview
+
+Mounting a remote Windows share is possible with Docker, but requires a little more configuration.
+
+
+<Tabs
+defaultValue="docker_run"
+values={[
+{label: 'Docker run', value: 'docker_run'},
+{label: 'Docker-compose', value: 'docker_compose'},
+]}>
+<TabItem value="docker_run">
+
+  ```bash
+    PUID=$(id -u)
+    PGID=$(id -g)
+
+    # CONFIG_DIR - Where you settings are saved
+    CONFIG_DIR=/config
+
+    # CACHE_DIR - A tmpfs or and folder for temporary conversion files
+    CACHE_DIR=/tmp/unmanic
+    
+    # CIFS Mount params
+    REMOTE_IP=192.168.0.20
+    PATH_TO_LIBRARY=/library
+    USERNAME=user
+    PASSWORD=password
+
+    # First create the docker volume mounting the CIFS remote share
+    docker volume create \
+        --driver local \
+        --opt type=cifs \
+        --opt device=//${REMOTE_IP}${PATH_TO_LIBRARY} \
+        --opt o=username=${USERNAME},password=${PASSWORD},vers=3.0,uid=${PUID},gid=${PGID} \
+        --name cifs_mount
+
+    # Now create the docker container using the created CIFS volume
+    docker run -ti --rm \
+        -e PUID=${PUID} \
+        -e PGID=${PGID} \
+        -p 8888:8888 \
+        -v ${CONFIG_DIR}:/config \
+        -v cifs_mount:/library \
+        -v ${CACHE_DIR}:/tmp/unmanic \
+        josh5/unmanic:latest
+  ```
+
+  </TabItem>
+  <TabItem value="docker_compose">
+
+  ```yaml
+    # Variables that will need to be changed:
+    #     <PUID>                            -  User id for folder/file permissions
+    #     <PGID>                            -  Group id for folder/file permissions
+    #     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
+    #     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
+    #     <REMOTE_IP>                       -  Remote IP address of CIFS mount
+    #     <PATH_TO_LIBRARY>                 -  Path in remote machine to be mounted as your library 
+    #     <USERNAME>                        -  Remote mount username
+    #     <PASSWORD>                        -  Remote mount password
+    #
+
+    ---
+    version: '2.4'
+    services:
+      unmanic:
+        container_name: unmanic
+        image: josh5/unmanic:latest
+        ports:
+          - 8888:8888
+        environment:
+          - PUID=<PUID>
+          - PGID=<PGID>
+        volumes:
+          - <PATH_TO_CONFIG>:/config
+          - cifs_mount:/library
+          - <PATH_TO_ENCODE_CACHE>:/tmp/unmanic
+
+    volumes:
+      cifs_mount:
+        driver: local
+        driver_opts:
+          type: cifs    
+          device: //<REMOTE_IP>/<PATH_TO_LIBRARY>
+          o: "username=<USERNAME>,password=<PASSWORD>,vers=3.0,uid=<PUID>,gid=<PGID>"
+
+
+  ```
+
+  </TabItem>
+</Tabs>
