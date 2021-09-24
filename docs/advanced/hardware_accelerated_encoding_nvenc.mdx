@@ -1,6 +1,6 @@
 ---
-title: Hardware Acceleration - NVENC
-description: Unmanic Installation - Hardware Acceleration - NVENC
+title: Docker Hardware Acceleration - NVENC
+description: Unmanic Installation - Docker Hardware Acceleration - NVENC
 id: hardware_accelerated_encoding_nvenc
 ---
 import Tabs from '@theme/Tabs';
@@ -18,7 +18,7 @@ It is recommended to use the patched drivers [here](https://github.com/keylase/n
 
 [Here](https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new) is the official list of NVIDIA Graphics Cards for supported codecs.
 
-To ensure you device is capible of running the NVENC encoders, run this command:
+To ensure you device is capable of running the NVENC encoders, run this command:
 ```
 for i in encoders decoders filters; do     echo $i:; ffmpeg -hide_banner -${i} | egrep -i "npp|cuvid|nvenc|cuda|nvdec"; done
 ```
@@ -110,21 +110,3 @@ values={[
 
   </TabItem>
 </Tabs>
-
-
-## Enable NVENC in Unmanic Settings
-
-To enable the NVENC FFmpeg encoder, you must select it in the Unmanic's settings. Follow these steps to do this.
-
-1. Navigate to the **Video Encoding** section of Unmanic's settings.
-
-![Video Encoding](https://raw.githubusercontent.com/Josh5/unmanic/master/docs/images/settings-video-encoding.png)
-
-2. Select your target **Video Codec**.
-
-3. Then select the **Video Encoder** that ends with "_nvenc"
-
-4. Click **SUBMIT**
-
-These changes will only affect any future added files. If you wish to apply this to the current Pending Tasks list, then restart Unmanic.
-

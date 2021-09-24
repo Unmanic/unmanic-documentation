@@ -1,6 +1,6 @@
 ---
-title: Hardware Acceleration - VAAPI
-description: Unmanic Installation - Hardware Acceleration - VAAPI
+title: Docker Hardware Acceleration - VAAPI
+description: Unmanic Installation - Docker Hardware Acceleration - VAAPI
 id: hardware_accelerated_encoding_vaapi
 ---
 import Tabs from '@theme/Tabs';
@@ -96,35 +96,3 @@ values={[
 
   </TabItem>
 </Tabs>
-
-
-## Enable VAAPI in Unmanic Settings
-
-To enable the VAAPI FFmpeg encoder, you must select it in the Unmanic's settings. Follow these steps to do this.
-
-1. Navigate to the **Video Encoding** section of Unmanic's settings.
-
-![Video Encoding](https://raw.githubusercontent.com/Josh5/unmanic/master/docs/images/settings-video-encoding.png)
-
-2. Select your target **Video Codec**.
-
-3. Then select the **Video Encoder** that ends with "_vaapi"
-
-4. Click **SUBMIT**
-
-5. Now switch to the **Advanced Options** section of Unmanic's settings.
-
-![Advanced Options](https://raw.githubusercontent.com/Josh5/unmanic/master/docs/images/settings-advanced-options.png)
-
-6. Add the following lines:
-
-```
--vf format=nv12|vaapi,hwupload 
-```
-> NOTE: For more details on filtering for VAAPI encoders, see the [FFmpeg VAAPI Docs](https://trac.ffmpeg.org/wiki/Hardware/VAAPI)
-> and the [FFmpeg Filtering Guide Docs](https://trac.ffmpeg.org/wiki/FilteringGuide).
-
-7. Click **SUBMIT**
-
-These changes will only affect any future added files. If you wish to apply this to the current Pending Tasks list, then restart Unmanic.
-
