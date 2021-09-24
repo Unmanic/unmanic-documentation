@@ -16,6 +16,9 @@ to have the option of enabling configuration options for the Plugin's users.
 
 ##### Example
 
+<details>
+<summary>plugin.py</summary>
+
 ```python
 from unmanic.libs.unplugins.settings import PluginSettings
 
@@ -27,11 +30,23 @@ class Settings(PluginSettings):
 
     This class has a number of methods available to it for accessing these settings:
 
-        > get_setting(<key>)            - Fetch a single setting value. Or leave the 
-                                        key argument empty and return the full dictionary.
+        > get_plugin_directory()        - Returns the absolute path to the Plugin's directory.
+                                          This is where the Plugin is currently installed.
+
+        > get_profile_directory()       - Return the absolute path to the Plugin's profile
+                                          directory. This is where where Plugin settings are
+                                          saved and where all mutable data for the Plugin
+                                          should be stored.
+
+        > get_form_settings()           - Return the current form settings.
+                                          (see class attribute below)
+
+        > get_setting(<key>)            - Fetch a single setting value. Or leave the
+                                          key argument empty and return the full dictionary.
+
         > set_setting(<key>, <value>)   - Set a singe setting value.
-                                        Used by the Unmanic WebUI to save user settings.
-                                        Settings are stored on disk in order to be persistent.
+                                          Used by the Unmanic WebUI to save user settings.
+                                          Settings are stored on disk in order to be persistent.
 
     """
 
@@ -43,16 +58,21 @@ class Settings(PluginSettings):
 
     In the blow settings:
         Boolean Option                      - will become 'checkbox' in WebUI
+
         Custom String Option                - will become text 'input' in WebUI
-        Advanced - Select dropdown          - will become 'select' input in WebUI
-        Advanced - Text area input          - will become 'textarea' input in WebUI
+
+        Advanced - Select dropdown          - will become text 'input' in WebUI
+                                              (overwritten with form_settings below)
+
+        Advanced - Text area input          - will become text 'input' in WebUI
+                                              (overwritten with form_settings below)
 
     """
     settings = {
         "Boolean Option ":                               True,
         "Custom String Option":                          "",
-        "Advanced - Select dropdown with custom label ": "opt2",
-        "Advanced - Text area input ":                   "default value",
+        "Advanced - Select dropdown with custom label":  "opt2",
+        "Advanced - Text area input":                    "default value",
     }
 
 
@@ -61,9 +81,15 @@ class Settings(PluginSettings):
 
     A dictionary of form settings used by Unmanic's WebUI to configure
     the plugin's settings form.
+
+    This dictionary overwrites the defaults applied above and provides more advanced form
+    configuration for the Plugin user.
+
+        Advanced - Select dropdown          - will instead become 'select' input in WebUI
+        Advanced - Text area input          - will instead become 'textarea' input in WebUI
     """
     form_settings = {
-        "Advanced - Select dropdown with custom label (will become 'select' input in WebUI)": {
+        "Advanced - Select dropdown with custom label": {
             "input_type":     "select",
             "select_options": [
                 {
@@ -81,12 +107,15 @@ class Settings(PluginSettings):
             ],
             "label":          "Dropdown selection",
         },
-        "Advanced - Text area input (will become 'textarea' input in WebUI)":                 {
+        "Advanced - Text area input":                 {
             "input_type": "textarea",
             "label":      "Multi-line text area input",
         },
     }
+
 ```
+</details>
+
 
 
 ## Available methods
@@ -94,12 +123,54 @@ class Settings(PluginSettings):
 The PluginSettings class has a couple of methods available to it for accessing these settings.
 
 :::caution
+Do not access the Settings class attributes directly. Use the provided methods.
 
-Warning! Do not access The Settings class attributes directly. Use the provided methods.
 Not using the provided methods will lead to always receiving the default values and not
 the user configured options.
 
 :::
+
+
+---
+#### *classmethod* **get_plugin_directory()**
+
+Returns the absolute path to the Plugin's directory.
+This is where the Plugin is currently installed.
+
+##### Example:
+```python
+    settings = Settings()
+    plugin_directory = settings.get_plugin_directory()
+    db_file = os.path.abspath(os.path.join(plugin_directory, '..', '..', 'config', 'unmanic.db'))
+```
+
+
+---
+#### *classmethod* **get_profile_directory()**
+
+Return the absolute path to the Plugin's profile directory. 
+This is where where Plugin settings are saved and where all mutable data for the Plugin should be stored.
+
+##### Example:
+```python
+    settings = Settings()
+    profile_directory = settings.get_profile_directory()
+    db_file = os.path.abspath(os.path.join(profile_directory, 'history.db'))
+```
+
+
+---
+#### *classmethod* **get_form_settings()**
+
+Return the current form settings.
+
+##### Example:
+```python
+    settings = Settings()
+    form_settings = settings.get_form_settings()
+    if form_settings.get('option', {}).get('input_type') == 'textarea':
+        return True
+```
 
 
 ---
@@ -114,7 +185,7 @@ If no key is provided, this method will return a full dictionary
 of all configured options.
 
 ##### Example:
-```
+```python
     settings = Settings()
 
     # Fetch a single value
@@ -141,7 +212,7 @@ Settings are stored on disk in order to be persistent across restarts.
 
 
 ##### Example:
-```
+```python
     settings = Settings()
     enable_feature = settings.set_setting('Enable Feature', False)
 ```
@@ -167,8 +238,8 @@ If you are to create a settings class with the following values.
 ```python
 class Settings(PluginSettings):
     settings = {
-        "Boolean Option ":                               True,
-        "Custom String Option":                          "",
+        "Boolean Option ":      True,
+        "Custom String Option": "",
     }
 ```
 
@@ -187,10 +258,47 @@ your Plugin.
 
 You can overwrite the default form elements with the `form_settings` class variable.
 This class variable can be used to:
+  - [Dynamically show/hide settings](#dynamically-showhide-settings)
   - [Overwrite the input labels](#overwriting-labels)
   - [Create select drop-down inputs](#select-drop-downs)
   - [Create textarea inputs](#textarea)
   - [Create directory browser inputs](#select-directory)
+  - [Create slider inputs](#slider)
+
+
+### Dynamically show/hide settings
+*(since v0.1.0)*
+
+If you want your Plugin's settings options to change based on the input of other options such as a checkbox, 
+you can do this by adding an `__init__(self)` method to your Settings class.
+
+Inside this method, modify the form_settings object according what you need.
+
+
+##### Example:
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        'Limit to specified extensions': False,
+        "Comma separated list of file extensions to process.":  'ts',
+    }
+
+    def __init__(self):
+        self.form_settings = {
+            "Comma separated list of file extensions to process.":  self.__set_allowed_extensions_form_settings(),
+        }
+
+    def __set_allowed_extensions_form_settings(self):
+        values = {}
+        if not self.get_setting('Limit to specified extensions'):
+            values["display"] = 'hidden'
+        return values
+```
+
+![Unmanic Plugins - Settings Advanced Dynamic Hidden](/img/unmanic-plugin-settings-advanced-dynamic-hidden1.png "unmanic-plugin-settings-advanced-dynamic-hidden1")
+![Unmanic Plugins - Settings Advanced Dynamic Shown](/img/unmanic-plugin-settings-advanced-dynamic-hidden2.png "unmanic-plugin-settings-advanced-dynamic-hidden2")
+
 
 
 ### Overwriting labels
@@ -231,23 +339,27 @@ Each `select_options` should consist of a dictionary containing a `value` and a 
 ```python
 class Settings(PluginSettings):
     settings = {
-        "NVENC Encoder Quality Preset": "p4",
+        "NVENC Encoder Quality Preset": "medium",
     }
     form_settings = {
         "NVENC Encoder Quality Preset": {
             "input_type":     "select",
             "select_options": [
                 {
-                    'value': "p6",
+                    'value': "fast",
                     'label': "Fast",
                 },
                 {
-                    'value': "p4",
+                    'value': "medium",
                     'label': "Medium",
                 },
                 {
-                    'value': "p2",
+                    'value': "slow",
                     'label': "Slow",
+                },
+                {
+                    'value': "lossless",
+                    'label': "Lossless (slowest)",
                 },
             ],
         },
@@ -300,15 +412,44 @@ This can be done by setting an `input_type` as "browse_directory" entry to your 
 ```python
 class Settings(PluginSettings):
     settings = {
-        "destination directory": "/library",
+        "Destination directory": "/library/complete",
     }
     form_settings = {
-        "destination directory": {
+        "Destination directory": {
             "input_type": "browse_directory",
         },
     }
 ```
 
-![Unmanic Plugins - Settings Advanced Browse Directory](/img/unmanic-plugin-settings-advaced-browse-directory.png "unmanic-plugin-settings-advaced-browse-directory")
+![Unmanic Plugins - Settings Advanced Browse Directory](/img/unmanic-plugin-settings-advanced-browse-directory.png "unmanic-plugin-settings-advanced-browse-directory")
 
 
+
+### Slider
+*(since v0.1.0)*
+
+If your Plugin config option is to accept an integer and you have a set max/min value, you may wish to use the slider.
+
+This can be done by setting an `input_type` as "slider" entry to your `form_settings` dictionary.
+
+
+##### Example:
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "max_muxing_queue_size": 2048,
+    }
+    form_settings = {
+        "destination directory": {
+            "label":          "Max input stream packet buffer",
+            "input_type":     "slider",
+            "slider_options": {
+                "min": 1024,
+                "max": 10240,
+            },
+        },
+    }
+```
+
+![Unmanic Plugins - Settings Advanced Slider](/img/unmanic-plugin-settings-advanced-slider.png "unmanic-plugin-settings-advanced-slider")
