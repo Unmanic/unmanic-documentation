@@ -6,10 +6,25 @@ id: creating_your_own_repo
 
 If you wish to create your own custom repository, follow these steps.
 
+Feel free to deviate and create a repo your own way.
+Following these steps will provide you with a repo that is able to:
+- Automatically build plugins
+- Check that plugins are compatible for PRs to the official repo
+- Provide you with the ability to easily create PRs by following [the next guide](./creating_a_pull_request)
+
+
+## Video Guide:
+
+<figure class="video-container">
+    <iframe width="500" height="285" src="https://www.youtube.com/embed/n2dFCP5W5jA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="1"></iframe>
+</figure>
+
 ---
 
 
-## Fork the GitHub repo
+## Instructions:
+
+### Fork the GitHub repo
 
 Start by logging into your github account and navigating the browser to this URL:
 
@@ -27,7 +42,7 @@ Ensure that the repository is forked into your account.
 ---
 
 
-## Configure a GitHub Token
+### Configure a GitHub Token
 
 We will rely on [GitHub Actions](https://github.com/features/actions) to test, build, commit and push our repo to the "*repo*" branch of this git repository.
 
@@ -69,7 +84,7 @@ Click the **Add secret** button.
 ---
 
 
-## Clone your fork
+### Clone your fork
 
 Clone the forked repository from your GitHub profile.
 
@@ -84,7 +99,7 @@ cd unmanic-plugins
 ---
 
 
-## Checkout the template
+### Checkout the template
 
 Start by checking out the *template* branch. This branch contains the basic setup required to get started...
 
@@ -112,7 +127,7 @@ git push -f origin master
 ---
 
 
-## Adding Plugin source to repo
+### Adding Plugin source to repo
 
 All Plugin source files are added under the `source` directory.
 These should be added under a directory named the same as the Plugin ID.
@@ -124,7 +139,7 @@ Add the files to your source directory and commit.
 ---
 
 
-## Cleanup branches
+### Cleanup branches
 
 You need to set your *master* branch as the default branch on your GitHub Fork.
 
@@ -145,7 +160,7 @@ Click the "*I understand, update the default branch.*" button.
 ---
 
 
-## Enable GitHub Actions
+### Enable GitHub Actions
 
 GitHub Actions are not enabled by default on new repos. We must first enable it.
 
@@ -161,31 +176,31 @@ your repository into the *repo* branch, so long as you have configured your [Git
 ---
 
 
-## Update repo docs
+### Update repo docs
 
 The last step is to update your repository docs so that they reflect your newly created repository.
 
 Two things are required for this...
 
-#### 1. Update README.md file
-By default, if you followed these steps, your README.md file will still be pointing to:
-`https://raw.githubusercontent.com/Unmanic/unmanic-plugins/repo/repo.json`
+1. Update README.md file
+    By default, if you followed these steps, your README.md file will still be pointing to:
+    `https://raw.githubusercontent.com/Unmanic/unmanic-plugins/repo/repo.json`
 
-Open the `README.md` file and modify it accordingly.
+    Open the `README.md` file and modify it accordingly.
 
-For example, in the above URL, replace "*Unmanic/unmanic-plugins*" with "*JaneDoe/unmanic-plugins*".
+    For example, in the above URL, replace "*Unmanic/unmanic-plugins*" with "*JaneDoe/unmanic-plugins*".
 
-#### 2. Create config file
-You also need to create a `config.json` file inside the root directory of your repo on the *master* branch.
-In this config.json file, add the following:
+2. Create config file
+    You also need to create a `config.json` file inside the root directory of your repo on the *master* branch.
+    In this config.json file, add the following:
 
-```
-{
-    "id": "repository.YOUR_NAME_NO_SPACES",
-    "name": "THE NAME OF YOUR REPO",
-    "icon": ""
-}
-```
+    ```
+    {
+        "id": "repository.YOUR_NAME_NO_SPACES",
+        "name": "THE NAME OF YOUR REPO",
+        "icon": ""
+    }
+    ```
 
 Once you have done this, commit the change and push it to the *master* branch.
 
