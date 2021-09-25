@@ -51,7 +51,7 @@ const features = [
         imageUrl: 'img/plugins.png',
         description: (
             <>
-                Unmanic's feature set can be extended with installable plug-ins.
+                Unmanic is fully extensible. You have the ability to write any Plugin to run any task.
             </>
         ),
     },
@@ -86,8 +86,8 @@ export default function Home() {
     const {siteConfig = {}} = context;
     return (
         <Layout
-            title={`Hello from ${siteConfig.title}`}
-            description="Description will go into a meta tag in <head />">
+            title={`Optimise your file library ${siteConfig.title}`}
+            description="Unmanic is a simple tool for optimising your file library to a single, uniform format.">
             <header className={clsx('hero hero--primary', styles.heroBanner)}>
                 <div className="container">
                     <img src="/img/unmanic-logo-bluewhite.png" alt="Unmanic Logo" />
