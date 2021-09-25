@@ -4,8 +4,11 @@ description: An Overview of Unmanic Plugins
 id: overview
 ---
 
+import Flowchart from '/src/components/Flowchart';
+
+
 Unmanic features a Plugin system to extend Unmanic's capabilities.
-Plugins are stand-alone programs that are executed by Unmanic at defined stages during its task processing.
+Plugins are stand-alone scripts or "modules" that are executed by Unmanic at defined stages during its task processing.
 
 Usually, Plugins are designed to carry out one function only.
 However some Plugins are designed to be executed at multiple stages of task processing.
@@ -16,3 +19,39 @@ When the [Worker](/docs/dashboard/workers) picks up the task, it may execute tha
 In this example the Plugin has carried out two separate jobs at different stages of Unmanic's task processing.
 
 Use Plugins to build powerful library optimisation flows.
+
+---
+
+## Plugin execution during Task flow
+
+Sections in pink will execute all Plugins configured for that stage of the process.
+
+<Flowchart
+  chartCode={`
+    st=>start: Start
+    discoverFile=>operation: File discovered by Library Scanner or Event Monitor.
+    testFile=>condition: File Test Should it be added to Pending Tasks?|runner
+    fileNotAdded=>operation: File not added. to Pending Tasks queue.
+    pendingTasks=>operation: Added to Pending Tasks list.
+    workerCollects=>operation: Worker picks up file from Pending Tasks queue.
+    workerProcessTask=>operation: Worker loops over all Plugins and the default processes for the collected task|runner
+    workerCompletesTask=>operation: Worker completes task and places it into a Post Processor queue
+    postProcessorCollects=>operation: A single Post Processor process collects tasks completed by the workers
+    postProcessorProcessTask=>operation: The Post Processor loops over all Plugins and the default processes for the collected task|runner
+    taskSuccess=>condition: Were all tasks successful?
+    completedTasksFailed=>operation: Task added to history as failure.
+    completedTasksSuccess=>operation: Task added to history as success.
+    eIgnored=>end: End - File ignored
+    eFailed=>end: End - File failed at least one stage of being processed
+    eSuccess=>end: End - File successfully processed
+    
+    st->discoverFile->testFile
+    testFile(no,right)->fileNotAdded->eIgnored
+    testFile(yes)->pendingTasks
+    pendingTasks->workerCollects->workerProcessTask->workerCompletesTask
+    workerCompletesTask->postProcessorCollects->postProcessorProcessTask->taskSuccess
+    taskSuccess(no,right)->completedTasksFailed->eFailed
+    taskSuccess(yes,bottom)->completedTasksSuccess->eSuccess
+    
+  `}
+/>

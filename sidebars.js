@@ -32,7 +32,6 @@ module.exports = {
                     type: 'category',
                     label: 'Dashboard',
                     items: [
-                        'dashboard/task_flow_chart',
                         'dashboard/pending_tasks',
                         'dashboard/workers',
                     ],
