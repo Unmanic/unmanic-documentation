@@ -7,7 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 
-![Dashboard - Workers](/img/unmanic-dashboard-workers.png "unmanic-dashboard-workers")
+<img className={"screenshot"} src={require('/img/unmanic-dashboard-workers.png').default} />
 
 ## What Are Workers
 
@@ -23,11 +23,11 @@ Workers can be in a number of states:
 
 | State                                | Colour                                                  |
 |--------------------------------------|----------------------------------------------------------------|
-| Idle                                 | YELLOW |
-| Processing - progress known          | BLUE (percent shown) |
-| Processing - progress indeterminate  | BLUE (progress dialog spinning) |
-| Paused - idle                        | RED |
-| Paused - processing                  | RED (progress dialog spinning) |
+| Idle                                 | <span style={{ color: 'var(--ifm-color-warning)' }}>YELLOW</span> |
+| Processing - progress known          | <span style={{ color: 'var(--ifm-color-info)' }}>BLUE</span> (percent shown) |
+| Processing - progress indeterminate  | <span style={{ color: 'var(--ifm-color-info)' }}>BLUE</span> (progress dialog spinning) |
+| Paused - idle                        | <span style={{ color: 'var(--ifm-color-danger)' }}>RED</span> |
+| Paused - processing                  | <span style={{ color: 'var(--ifm-color-danger)' }}>RED</span> (progress dialog spinning) |
 
 #### Idle
 An idle worker is ready to accept another task from the Pending Task queue.
@@ -51,7 +51,7 @@ The worker is paused. It does currently have a task assigned to it being process
 
 You may expand each worker card display more in-depth information about its current status.
 
-![Dashboard - Workers Status](/img/unmanic-dashboard-workers-status.png "unmanic-dashboard-workers-status")
+<img className={"screenshot"} src={require('/img/unmanic-dashboard-workers-status.png').default} />
 
 Once expanded you will see, among other things, a live tail of the current command's log output.
 

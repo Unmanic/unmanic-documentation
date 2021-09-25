@@ -93,7 +93,7 @@ module.exports = {
             items: [
                 {
                     type: 'category',
-                    label: 'Configuration',
+                    label: 'Installation',
                     items: [
                         'advanced/hardware_accelerated_encoding_nvenc',
                         'advanced/hardware_accelerated_encoding_vaapi',

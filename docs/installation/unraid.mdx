@@ -3,13 +3,15 @@ title: Installation on Unraid
 description: Unmanic Installation on Unraid
 id: unraid
 ---
+import ReactPlayer from 'react-player';
 
 
 ## Video Guide:
 
-<figure class="video-container">
-  <iframe width="500" height="285" src="https://www.youtube.com/embed/ngqixJy6qr8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="1"></iframe>
-</figure>
+<ReactPlayer
+    url='https://www.youtube.com/watch?v=ngqixJy6qr8'
+    controls={true}
+/>
 
 
 ## Instructions:
@@ -18,13 +20,13 @@ id: unraid
   2. Enter in a URL of https://github.com/Josh5/unraid-docker-templates in the "Template repositories" field.
   3. Click on the "Save" button
 
-![Unraid Docker Templates](/img/unraid-docker-templates.png "unraid-docker-templates")
+<img className={"screenshot"} src={require('/img/unraid-docker-templates.png').default} />
 
 
   4. Scroll back to the bottom of the **Docker** tab and then click on the "Add Container" button.
   5. Click on the "Template" drop-down menu and select the *unmanic* template.
 
-![Unraid Select Unmanic Templates](/img/unraid-select-unmanic-template.png "unraid-select-unmanic-template")
+<img className={"screenshot"} src={require('/img/unraid-select-unmanic-template.png').default} />
 
   6. Modify the WebUI variables as desired:
   
@@ -32,7 +34,7 @@ id: unraid
 > The Encoding Cache Directory is where files are written while they are being transcoded. 
 > Setting this to /dev/shm/unmanic will cause the files to be written to a RAM tmpfs. Set this to whatever you like.
 
-![Unraid Unmanic Templates Volumes](/img/unraid-unmanic-template-volumes.png "unraid-unmanic-template-volumes")
+<img className={"screenshot"} src={require('/img/unraid-unmanic-template-volumes.png').default} />
 
   7. Scroll to the bottom and click the "APPLY" button
  
@@ -44,7 +46,7 @@ Once the image is downloaded you should see it appear in the **Docker** tab.
 
 ### Multiple libraries:
 
-![Unraid Unmanic Template Multiple Libraries](/img/unraid-unmanic-template-multiple-libraries.png "unraid-unmanic-template-multiple-libraries")
+<img className={"screenshot"} src={require('/img/unraid-unmanic-template-multiple-libraries.png').default} />
 
  
 ### Nvidia GPU hardware encoding: [DEPRECATED]
@@ -63,14 +65,11 @@ To use your NVIDIA GPU for hardware encoding in this container, follow these ste
   2. Toggle this Docker Container template editor to "Advanced View".
   3. In the "Extra Parameters" field, add "--runtime=nvidia".
 
-![Unraid NVIDIA Plugin](/img/unraid-nvidia-plugin_6.8.png "unraid-nvidia-plugin_6.8")
+<img className={"screenshot"} src={require('/img/unraid-nvidia-plugin_6.8.png').default} />
 
   4. Expand the template "Show more settings..." section near the bottom.
   5. In the "NVIDIA_VISIBLE_DEVICES" variable, copy your GPU UUID (can be found in the Unraid Nvidia Plugin. See that forum thread for details)
 
-![Unraid Unmanic Template NVIDIA GPU](/img/unraid-unmanic-template-nvidia-gpu.png "unraid-unmanic-template-nvidia-gpu")
+<img className={"screenshot"} src={require('/img/unraid-unmanic-template-nvidia-gpu.png').default} />
 
 Once you have completed these steps, you should be able to use the **h264_nvenc** and **hvec_nvenc** encoders.
-
- 
-

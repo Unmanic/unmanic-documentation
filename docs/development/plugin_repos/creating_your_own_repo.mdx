@@ -2,6 +2,7 @@
 title: Creating Your Own Repository
 id: creating_your_own_repo
 ---
+import ReactPlayer from 'react-player';
 
 
 If you wish to create your own custom repository, follow these steps.
@@ -15,9 +16,7 @@ Following these steps will provide you with a repo that is able to:
 
 ## Video Guide:
 
-<figure class="video-container">
-    <iframe width="500" height="285" src="https://www.youtube.com/embed/n2dFCP5W5jA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="1"></iframe>
-</figure>
+<ReactPlayer playing controls url='https://www.youtube.com/watch?v=n2dFCP5W5jA' />
 
 ---
 
@@ -32,12 +31,12 @@ https://github.com/Unmanic/unmanic-plugins
 
 Select the **Fork** button in the top right corner.
 
-![Plugin Repo - Fork git repo](/img/unmanic-plugins-fork-git-repo.png "unmanic-plugins-fork-git-repo")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-fork-git-repo.png').default} />
 
 
 Ensure that the repository is forked into your account.
 
-![Plugin Repo - Confirm fork of git repo](/img/unmanic-plugins-confirm-fork-git-repo.png "unmanic-plugins-confirm-fork-git-repo")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-confirm-fork-git-repo.png').default} />
 
 ---
 
@@ -60,7 +59,7 @@ You will need to create a personal access token authorised for the following thi
   - repo:invite
   - security_events
 
-![Plugin Repo - Generate Personal Access Token for unmanic repo](/img/github-generating-pat.png "github-generating-pat")
+<img className={"screenshot"} src={require('/img/github-generating-pat.png').default} />
 
 :::warning
 These tokens are sensitive and contain the ability to access/modify your GitHub account. 
@@ -69,15 +68,15 @@ Don't go sharing this information with anyone.
 
 Once you have done that, open the settings tab on your fork repo.
 
-![Plugin Repo - Nav settings in fork of git repo](/img/unmanic-plugins-settings-tab-git-repo-fork.png "unmanic-plugins-settings-tab-git-repo-fork")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-settings-tab-git-repo-fork.png').default} />
 
 Then select **Secrets** and then **New repository secret**
 
-![Plugin Repo - Create repo secret in fork of git repo](/img/unmanic-plugins-add-repo-secret-git-repo-fork.png "unmanic-plugins-add-repo-secret-git-repo-fork")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-add-repo-secret-git-repo-fork.png').default} />
 
 Enter the name as "**GH_TOKEN**" and then enter the value as the token you created following the steps in the link above.
 
-![Plugin Repo - Create repo secret in fork of git repo part 2](/img/unmanic-plugins-add-repo-secret-git-repo-fork-2.png "unmanic-plugins-add-repo-secret-git-repo-fork-2")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-add-repo-secret-git-repo-fork-2.png').default} />
 
 Click the **Add secret** button.
 
@@ -88,7 +87,7 @@ Click the **Add secret** button.
 
 Clone the forked repository from your GitHub profile.
 
-![Plugin Repo - Clone git repo](/img/unmanic-plugins-clone-git-repo-fork.png "unmanic-plugins-clone-git-repo-fork")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-clone-git-repo-fork.png').default} />
 
 Once you have cloned the repo, change directory to where you cloned it.
 
@@ -134,7 +133,7 @@ These should be added under a directory named the same as the Plugin ID.
 
 Add the files to your source directory and commit.
 
-![Plugin Repo - Example push new plugin to forked repo](/img/unmanic-plugins-commit-plugin-to-git-repo-fork.png "unmanic-plugins-commit-plugin-to-git-repo-fork")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-commit-plugin-to-git-repo-fork.png').default} />
 
 ---
 
@@ -145,15 +144,15 @@ You need to set your *master* branch as the default branch on your GitHub Fork.
 
 To do this, open your GitHub fork in a browser and navigate to the branches screen.
 
-![Plugin Repo - Show branches](/img/unmanic-plugins-show-branches-git-repo-fork.png "unmanic-plugins-show-branches-git-repo-fork")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-show-branches-git-repo-fork.png').default} />
 
 Select the **Switch default branch** button.
 
-![Plugin Repo - Switch default branch button](/img/unmanic-plugins-switch-default-branch-git-repo-fork-1.png "unmanic-plugins-switch-default-branch-git-repo-fork-1")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-switch-default-branch-git-repo-fork-1.png').default} />
 
 Select the **Switch to another branch** button. Select the *Master* branch. Then click **Update**.
 
-![Plugin Repo - Switch default branch screen](/img/unmanic-plugins-switch-default-branch-git-repo-fork-2.png "unmanic-plugins-switch-default-branch-git-repo-fork-2")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-switch-default-branch-git-repo-fork-2.png').default} />
 
 Click the "*I understand, update the default branch.*" button.
 
@@ -168,7 +167,7 @@ The Actions in this repository are managed by the file `.github/workflows/plugin
 
 Without enabling these GitHub Actions, your repository will not build when you push to the *master* branch.
 
-![Plugin Repo - Enable GitHub Actions](/img/unmanic-plugins-enable-github-actions-git-repo-fork.png "unmanic-plugins-enable-github-actions-git-repo-fork")
+<img className={"screenshot"} src={require('/img/unmanic-plugins-enable-github-actions-git-repo-fork.png').default} />
 
 Now that this is done, whenever you commit something on the *master* branch and push back to GitHub, it will automatically build
 your repository into the *repo* branch, so long as you have configured your [GitHub Token](#configure-a-github-token) above.
