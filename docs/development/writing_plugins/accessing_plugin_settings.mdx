@@ -438,15 +438,17 @@ This can be done by setting an `input_type` as "slider" entry to your `form_sett
 ```python
 class Settings(PluginSettings):
     settings = {
-        "max_muxing_queue_size": 2048,
+        "bitrate": 2000,
     }
     form_settings = {
-        "destination directory": {
-            "label":          "Max input stream packet buffer",
+        "bitrate": {
+            "label":          "Bitrate",
             "input_type":     "slider",
             "slider_options": {
-                "min": 1024,
-                "max": 10240,
+                "min":    1000,
+                "max":    10000,
+                "step":   100,
+                "suffix": "K"
             },
         },
     }
