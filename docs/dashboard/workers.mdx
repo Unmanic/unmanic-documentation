@@ -14,6 +14,8 @@ import TabItem from '@theme/TabItem';
 Workers carry out the main processing against your tasks.
 Your workers run simultaneously, and you can configure Unmanic to have up to 12 concurrent workers at any time.
 The number of workers that you choose to spawn should be determined based on your needs.
+It is recommended to start with one worker initially, and then increase this value slowly until you find the right
+balance of CPU use and Task processing speed.
 
 
 
@@ -30,7 +32,7 @@ Workers can be in a number of states:
 | Paused - processing                  | <span style={{ color: 'var(--ifm-color-danger)' }}>RED</span> (progress dialog spinning) |
 
 #### Idle
-An idle worker is ready to accept another task from the Pending Task queue.
+An idle worker is ready to accept another task from the Pending Task queue as soon as one is made available.
 
 #### Processing - progress known
 The worker is currently processing a task.
@@ -53,6 +55,6 @@ You may expand each worker card display more in-depth information about its curr
 
 <img className={"screenshot"} src={require('/img/unmanic-dashboard-workers-status.png').default} />
 
-Once expanded you will see, among other things, a live tail of the current command's log output.
+Once expanded you will see, among other things, a live stream of the current command's log output.
 
 You will also have an **Options** dropdown for pausing/resuming or terminating this individual worker and its current subprocess.
