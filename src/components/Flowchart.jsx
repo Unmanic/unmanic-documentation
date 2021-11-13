@@ -24,7 +24,7 @@ class Flowchart extends React.Component {
     const opt = {
         x: 0,
         y: 0,
-        'line-width': 3,
+        'line-width': 2,
         'line-length': 50,
         'text-margin': 10,
         'font-size': 14,
@@ -35,7 +35,7 @@ class Flowchart extends React.Component {
         'yes-text': 'yes',
         'no-text': 'no',
         'arrow-end': 'block',
-        scale: 0.6,
+        scale: 0.7,
         symbols: {
           start: {
             'font-color': 'red',

@@ -11,7 +11,7 @@ Unmanic features a Plugin system to extend Unmanic's capabilities.
 Plugins are stand-alone scripts or "modules" that are executed by Unmanic at defined stages during its task processing.
 
 Usually, Plugins are designed to carry out one function only.
-However some Plugins are designed to be executed at multiple stages of task processing.
+However, in order to carry out that one function, some Plugins are designed to be executed at multiple stages of task processing.
 
 For example, you may install a Plugin that will run during the library scan process to detect files that need to be added to the [Pending Tasks queue](/docs/dashboard/pending_tasks) due to an incorrect video codec.
 When the [Worker](/docs/dashboard/workers) picks up the task, it may execute that same Plugin again which will now handle the job of transcoding the video streams to the configured codec.
@@ -24,34 +24,69 @@ Use Plugins to build powerful library optimisation flows.
 
 ## Plugin execution during Task flow
 
-Sections in pink will execute all Plugins configured for that stage of the process.
+Sections in pink will execute Plugins configured for that stage of the process.
 
 <Flowchart
-  chartCode={`
+    chartCode={`
     st=>start: Start
     discoverFile=>operation: File discovered by Library Scanner or Event Monitor.
-    testFile=>condition: File Test Should it be added to Pending Tasks?|runner
+    libraryTestFileStart=>operation: Library Manager creates a list of all Plugins it needs for testing files.
+    libraryTestFileExecPlugin=>operation: Library Management - File test\nCheck if file should be added to Pending Tasks?|runner
+    libraryTestPluginRequestIgnoreFile=>condition: Did the Plugin request that\nUnmanic ignore this file?
+    libraryTestPluginRequestTaskCreate=>condition: Did the Plugin request that\nUnmanic create a task for this file?
+    libraryTestFileTaskCheckLoop=>condition: Has the Library Manager completed\nexecuting all Plugins?
     fileNotAdded=>operation: File not added. to Pending Tasks queue.
     pendingTasks=>operation: Added to Pending Tasks list.
     workerCollects=>operation: Worker picks up file from Pending Tasks queue.
-    workerProcessTask=>operation: Worker loops over all Plugins and the default processes for the collected task|runner
+    workerProcessTaskStart=>operation: Worker creates a list of all Plugins it needs to run.
+    workerExecPlugin=>operation: Worker - Processing file\nWorker executes a single Plugin.|runner
+    workerExecPluginCheck=>condition: Did the Plugin execute OK?
+    workerExecPluginRequestCommand=>condition: Did the Plugin request that\nUnmanic execute a command?
+    workerExecCommand=>operation: Worker executes the command given by the Plugin.
+    workerExecCommandCheck=>condition: Did the command execute OK?
+    workerProcessTaskCheckLoop=>condition: Has the Worker completed\nexecuting all Plugins?
     workerCompletesTask=>operation: Worker completes task and places it into a Post Processor queue
-    postProcessorCollects=>operation: A single Post Processor process collects tasks completed by the workers
-    postProcessorProcessTask=>operation: The Post Processor loops over all Plugins and the default processes for the collected task|runner
-    taskSuccess=>condition: Were all tasks successful?
+    postProcessorFileMoveTaskStart=>operation: Post-processor creates a list of all Plugins it needs to run for file movements.
+    postProcessorFileMoveExecPlugin=>operation: Post-processor - File movements\nPost-processor executes a single file movement Plugin.|runner
+    postProcessorFileMoveTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all Plugins?
+    postProcessorTaskSuccessTaskStart=>operation: Post-processor creates a list of all Plugins it needs to run for task results.
+    postProcessorTaskSuccessExecPlugin=>operation: Post-processor - Marking task success/failure\nPost-processor executes a single task results Plugin.|runner
+    postProcessorTaskSuccessTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all Plugins?
+    taskSuccess=>condition: Were all jobs for this task successful?
     completedTasksFailed=>operation: Task added to history as failure.
     completedTasksSuccess=>operation: Task added to history as success.
     eIgnored=>end: End - File ignored
     eFailed=>end: End - File failed at least one stage of being processed
     eSuccess=>end: End - File successfully processed
     
-    st->discoverFile->testFile
-    testFile(no,right)->fileNotAdded->eIgnored
-    testFile(yes)->pendingTasks
-    pendingTasks->workerCollects->workerProcessTask->workerCompletesTask
-    workerCompletesTask->postProcessorCollects->postProcessorProcessTask->taskSuccess
+    st->discoverFile->libraryTestFileStart
+    libraryTestFileStart->libraryTestFileExecPlugin->libraryTestPluginRequestIgnoreFile
+    libraryTestPluginRequestIgnoreFile(yes,right)->fileNotAdded->eIgnored
+    libraryTestPluginRequestIgnoreFile(no,bottom)->libraryTestPluginRequestTaskCreate
+    libraryTestPluginRequestTaskCreate(yes,left)->pendingTasks
+    libraryTestPluginRequestTaskCreate(no,bottom)->libraryTestFileTaskCheckLoop
+    libraryTestFileTaskCheckLoop(no,left)->libraryTestFileExecPlugin
+    libraryTestFileTaskCheckLoop(yes,right)->fileNotAdded->eIgnored
+    pendingTasks->workerCollects->workerProcessTaskStart
+    workerProcessTaskStart->workerExecPlugin->workerExecPluginCheck
+    workerExecPluginCheck(no,right)->workerCompletesTask
+    workerExecPluginCheck(yes,bottom)->workerExecPluginRequestCommand
+    workerExecPluginRequestCommand(yes,bottom)->workerExecCommand
+    workerExecPluginRequestCommand(no,right)->workerProcessTaskCheckLoop
+    workerExecCommand->workerExecCommandCheck
+    workerExecCommandCheck(no,bottom)->workerCompletesTask
+    workerExecCommandCheck(yes,right)->workerProcessTaskCheckLoop
+    workerProcessTaskCheckLoop(no,right)->workerExecPlugin
+    workerProcessTaskCheckLoop(yes,bottom)->workerCompletesTask
+    workerCompletesTask->postProcessorFileMoveTaskStart->postProcessorFileMoveExecPlugin
+    postProcessorFileMoveExecPlugin(bottom)->postProcessorFileMoveTaskCheckLoop
+    postProcessorFileMoveTaskCheckLoop(no,right)->postProcessorFileMoveExecPlugin
+    postProcessorFileMoveTaskCheckLoop(yes,bottom)->postProcessorTaskSuccessTaskStart
+    postProcessorTaskSuccessTaskStart->postProcessorTaskSuccessExecPlugin
+    postProcessorTaskSuccessExecPlugin->postProcessorTaskSuccessTaskCheckLoop
+    postProcessorTaskSuccessTaskCheckLoop(no,right)->postProcessorTaskSuccessExecPlugin
+    postProcessorTaskSuccessTaskCheckLoop(yes,bottom)->taskSuccess
     taskSuccess(no,right)->completedTasksFailed->eFailed
     taskSuccess(yes,bottom)->completedTasksSuccess->eSuccess
-    
-  `}
+`}
 />
