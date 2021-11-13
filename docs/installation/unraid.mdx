@@ -50,23 +50,19 @@ Once the image is downloaded you should see it appear in the **Docker** tab.
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-multiple-libraries.png').default} />
 
  
-### Nvidia GPU hardware encoding: [DEPRECATED]
-
-:::warning
-Only use the below instructions if you are running Unraid version older than 6.9.0.
-More recent versions of Unraid ship with NVIDIA drivers already installed.
-:::
-
+### Nvidia GPU hardware encoding:
 
 To use your NVIDIA GPU for hardware encoding in this container, follow these steps:
 
-  1. Install the Unraid Nvidia Plugin to install a version of Unraid with the Nvidia Drivers installed.
-     [Linuxserverio Unraid NVIDIA Plugin](https://forums.unraid.net/topic/77813-plugin-linuxserverio-unraid-nvidia/)
+  1. Install the [Unraid Nvidia-Driver Plugin](https://forums.unraid.net/topic/98978-plugin-nvidia-driver/) to install
+    an up-to-date NVIDIA driver onto your Unraid server.
+
+<img className={"screenshot"} src={require('/img/unraid-nvidia-plugin.png').default} />
 
   2. Toggle this Docker Container template editor to "Advanced View".
   3. In the "Extra Parameters" field, add "--runtime=nvidia".
 
-<img className={"screenshot"} src={require('/img/unraid-nvidia-plugin_6.8.png').default} />
+<img className={"screenshot"} src={require('/img/unraid-unmanic-template-nvidia-extra-params.png').default} />
 
   4. Expand the template "Show more settings..." section near the bottom.
   5. In the "NVIDIA_VISIBLE_DEVICES" variable, copy your GPU UUID (can be found in the Unraid Nvidia Plugin. See that forum thread for details)
@@ -74,3 +70,33 @@ To use your NVIDIA GPU for hardware encoding in this container, follow these ste
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-nvidia-gpu.png').default} />
 
 Once you have completed these steps, you should be able to use the **h264_nvenc** and **hvec_nvenc** encoders.
+
+### Intel hardware encoding:
+
+To use your INTEL Processor for hardware encoding in this container, follow these steps:
+
+  1. Install the [Intel-GPU-TOP Plugin](https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/).
+
+<img className={"screenshot"} src={require('/img/unraid-intel-top-plugin.png').default} />
+
+  2. Toggle this Docker Container template editor to "Advanced View".
+  3. In the "Extra Parameters" field, add "--device=/dev/dri".
+
+<img className={"screenshot"} src={require('/img/unraid-unmanic-template-dri-device-extra-params.png').default} />
+
+Once you have completed these steps, you should be able to use the **h264_vaapi** and **hevc_vaapi** encoders.
+
+### AMD hardware encoding:
+
+To use your AMD GPU for hardware encoding in this container, follow these steps:
+
+  1. Install the [Radeon-TOP Plugin](https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/).
+
+<img className={"screenshot"} src={require('/img/unraid-radeon-top-plugin.png').default} />
+
+  2. Toggle this Docker Container template editor to "Advanced View".
+  3. In the "Extra Parameters" field, add "--device=/dev/dri".
+
+<img className={"screenshot"} src={require('/img/unraid-unmanic-template-dri-device-extra-params.png').default} />
+
+Once you have completed these steps, you should be able to use the **h264_vaapi** and **hevc_vaapi** encoders.
