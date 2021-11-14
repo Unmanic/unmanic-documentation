@@ -34,6 +34,7 @@ module.exports = {
                     items: [
                         'dashboard/pending_tasks',
                         'dashboard/workers',
+                        'dashboard/completed_tasks'
                     ],
                 },
                 {

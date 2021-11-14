@@ -39,5 +39,12 @@
     width: 100%;
     margin-bottom: var(--ifm-leading);
 }
+.inline-text-screenshot {
+    border-radius: 4px;
+    box-shadow: 0 1px 5px #0003, 0 2px 2px #00000024, 0 3px 1px -2px #0000001f;
+    height: 1.5em;
+    display: inline-block;
+    vertical-align: middle;
+}
 
 

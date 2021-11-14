@@ -1,0 +1,47 @@
+---
+title: Dashboard Completed Tasks
+description: Completed Tasks
+id: completed_tasks
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+<img className={"screenshot"} src={require('/img/unmanic-dashboard-completed-tasks.png').default} />
+
+## What are Completed Tasks
+
+Once a Task has finished being processed by the configured [Workers](/docs/dashboard/workers), it is Post-processed and marked as either:
+- Completed Successfully (Indicated by a <span style={{ color: 'var(--ifm-color-info)' }}>BLUE</span> tick)
+- Completed Unsuccessfully (Indicated by a <span style={{ color: 'var(--ifm-color-danger)' }}>RED</span> cross)
+
+Completed Tasks are listed in order of completion and limited to the last 10 Tasks.
+
+
+## Managing Completed Tasks
+
+You will see more details regarding your Completed Tasks list if you expand the card by clicking the <img className={"inline-text-screenshot"} src={require('/img/unmanic-dashboard-show-more-button.png').default} title={"Show more"} /> button in the top-right corner.
+
+<img className={"screenshot"} src={require('/img/unmanic-dashboard-completed-tasks-expanded1.png').default} />
+
+Once expanded you have the options to select and add one to many Tasks back into the Pending Tasks Queue,
+or to delete the selected Tasks from your Completed Tasks list altogether.
+
+You may discover that some of your Tasks fail and will be indicated by a <span style={{ color: 'var(--ifm-color-danger)' }}>Failed</span> status.
+From this expanded card you are able to view more details regarding the jobs carried out against your Task by clicking on
+the <img className={"inline-text-screenshot"} src={require('/img/unmanic-dashboard-details-button.png').default} title={"DETAILS"} /> button.
+
+:::note
+Tasks that are listed in the Completed Tasks list as <span style={{ color: 'var(--ifm-color-danger)' }}>Failed</span>
+will be ignored in all future Library Scans or during detected Library File Monitor events.
+:::
+
+### Completed Task Details
+
+<img className={"screenshot"} src={require('/img/unmanic-dashboard-failed-completed-task-details.png').default} />
+
+The Completed Task Details card will give you a full log of the commands that were run by every job executed by the Workers.
+You can use this log to diagnose issues that may be causing your Tasks to fail.
+
+
+
