@@ -19,17 +19,17 @@ Set the path to your file library.
 
 ## Library Scanner
 
-### Enable the library scanner
+### Enable periodic library scans
 Select this option if you wish for Unmanic to schedule a library scanner.
 
 ### Library scan schedule in minutes
 Set the time in minutes between scans of your files in the configured library path.
 
-### Follow symlinks
-If selected, the library scan will follow symlinks.
-
-### Run scan on start
+### Run a one off library scan on startup
 If selected, the library scan will be executed when Unmanic starts.
+
+### Follow symlinks on library scans
+If selected, the library scan will follow symlinks.
 
 ## Library file monitor
 
@@ -44,3 +44,13 @@ If you do have a large number of files on disk, search the internet for ["config
 The file monitor will increase the RAM requirements of Unmanic and as such may not be a good option for
 devices with limited RAM availability.
 :::
+
+## Pending tasks
+
+### Clear all pending tasks on startup
+If selected, the Pending Tasks queue will be cleared whenever Unmanic starts.
+
+:::tip
+For larger libraries it is recommended to disable this option and preserve your Pending Tasks queue between Unmanic restarts.
+:::
+
