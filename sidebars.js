@@ -52,6 +52,7 @@ module.exports = {
                                 'configuration/plugins/adding_a_custom_plugin_repo',
                             ],
                         },
+                        'configuration/link_settings',
                     ],
                 },
             ],
