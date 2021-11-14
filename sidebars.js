@@ -43,15 +43,15 @@ module.exports = {
                     items: [
                         'configuration/library_settings',
                         'configuration/workers_settings',
-                    ],
-                },
-                {
-                    type: 'category',
-                    label: 'Plugins',
-                    items: [
-                        'plugins/overview',
-                        'plugins/installing_plugins',
-                        'plugins/adding_a_custom_plugin_repo',
+                        {
+                            type: 'category',
+                            label: 'Plugins',
+                            items: [
+                                'configuration/plugins/overview',
+                                'configuration/plugins/installing_plugins',
+                                'configuration/plugins/adding_a_custom_plugin_repo',
+                            ],
+                        },
                     ],
                 },
             ],
