@@ -88,7 +88,7 @@ Once you have completed these steps, you should be able to use the **h264_vaapi*
 
 ### AMD hardware encoding:
 
-To use your AMD GPU for hardware encoding in this container, follow these steps:
+To use your AMD APU/GPU for hardware encoding in this container, follow these steps:
 
   1. Install the [Radeon-TOP Plugin](https://forums.unraid.net/topic/92865-support-ich777-nvidiadvb-kernel-helperbuilder-docker/).
 
@@ -100,3 +100,11 @@ To use your AMD GPU for hardware encoding in this container, follow these steps:
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-dri-device-extra-params.png').default} />
 
 Once you have completed these steps, you should be able to use the **h264_vaapi** and **hevc_vaapi** encoders.
+
+:::tip
+Ryzen APU transcode performance is heavily determined by the speed of your RAM.
+
+Setting RAM speed from 2400 to 3200 changed transcode times from around 10 minutes to around 5.
+
+Also, if you have the option in your BIOS, set your iGPU RAM to at least 1GB (So long as you can afford to subtract that from your available RAM).
+:::
