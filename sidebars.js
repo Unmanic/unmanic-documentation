@@ -42,6 +42,7 @@ module.exports = {
                     label: 'Configuration',
                     items: [
                         'configuration/library_settings',
+                        'configuration/workers_settings',
                     ],
                 },
                 {

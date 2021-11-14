@@ -14,8 +14,13 @@ import TabItem from '@theme/TabItem';
 Workers carry out the main processing against your tasks.
 Your workers run simultaneously, and you can configure Unmanic to have up to 12 concurrent workers at any time.
 The number of workers that you choose to spawn should be determined based on your needs.
-It is recommended to start with one worker initially, and then increase this value slowly until you find the right
-balance of CPU use and Task processing speed.
+
+While the Workers are executed concurrently, they are designed to each execute commands as sub-processes in parallel with
+each other Worker. This means that the processes executed by each Worker are not bound to a single thread and will work
+in true parallelism.
+
+It is recommended when [configuring the Worker count](/docs/configuration/workers_settings), to start with one worker initially, and then increase this value slowly until you find the right
+balance of system resource use and Task processing speed.
 
 
 
