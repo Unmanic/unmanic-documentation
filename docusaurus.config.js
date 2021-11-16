@@ -92,4 +92,17 @@ module.exports = {
             },
         ],
     ],
+    plugins: [
+        [
+            '@docusaurus/plugin-client-redirects',
+            {
+                redirects: [
+                    {
+                        to: '/docs/configuration/plugins/adding_a_custom_plugin_repo',
+                        from: '/docs/plugins/adding_a_custom_plugin_repo',
+                    },
+                ],
+            },
+        ],
+    ],
 };
