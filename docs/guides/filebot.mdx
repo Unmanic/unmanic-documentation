@@ -4,6 +4,9 @@ description: Running a FileBot Post-processor
 id: filebot_post_processor
 ---
 
+![Difficulty](https://img.shields.io/badge/Difficulty-easy-green?style=flat)
+![Setup Time](https://img.shields.io/badge/Setup%20Time-20%20minutes-orange?style=flat)
+
 
 Follow these instructions to configure the Unmanic Docker container for running FileBot as a Post-processor function.
 
@@ -30,7 +33,7 @@ You will need to install it into the container during container startup.
 INSTALL_FILEBOT=true
 INSTALL_LEGACY_FILEBOT=false
 # Define software versions (only used for legacy installation)
-ARCH=amd64  # (amd64, armhf, 1386)
+ARCH=amd64  # (amd64, 1386, armhf)
 FILEBOT_VERSION=4.7.9
 
 if [[ ${INSTALL_FILEBOT} == 'true' ]]; then
@@ -78,6 +81,25 @@ if [[ ${INSTALL_FILEBOT} == 'true' ]]; then
 fi
 
 ```
+
+:::note
+It may take some time for this script to complete the installation of FileBot and all of its dependencies.
+During this time, Unmanic will not start, and the web UI will not be accessible.
+Be patient, it will only need to run this installation the first time the container is started.
+:::
+
+:::tip
+You can configure the script in the following ways:
+
+
+| Variable | Set Value | Description |
+|----|----|----|
+| INSTALL_FILEBOT | true / false | Enable / Disable the script |
+| INSTALL_LEGACY_FILEBOT | true | Install the legacy version of FileBot [link](https://sourceforge.net/projects/filebot/files/) rather than the latest release |
+| ARCH | amd64 / 1386 / armhf | Specify the hardware (x86_64 / x86 / ARM) version of FileBot (only required when installing the legacy version) |
+| FILEBOT_VERSION | 4.7.9 | Specify the version of FileBot to download (only required when installing the legacy version) |
+:::
+
 3. Restart the container
 
 During startup, this script will install FileBot if it is not already installed in this container.
