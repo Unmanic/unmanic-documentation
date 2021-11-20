@@ -134,7 +134,7 @@ export default function Home() {
             <header className={clsx('hero hero--primary', styles.heroBanner)}>
                 <div className="container">
                     <div className="row">
-                        <div className="col col--6">
+                        <div className="col col--6 margin-bottom--lg">
                             <img src="/img/unmanic-logo-bluewhite.png" alt="Unmanic Logo"/>
                             <br/>
                             <br/>
