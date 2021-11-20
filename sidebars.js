@@ -105,5 +105,12 @@ module.exports = {
                 },
             ],
         },
+        {
+            type: 'category',
+            label: 'Guides',
+            items: [
+                'guides/filebot_post_processor',
+            ],
+        },
     ],
 };
