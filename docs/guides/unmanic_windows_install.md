@@ -1,13 +1,26 @@
--   -   Unmanic Windows 10 Install guide\*\*
+---
+title: Unmanic Windows 10 Install guide
+description: Unmanic Windows 10 Install guide
+id: unmanic_windows_install
+---
 
-1.  Installing WSL 2(Windows subsystem for Linux 2)
+![Difficulty](https://img.shields.io/badge/Difficulty-moderate-orange?style=flat)
+![Setup Time](https://img.shields.io/badge/Setup%20Time-30%20minutes-orange?style=flat)
+[![Original Author](https://img.shields.io/badge/Original%20Author-austinsr1-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/austinsr1)
+
+
+### 1) Installing WSL 2(Windows subsystem for Linux 2)
 
 Verify you are running Windows 10, Version 1903, Build 18362 or higher.
 You may check this by pressing windows key R.
 
-In the run dialog, type: “winver” without the quotes and press enter.
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/winver\_run.PNG)
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/winver.PNG)
+In the run dialog, type:
+```
+winver
+```
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/winver_run.png').default} />
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/winver.png').default} />
+
 
 If you are not running Version 1903, Build 18362 or higher, you can
 download the Windows Update Assistant from Microsoft.
@@ -15,27 +28,30 @@ download the Windows Update Assistant from Microsoft.
 will update your system to the newest Windows 10 version.
 
 As an administrator account, open a cmd window by pressing windows key R
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/cmd.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/cmd.png').default} />
 
 In the run dialog, enter the command, cmd and click ok. Enter the
-following command in the cmd window: "wsl --install -d Ubuntu" without
-the quotes. Once the command has finished, reboot your computer. After
+following command in the cmd window:
+```
+wsl --install -d Ubuntu
+```
+Once the command has finished, reboot your computer. After
 rebooting, the Ubuntu install will continue. This will take a few
 minutes. Do not close the Ubuntu dialog box while it is installing.
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/post%20reboot%20ubuntu%20install.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/post_reboot_ubuntu_install.png').default} />
 
 You will eventually see a prompt to Enter new UNIX username: prompt.
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/username.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/username.png').default} />
 
-Select a username and press enter. It will now prompt for a New
-password: . Enter a password and press enter. It will then ask you to
-Retype new password. Verify your password and press enter. You will now
-be at a bash prompt. If at any point, you close the Ubuntu bash window,
-you can re-open it by pressing windows key R and typing: bash then press
-ok.
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/run%20bash.PNG)
+Select a username and press enter. It will now prompt for a "New
+password". Enter a password and press enter. 
 
-1.  Mount your media library in WSL 2 Ubuntu
+It will then ask you to "Retype new password". Verify your password and press enter. 
+You will now be at a bash prompt. If at any point, you close the Ubuntu bash window, 
+you can re-open it by pressing windows key R and typing: bash then press ok.
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/run_bash.png').default} />
+
+### 2) Mount your media library in WSL 2 Ubuntu
 
 First, we will make a mount point for our library.
 
@@ -45,14 +61,16 @@ sudo command. This will prompt for the password that you set earlier.
 As an example, we will use the Windows drive letter Y for the location
 of our library.
 
-In your Ubuntu bash window, type: "sudo mkdir /library" without the
-quotes. This will create a local mount point where Unmanic will be able
-to see your media.
+In your Ubuntu bash window, type: 
+```
+sudo mkdir /library
+``` 
+This will create a local mount point where Unmanic will be able to see your media.
 
 Next, we will want to make sure this drive will be mounted after
 reboots. For this command, we will need to run as root.
 
-From the Ubuntu bash window, type: sudo su - and press enter. Enter your
+From the Ubuntu bash window, type: `sudo su -` and press enter. Enter your
 password when prompted.
 
 Next, we will add the drive entry to the fstab file.
@@ -60,19 +78,26 @@ Next, we will add the drive entry to the fstab file.
 With the following command, we will want to leave the quotes in place.
 Replace Y with the drive letter of your mounted library.
 
-From your Ubuntu bash window, type: echo "Y: /library drvfs defaults 0
-0" &gt;&gt;/etc/fstab
+From your Ubuntu bash window, type: 
+```
+echo "Y: /library drvfs defaults 0 0" >> /etc/fstab
+```
 
-Next, we will need to mount the drive. From the Ubuntu bash window,
-type: "mount -a" without the quotes.
+Next, we will need to mount the drive. From the Ubuntu bash window, type: 
+```
+mount -a
+```
 
-To verify the drive is now mounted, type: "df -h" without quotes.
+To verify the drive is now mounted, type:
+```
+df -h
+```
 
 The drive will be shown somewhere in the listed entries.
 
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/df.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/df.png').default} />
 
-1.  Docker for Windows
+### 3) Docker for Windows
 
 Next we will install Docker for Windows.
 
@@ -91,14 +116,14 @@ windows. Press the Close and log out button in the Docker installer.
 After logging back in, Docker will have you accept its terms of use.
 Click the I accept the terms box and hit Accept.
 
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/docker%20starting.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/docker_starting.png').default} />
 
 Once the Docker starting message closes, click the Skip tutorial link.
 
 Next we will enable WSL2 support in docker. Click the gear icon on the
 top right of the Docker window to bring up settings.
 
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/docker%20wsl%20setup.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/docker_wsl_setup.png').default} />
 
 Click Resources from the left menu and then WSL INTEGRATION
 
@@ -110,18 +135,22 @@ Click Apply & Restart.
 
 Next we will install the Unmanic docker container.
 
-Open the Ubuntu bash window and type: "sudo docker pull josh5/unmanic"
-without the quotes.
+Open the Ubuntu bash window and type:
+```
+sudo docker pull josh5/unmanic
+```
 
 Finally, we will go to the Unmanic documentation page to get the shell
 script that will pass all the required flags to Unmanic.
 <https://docs.unmanic.app/docs/installation/docker>
 
-In the Ubuntu bash window, type: "sudo nano -w
-/usr/local/bin/start-unmanic.sh" without the quotes. This will open the
-text editor nano.
+In the Ubuntu bash window, type:
+```
+sudo nano -w /usr/local/bin/start-unmanic.sh
+```
+This will open the text editor nano.
 
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/new%20nano.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/new_nano.png').default} />
 
 Once the nano window is open, copy the block of shellscript from the
 unmanic documentation link above. Switch back to your Ubuntu bash window
@@ -132,24 +161,28 @@ Next, we will save and exit from nano. Press Ctrl x . You will see a
 message "Save modified buffer?" at the bottom left of the window. Type Y
 and press enter to save and exit.
 
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/save%20nano.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/save_nano.png').default} />
 
 Next, we will set the shell script to be executable. In the Ubuntu bash
-window, type: "sudo chmod 755 /usr/local/bin/start-unmanic.sh" without
-the quotes.
+window, type: 
+```
+sudo chmod 755 /usr/local/bin/start-unmanic.sh
+```
 
-Finally, in the Ubuntu bash window, type: "sudo start-unmanic.sh"
-without quotes.
+Finally, in the Ubuntu bash window, type: 
+```
+sudo start-unmanic.sh
+```
 
 If you are running the Windows firewall, you may see a security dialog.
 Click the Allow access button.
 
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/windows%20security%20alert.PNG)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/windows_security_alert.png').default} />
 
 Unmanic is now running in Docker. To access Unmanic, open a web browser
 window to <http://localhost:8888>
 
-1.  Troubleshooting common issues
+### 4) Troubleshooting common issues
 
 Problems can arise if the network connection to the computer is
 interrupted. If Unmanic can no longer see your library, first check that
@@ -160,6 +193,6 @@ library, quit Docker by right clicking the Docker icon in the system
 tray and click Quit Docker Desktop. Docker must be quit completely, the
 Restart option will not resolve the issue.
 
-!\[\](https://github.com/austinsr1/unmanic-documentation/blob/master/static/unmanic\_windows\_install\_images/quit%20docker.png)
+<img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/quit_docker.png').default} />
 
 Restart Docker Desktop and restart Unmanic from the Ubuntu bash window.

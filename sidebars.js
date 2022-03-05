@@ -110,6 +110,7 @@ module.exports = {
             label: 'Guides',
             items: [
                 'guides/filebot_post_processor',
+                'guides/unmanic_windows_install'
             ],
         },
     ],
