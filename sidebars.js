@@ -14,7 +14,7 @@ module.exports = {
                 'requirements',
                 {
                     type: 'category',
-                    label: 'Installation',
+                    label: 'Instructions',
                     items: [
                         'installation/pip',
                         'installation/docker',

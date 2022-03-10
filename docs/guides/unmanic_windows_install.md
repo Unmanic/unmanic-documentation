@@ -9,10 +9,17 @@ id: unmanic_windows_install
 [![Original Author](https://img.shields.io/badge/Original%20Author-austinsr1-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/austinsr1)
 
 
-### 1) Installing WSL 2(Windows subsystem for Linux 2)
+## Requirements
 
-Verify you are running Windows 10, Version 1903, Build 18362 or higher.
-You may check this by pressing windows key R.
+:::note
+The process for setting this up on Windows11 should be similar.
+:::
+
+This requires Windows 10, Version 1903, Build 18362 or higher.
+
+### 1) Checking requirements
+
+To check this, press windows key R.
 
 In the run dialog, type:
 ```
@@ -27,6 +34,10 @@ download the Windows Update Assistant from Microsoft.
 <https://www.microsoft.com/en-us/software-download/windows10> . This
 will update your system to the newest Windows 10 version.
 
+## Instructions
+
+### 1) Installing WSL 2(Windows subsystem for Linux 2)
+
 As an administrator account, open a cmd window by pressing windows key R
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/cmd.png').default} />
 
@@ -35,8 +46,9 @@ following command in the cmd window:
 ```
 wsl --install -d Ubuntu
 ```
-Once the command has finished, reboot your computer. After
-rebooting, the Ubuntu install will continue. This will take a few
+Once the command has finished, reboot your computer. 
+
+After rebooting, the Ubuntu install will continue. This will take a few
 minutes. Do not close the Ubuntu dialog box while it is installing.
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/post_reboot_ubuntu_install.png').default} />
 
