@@ -25,17 +25,19 @@ Set a name for this installation. This will be used to identify it once linked w
 
 ### Adding a new Link
 
-To add a new Link, open the *Add remote installation* dialog.
+To add a new link, open the *Add remote installation* dialog.
 
-<img className={"screenshot"} style={{ width: '300px' }} src={require('/img/unmanic-settings-link-add.png').default} />
+<img className={"screenshot"} style={{ width: '300px' }} src={require('/img/unmanic-settings-link-add1.png').default} />
 
 Insert the **Hostname** or **IP** as well as the **port** of the remote installation that you wish to link to.
+
+<img className={"screenshot"} style={{ width: '300px' }} src={require('/img/unmanic-settings-link-add2.png').default} />
 
 :::note
 If your remote installation is behind a proxy adding a TLS SSL layer, be sure to add *https://* before the hostname or IP.
 :::
 
-Once you add a new Link, it will be displayed immediately on both installations.
+Once you add a new link, it will be displayed immediately on both installations.
 
 ### Connection status
 
@@ -47,19 +49,19 @@ When a remote installation is available, the Unmanic icon will display in colour
 
 When the remote installation is not available, the Unmanic icon will display in greyscale. <img className={"inline-text-screenshot"} src={require('/img/unmanic-link-disconnected-icon.png').default} title={"Disconnected Link"} />
 
-If both installations show the other remote installation icon in colour, then the Link will be synchronised bi-directionally.
+If both installations show the other remote installation icon in colour, then the link will be synchronised bi-directionally.
 That is to say, modifying the configuration either of the installations will sync that configuration over to the other.
 
-If only one installation shows the other remote installation icon in colour, then the Link is synchronised one way.
+If only one installation shows the other remote installation icon in colour, then the link is synchronised one way.
 This means that settings will be pushed out from only the installation that is able to see the other.
 
-Unmanic does not require that Links be configured to sync bi-directionally.
-Because of this, a Link may traverse more complicated network configurations such as a NAT.
+Unmanic does not require that links be configured to sync bi-directionally.
+Because of this, a link may traverse more complicated network configurations such as a NAT.
 
 ### Configure remote installation Link
 
 Click the configure button <img className={"inline-text-screenshot"} src={require('/img/unmanic-configure-icon.png').default} title={"Connected Link"} /> to open
-the Link's configuration.
+the link's configuration.
 
 <img className={"screenshot"} style={{ width: '500px' }} src={require('/img/unmanic-link-configure.png').default} />
 
@@ -78,7 +80,7 @@ The same configuration option as above, but reversed.
 :::note
 This configuration option is disabled if the remote installation is not available.
 However, if you set this option while the remote installation is available and then that installation becomes unavailable,
-this option will not be
+this option will not be disabled.
 
 <img className={"screenshot"} style={{ width: '500px' }} src={require('/img/unmanic-link-configure-send-disabled.png').default} />
 :::
@@ -105,7 +107,7 @@ The value selected for the Worker count target will be pushed to the remote inst
 
 :::note
 The Worker target value is global across all installations that you select this option for. Changing it in the configuration
-of one Link will also change it for all others.
+of one link will also change it for all others.
 :::
 
 :::note
@@ -118,7 +120,7 @@ This is normal. Assume this value is plus or minus one.
 When wanting to maintain two libraries independently on the same PC, it is a good idea to link those installations and
 configure a Worker target to share amongst those installations.
 
-This way, you get to maintain custom Plugin stacks for each library, with the benefit of limiting the overall Worker count
+This way, you get to maintain custom plugin stacks for each library, with the benefit of limiting the overall Worker count
 for that PC to whatever target you configure here.
 :::
 

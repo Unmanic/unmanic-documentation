@@ -7,7 +7,7 @@ id: workers_settings
 
 <img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-workers.png').default} />
 
-Under the **Workers** section of your Unmanic settings you will find the ability to configure various aspects of your [Workers](/docs/dashboard/workers).
+Under the **Workers** section of your Unmanic settings you will find a few configuration options for managing the workers.
 
 ---
 
@@ -17,16 +17,16 @@ Under the **Workers** section of your Unmanic settings you will find the ability
 Set the number of concurrent workers that you wish this Unmanic installation to run.
 
 :::tip
-For most people, there is no benefit to running more than 3-5 Workers.
+For most people, there is no benefit to running more than 3-5 workers.
 Depending on the type of tasks you carry out, you may find diminishing returns increasing this value beyond 5.
 
 It is recommended to start with one worker initially, and then increase this value slowly until you find the right
-balance of system resource use and Task processing speed.
+balance of system resource use and task processing speed.
 :::
 
 ## Worker event schedule
 
-The Worker event schedule allows you to generate an ordered list of events that can modify the state of your Workers.
+The worker event schedule allows you to generate an ordered list of events that can modify the state of your workers.
 
 ### Adding an event
 
@@ -34,14 +34,14 @@ The Worker event schedule allows you to generate an ordered list of events that 
 
 An event is configured to trigger at a repeating time.
 It may be configured to:
-- Set the Worker count
-- Pause all Workers
-- Resume all Workers
+- Set the worker count
+- Pause all workers
+- Resume all workers
 
 
 :::note
-Scheduling the Worker count to reduce at a specified time will trigger the configuration change at that exact time.
-However, if all Workers are currently processing Tasks, the actual Worker count will not reduce until the next Worker
+Scheduling the worker count to reduce at a specified time will trigger the configuration change at that exact time.
+However, if all workers are currently processing tasks, the actual worker count will not reduce until the next worker
 becomes idle, at which point it will be terminated.
 :::
 
@@ -57,11 +57,11 @@ This can be achieved by dragging the items in the list of configured events into
 
 ## Cache path
 
-Set the location of the cache where Task files will be temporarily stored while workers are carrying out jobs on them.
+Set the location of the cache where task files will be temporarily stored while workers are carrying out jobs on them.
 
 :::tip
 For faster processing of I/O bound tasks, such as video encoding, try setting this to a tmpfs (RAM).
 
-However, do note that if you do this you will need to ensure that enough RAM is available to store the average file
-size times the number of Workers that you are running.
+However, if you do this you will need to ensure that enough RAM is available to store the average file
+size times the number of workers that you are running.
 :::

@@ -7,51 +7,51 @@ id: overview
 import Flowchart from '/src/components/Flowchart';
 
 
-Unmanic features a Plugin system to extend Unmanic's capabilities.
+Unmanic features a plugin system to extend Unmanic's capabilities.
 Plugins are stand-alone scripts or "modules" that are executed by Unmanic at defined stages during its task processing.
 
-Usually, Plugins are designed to carry out one function only.
-However, in order to carry out that one function, some Plugins are designed to be executed at multiple stages of task processing.
+Usually, plugins are designed to carry out one function only.
+However, in order to carry out that one function, some plugins are designed to be executed at multiple stages of task processing.
 
-For example, you may install a Plugin that will run during the library scan process to detect files that need to be added to the [Pending Tasks queue](/docs/dashboard/pending_tasks) due to an incorrect video codec.
-When the [Worker](/docs/dashboard/workers) picks up the task, it may execute that same Plugin again which will now handle the job of transcoding the video streams to the configured codec.
+For example, you may install a plugin that will run during the library scan process to detect files that need to be added to the [pending tasks](/docs/dashboard/pending_tasks) queue due to an incorrect video codec.
+When the [worker](/docs/dashboard/workers) picks up the task, it may execute that same plugin again which will now handle the job of transcoding the video streams to the configured codec.
 
-In this example the Plugin has carried out two separate jobs at different stages of Unmanic's task processing.
+In this example the plugin has carried out two separate jobs at different stages of Unmanic's task processing.
 
-Use Plugins to build powerful library optimisation flows.
+Use plugins to build powerful library optimisation flows.
 
 ---
 
 ## Plugin execution during Task flow
 
-Sections in pink will execute Plugins configured for that stage of the process.
+Sections in pink will execute plugins configured for that stage of the process.
 
 <Flowchart
     chartCode={`
     st=>start: Start
     discoverFile=>operation: File discovered by Library Scanner or Event Monitor.
-    libraryTestFileStart=>operation: Library Manager creates a list of all Plugins it needs for testing files.
-    libraryTestFileExecPlugin=>operation: Library Management - File test\nCheck if file should be added to Pending Tasks?|runner
-    libraryTestPluginRequestIgnoreFile=>condition: Did the Plugin request that\nUnmanic ignore this file?
-    libraryTestPluginRequestTaskCreate=>condition: Did the Plugin request that\nUnmanic create a task for this file?
-    libraryTestFileTaskCheckLoop=>condition: Has the Library Manager completed\nexecuting all Plugins?
-    fileNotAdded=>operation: File not added. to Pending Tasks queue.
-    pendingTasks=>operation: Added to Pending Tasks list.
-    workerCollects=>operation: Worker picks up file from Pending Tasks queue.
-    workerProcessTaskStart=>operation: Worker creates a list of all Plugins it needs to run.
-    workerExecPlugin=>operation: Worker - Processing file\nWorker executes a single Plugin.|runner
-    workerExecPluginCheck=>condition: Did the Plugin execute OK?
-    workerExecPluginRequestCommand=>condition: Did the Plugin request that\nUnmanic execute a command?
-    workerExecCommand=>operation: Worker executes the command given by the Plugin.
+    libraryTestFileStart=>operation: Library Manager creates a list of all plugin it needs for testing files.
+    libraryTestFileExecPlugin=>operation: Library Management - File test\nCheck if file should be added to pending tasks?|runner
+    libraryTestPluginRequestIgnoreFile=>condition: Did the plugin request that\nUnmanic ignore this file?
+    libraryTestPluginRequestTaskCreate=>condition: Did the plugin request that\nUnmanic create a task for this file?
+    libraryTestFileTaskCheckLoop=>condition: Has the Library Manager completed\nexecuting all plugins?
+    fileNotAdded=>operation: File not added. to pending tasks queue.
+    pendingTasks=>operation: Added to pending tasks list.
+    workerCollects=>operation: Worker picks up file from pending tasks queue.
+    workerProcessTaskStart=>operation: Worker creates a list of all plugins it needs to run.
+    workerExecPlugin=>operation: Worker - Processing file\nworker executes a single plugin.|runner
+    workerExecPluginCheck=>condition: Did the plugin execute OK?
+    workerExecPluginRequestCommand=>condition: Did the plugin request that\nUnmanic execute a command?
+    workerExecCommand=>operation: Worker executes the command given by the plugin.
     workerExecCommandCheck=>condition: Did the command execute OK?
-    workerProcessTaskCheckLoop=>condition: Has the Worker completed\nexecuting all Plugins?
+    workerProcessTaskCheckLoop=>condition: Has the worker completed\nexecuting all plugins?
     workerCompletesTask=>operation: Worker completes task and places it into a Post Processor queue
-    postProcessorFileMoveTaskStart=>operation: Post-processor creates a list of all Plugins it needs to run for file movements.
-    postProcessorFileMoveExecPlugin=>operation: Post-processor - File movements\nPost-processor executes a single file movement Plugin.|runner
-    postProcessorFileMoveTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all Plugins?
-    postProcessorTaskSuccessTaskStart=>operation: Post-processor creates a list of all Plugins it needs to run for task results.
-    postProcessorTaskSuccessExecPlugin=>operation: Post-processor - Marking task success/failure\nPost-processor executes a single task results Plugin.|runner
-    postProcessorTaskSuccessTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all Plugins?
+    postProcessorFileMoveTaskStart=>operation: Post-processor creates a list of all plugins it needs to run for file movements.
+    postProcessorFileMoveExecPlugin=>operation: Post-processor - File movements\nPost-processor executes a single file movement plugin.|runner
+    postProcessorFileMoveTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all plugins?
+    postProcessorTaskSuccessTaskStart=>operation: Post-processor creates a list of all plugins it needs to run for task results.
+    postProcessorTaskSuccessExecPlugin=>operation: Post-processor - Marking task success/failure\nPost-processor executes a single task results plugin.|runner
+    postProcessorTaskSuccessTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all plugins?
     taskSuccess=>condition: Were all jobs for this task successful?
     completedTasksFailed=>operation: Task added to history as failure.
     completedTasksSuccess=>operation: Task added to history as success.

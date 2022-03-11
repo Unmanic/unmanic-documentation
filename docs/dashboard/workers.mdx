@@ -15,12 +15,12 @@ Workers carry out the main processing against your tasks.
 Your workers run simultaneously, and you can configure Unmanic to have up to 12 concurrent workers at any time.
 The number of workers that you choose to spawn should be determined based on your needs.
 
-While the Workers are executed concurrently, they are designed to each execute commands as sub-processes in parallel with
-each other Worker. This means that the processes executed by each Worker are not bound to a single thread and will work
+While the workers are executed concurrently, they are designed to each execute commands as sub-processes in parallel with
+each other worker. This means that the processes executed by each worker are not bound to a single thread and will work
 in true parallelism.
 
-It is recommended when [configuring the Worker count](/docs/configuration/workers_settings), to start with one worker initially, and then increase this value slowly until you find the right
-balance of system resource use and Task processing speed.
+It is recommended when [configuring the worker count](/docs/configuration/workers_settings), to start with one worker initially, and then increase this value slowly until you find the right
+balance of system resource use and task processing speed.
 
 
 
@@ -37,18 +37,19 @@ Workers can be in a number of states:
 | Paused - processing                  | <span style={{ color: 'var(--ifm-color-danger)' }}>RED</span> (progress dialog spinning) |
 
 #### Idle
-An idle worker is ready to accept another task from the Pending Task queue as soon as one is made available.
+An idle worker is ready to accept another task from the [pending tasks](/docs/dashboard/pending_tasks) queue as soon as
+one is made available.
 
 #### Processing - progress known
 The worker is currently processing a task.
-The progress of the Plugin's command is able to be parsed.
+The progress of the plugin's command is able to be parsed.
 
 #### Processing - progress indeterminate
 The worker is currently processing a task.
-The progress of the Plugin's command is not able to be parsed.
+The progress of the plugin's command is not able to be parsed.
 
 #### Paused - idle
-The worker is paused and it currently has no task.
+The worker is paused, and it currently has no task.
 
 #### Paused - processing
 The worker is paused. It does currently have a task assigned to it being processed.
