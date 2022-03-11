@@ -34,7 +34,7 @@ module.exports = {
                     items: [
                         'dashboard/pending_tasks',
                         'dashboard/workers',
-                        'dashboard/completed_tasks'
+                        'dashboard/completed_tasks',
                     ],
                 },
                 {
@@ -49,7 +49,7 @@ module.exports = {
                                 'configuration/libraries/configure_libraries',
                                 'configuration/libraries/library_scanner',
                                 'configuration/libraries/file_testing',
-                                'configuration/libraries/managing_task_list'
+                                'configuration/libraries/managing_task_list',
                             ],
                         },
                         'configuration/workers_settings',
@@ -60,6 +60,7 @@ module.exports = {
                                 'configuration/plugins/overview',
                                 'configuration/plugins/installing_plugins',
                                 'configuration/plugins/adding_a_custom_plugin_repo',
+                                'configuration/plugins/configuring_plugins',
                             ],
                         },
                         'configuration/link_settings',
@@ -120,7 +121,7 @@ module.exports = {
             label: 'Guides',
             items: [
                 'guides/filebot_post_processor',
-                'guides/unmanic_windows_install'
+                'guides/unmanic_windows_install',
             ],
         },
     ],

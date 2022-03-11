@@ -1,0 +1,37 @@
+---
+title: Configuring Plugins
+description: Unmanic Configuration - Configuring Plugins
+id: configuring_plugins
+---
+
+Plugins may be configured either globally or per-library.
+The configuration saved against a library overrides the configuration set globally.
+This gives you the option to configure some plugins once for all libraries while tweaking others to suit the needs of
+the libraries they are assigned to.
+
+
+## Global Config
+
+Under the **Plugins** section of Unmanic's settings you will see the list of all currently installed plugins.
+
+<img className={"screenshot"} src={require('/img/unmanic-settings-plugins.png').default} />
+
+Click the <img className={"inline-text-screenshot"} src={require('/img/unmanic-configure-icon.png').default} title={"Configure"} /> button
+to open up the plugin's global configuration.
+
+
+## Library Config
+
+Under the **Library** section of Unmanic's settings, select the
+[library configuration](/docs/configuration/libraries/configure_libraries) for which you wish to modify a plugin's
+configuration.
+
+<img className={"screenshot"} src={require('/img/unmanic-settings-library-configuration-plugins-added.png').default} />
+
+Click the <img className={"inline-text-screenshot"} src={require('/img/unmanic-configure-icon.png').default} title={"Configure"} /> button
+to open up the plugin's library configuration.
+
+<img className={"screenshot"} src={require('/img/unmanic-plugin-library-config.png').default} />
+
+At the bottom you will have the option to reset the plugin's configuration back to the global configuration.
+This action will remove the library's override settings for this plugin.
