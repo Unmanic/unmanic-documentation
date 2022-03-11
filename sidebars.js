@@ -41,7 +41,17 @@ module.exports = {
                     type: 'category',
                     label: 'Configuration',
                     items: [
-                        'configuration/library_settings',
+                        {
+                            type: 'category',
+                            label: 'Libraries',
+                            items: [
+                                'configuration/libraries/adding_libraries',
+                                'configuration/libraries/configure_libraries',
+                                'configuration/libraries/library_scanner',
+                                'configuration/libraries/file_testing',
+                                'configuration/libraries/managing_task_list'
+                            ],
+                        },
                         'configuration/workers_settings',
                         {
                             type: 'category',

@@ -1,0 +1,23 @@
+---
+title: Optimise File Testing
+description: Unmanic Configuration - Optimise File Testing
+id: file_testing
+---
+
+When Unmanic is carrying out a library scan, or a library is configured for file monitoring, all files detected by these
+operations are tested using that library's configured *"File Test"* plugins. These plugins will determine if the file
+should be added to the pending task list or not.
+
+These file test operations carried out by the plugins do slow down the library scan process. However, Unmanic is designed
+to carry out multiple file tests at the same time.
+
+You can optimise how long it takes for Unmanic to carry out a library scan by tuning the **Concurrent file testers**
+option under the **Library** section in Unmanic's settings.
+
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-file-test.png').default} />
+
+Increasing this value will spawn more threads to concurrently test the files.
+However, it will also use more CPU and RAM resources and on less powerful machines has more obvious diminishing returns.
+
+It is recommended to initially set this value between 2 and 5 and increase it between library scans to determine the
+optimal value.

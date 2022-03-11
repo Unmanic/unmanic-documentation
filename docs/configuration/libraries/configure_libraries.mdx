@@ -1,0 +1,62 @@
+---
+title: Configuring Libraries
+description: Unmanic Configuration - Configuring Libraries
+id: configure_libraries
+---
+
+To modify the settings of one of your libraries, click the <img className={"inline-text-screenshot"} src={require('/img/unmanic-configure-icon.png').default} title={"Configure"} /> button.
+This will open up a new dialog.
+
+
+### Library Configuration
+
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-configuration.png').default} />
+
+This dialog allows you to stipulate how the library should behave. Here you can modify the library's name and path.
+
+#### Enable library scanner for this library
+
+When this is selected, the library scanner will also include the path given by this library.
+
+If you leave this option unselected, the library scanner will ignore this library when carrying out automated and manually triggered scans.
+
+#### Enable file monitor for this library
+
+When this is selected, Unmanic will start a file monitoring task against this library path.
+
+:::note
+This may cause errors on very large libraries.
+If you do have a large number of files on disk, search the internet for ["configuring Linux max_user_watches"](https://www.google.com/search?q=configuring+Linux+max_user_watches).
+:::
+:::caution
+The file monitor will increase the RAM requirements of Unmanic and as such may not be a good option for
+devices with limited RAM availability.
+:::
+
+
+### Plugins
+
+The library will do nothing on its own. In order to create any tasks for the files in a library, that library must
+first be configured with one or more plugins.
+
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-configuration-plugins-empty.png').default} />
+
+To add a new plugin, click the <img className={"inline-text-screenshot"} src={require('/img/unmanic-add-to-list-icon.png').default} title={"Add plugin"} /> button.
+
+Select a plugin from the list provided.
+
+If the plugin you require is not yet installed, click the **INSTALL PLUGIN** button.
+
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-configuration-plugins-add-install.png').default} />
+
+For more information, follow the instructions on [installing plugins](/docs/configuration/plugins/installing_plugins).
+
+
+### Plugin Flow
+
+Once you have one or more plugins added to a library, you will be able to configure their flow.
+
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-configuration-plugin-flow.png').default} />
+
+Use the <img className={"inline-text-screenshot"} src={require('/img/unmanic-drag-icon.png').default} title={"Move"} /> handle
+to drag the plugins into the order that you need them to be executed.

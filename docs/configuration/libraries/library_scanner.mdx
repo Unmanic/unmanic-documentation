@@ -1,0 +1,29 @@
+---
+title: Library Scanning
+description: Unmanic Configuration - Library Scanning
+id: library_scanner
+---
+
+Unmanic is able to run a routine scan of your configured libraries to determine if files need tasks created for processing.
+
+:::note
+The scan will only run against a library if that library has the library scanner enabled.
+:::
+
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-scanning.png').default} />
+
+### Options
+
+The options for the library scanner are configured under the *Library* section in Unmanic's settings.
+
+#### Enable periodic library scans
+Select this option if you wish for Unmanic to schedule a library scanner.
+
+#### Library scan schedule in minutes
+Set the time in minutes between scans of your files in the configured library path.
+
+#### Run a one off library scan on startup
+If selected, the library scan will be executed when Unmanic starts.
+
+#### Follow symlinks on library scans
+If selected, the library scan will follow symlinks.
