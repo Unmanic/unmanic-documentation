@@ -20,7 +20,7 @@ Once the terminal is open, type
 python3 --version
 ```
 If this is the first time running python, it may prompt you to download the command line developer tools. Click install to continue.
-
+<img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/python3.png').default} />
 If you already have python installed, the version needs to be between 3.7 and 3.8 to work best with Unmanic.
 
 ### 2) Installing pip
