@@ -55,14 +55,45 @@ This will install Unmanic and dependencies.
 
 ### 4) Creating a shellscript to start Unmanic
 
-In the terminal, enter the following command
+For the next step, we will need root access.
+At the terminal, enter the following command
+```
+sudo su -
+```
+This will then prompt you for your account password. Enter your password and press enter.
+
+Next, in the terminal, enter the following command
 ```
 echo "cd ~/Library/Python/3.8/lib/python/site-packages/unmanic;python3 service.py" >/usr/local/bin/start_unmanic.sh
 ```
-Next, we will make the shell script executable by entering the following command in the terminal
+Lastly, we will make the shell script executable by entering the following command in the terminal
 ```
 chmod 755 /usr/local/bin/start_unmanic.sh
 ```
+In the Terminal type exit to leave root access.
+```
+exit
+```
+
+### 5) Start Unmanic
+
+From the Terminal, type
+```
+/usr/local/bin/start_unmanic.sh
+```
+This will start Unmanic. This terminal must be left open or Unmanic will stop.
+
+
+### 6) Mount your media
+
+Mount the remote drive that contains your media from the Go menu ->Connect to Server.
+Enter the ip address and share name and click Connect.
+
+When you are configuring Unmanic to access your library, it will now be locate under the /Volumes directory .
+
+
+
+
 
 
 
