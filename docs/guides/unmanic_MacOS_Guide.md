@@ -116,6 +116,7 @@ This will start Unmanic. This terminal must be left open or Unmanic will stop.
 ### 7) Mount your media
 
 Mount the remote drive that contains your media from the Go menu ->Connect to Server.
+<img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/connect_to_server.png').default} />
 Enter the ip address and share name and click Connect.
 
 When you are configuring Unmanic to access your library, it will now be locate under the /Volumes directory .
