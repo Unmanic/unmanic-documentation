@@ -55,7 +55,7 @@ in the Terminal.
 
 We will need to download ffmpeg and ffprobe from https://evermeet.cx/ffmpeg/ .
 Go to your download folder and extract both ffmpeg and ffprobe.
-Click and drag to highlight bot ffmpeg and ffprobe then right click on them and click Copy from the menu.
+Click and drag to highlight both ffmpeg and ffprobe then right click on them and click Copy from the menu.
 Next, go to the Go menu and select Go to folder.
 Enter
 ```
