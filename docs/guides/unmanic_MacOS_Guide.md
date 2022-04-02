@@ -131,8 +131,11 @@ Click the 3 horizontal lines in the upper left to expand the menu. Next go to Se
 <img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/settings.png').default} />
 
 In the setting menu, you will see your default library. Click the 3 horizontal bars to the right of the library to open the configuration.
-Next, you will see a box that says Library Path. Click that.
+
+Next, cliock on the box that says Library Path.
+
 By default, Unmanic looks for a library at /library, but that is in use already in macOS.
+
 Click the .. at the top of the window to go up a level.
 <img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/up_one_level.png').default} />
 
@@ -149,16 +152,19 @@ Open Applications->Utilities->Script Editor
 <img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/script_editor.png').default} />
 
 Paste the following into the script editor
+
 ```
 try
 	do shell script "/usr/local/bin/start_unmanic.sh"
 on error errMsg
 	display dialog "ERROR: " & errMsg
 end try
+
 ```
 Next, go to File->Export
 <img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/export_script.png').default} />
 ```
+
 Export As: Start_Unmanic
 Where:Applications
 File Format: Application
