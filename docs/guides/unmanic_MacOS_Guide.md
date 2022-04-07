@@ -70,7 +70,8 @@ From the terminal, enter the following.
 sudo chmod 755 /usr/local/bin/ffmpeg
 sudo chmod 755 /usr/local/bin/ffprobe
 ```
-
+Next, we have to deal with the macOS security settings for unsigned packages.
+From the terminal, type
 
 ### 4) Installing Unmanic
 
