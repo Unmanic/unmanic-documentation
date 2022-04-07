@@ -72,6 +72,38 @@ sudo chmod 755 /usr/local/bin/ffprobe
 ```
 Next, we have to deal with the macOS security settings for unsigned packages.
 From the terminal, type
+```
+ffmpeg
+```
+You will see a dialog similar to <img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/cannot_be_opened.png').default} />
+Click Cancel in the dialog box.
+
+Open the Apple Menu->System Preferences menu
+Open Security & Privacy
+Click the Allow Anyway button.
+<img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/cannot_be_opened.png').default} />
+From the terminal, type
+```
+ffmpeg
+```
+When the dialog opens, click the open button.
+
+Next, we will repeat the same process for ffprobe.
+From the terminal, type
+```
+ffprobe
+```
+Click Canel in the dialog box.
+
+Open the Apple Menu->System Preferences menu
+Open Security & Privacy
+Click the Allow Anyway button.
+
+From the terminal, type
+```
+ffprobe
+```
+When the dialog opens, click the open button.
 
 ### 4) Installing Unmanic
 
