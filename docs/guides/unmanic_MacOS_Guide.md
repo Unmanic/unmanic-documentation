@@ -171,7 +171,7 @@ Next, cliock on the box that says Library Path.
 By default, Unmanic looks for a library at /library, but that is in use already in macOS.
 
 Click the .. at the top of the window to go up a level.
-<img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/up_one_level.png').default} />
+<img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/up_a_level.png').default} />
 
 Navigate to the /Volumes director and you should see the network drive that was mounted in the previous step.
 <img className={"screenshot"} src={require('/img/guides/unmanic_macos_install_images/select_library.png').default} />
