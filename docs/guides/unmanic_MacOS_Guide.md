@@ -92,7 +92,7 @@ This will then prompt you for your account password. Enter your password and pre
 
 Next, in the terminal, enter the following command
 ```
-echo "cd ~/Library/Python/3.8/lib/python/site-packages/unmanic;python3 service.py" >/usr/local/bin/start_unmanic.sh
+echo "python3 -m unmanic" >/usr/local/bin/start_unmanic.sh
 ```
 Lastly, we will make the shell script executable by entering the following command in the terminal
 ```
