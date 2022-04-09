@@ -12,24 +12,34 @@ Python scripts.
 
 ## Directory Structure
 
-The directory structure of a Plugin should be:
+The basic directory structure of a Plugin should be:
 
 ```sh
 my_new_plugin
 ├── changelog.md
+├── description.md
 ├── info.json
-└── plugin.py
+├── lib
+├── package.json
+├── plugin.py
+└── requirements.txt
 ```
 
 
 ---
-#### File: changelog.json
+### File: `changelog.json`
 
 This file should be used to record changes made to the Plugin.
 
 
 ---
-#### File: info.json
+### File: `description.json` *(optional)*
+
+This file can be used to extend the description provided within the *info.json* file.
+
+
+---
+### File: `info.json`
 
 A JSON file containing the metadata of your Plugin.
 This JSON file should contain the following data:
@@ -65,11 +75,34 @@ This JSON file should contain the following data:
 ```
 
 ---
-#### File: plugin.py
+### Directory: `lib` *(optional)*
+
+Location of any additional Python modules imported by this plugin. 
+Use this directory if you are including files from another project on GitHub, etc.
+
+
+---
+### File: `package.json` *(optional)*
+
+This file will be read during the plugin build in GitHub. Any nodeJS packages listed will be installed and packaged with the plugin.
+
+Python modules will be installed to `{plugin root}/node_modules`.
+
+
+---
+### File: `plugin.py`
 
 The main Pugin Python module.
 
 This file will be imported and it's functions called byt he main Unmanic process.
+
+
+---
+### File: `requirements.txt` *(optional)*
+
+This file will be read during the plugin build in GitHub. Any Python modules listed will be installed and packaged with the plugin.
+
+Python modules will be installed to `{plugin root}/site-packages`.
 
 
 ## Plugin Module
