@@ -44,35 +44,48 @@ This file can be used to extend the description provided within the *info.json* 
 A JSON file containing the metadata of your Plugin.
 This JSON file should contain the following data:
 
-  - **`id`** - A string identifier for your Plugin. Should only contain lowercase `a-z` or `_` characters.
-  - **`name`** - A very short name for your Plugin.
   - **`author`** - Your name.
-  - **`version`** - The version of your Plugin.
+  - **`compatibility`** - A list of Unmanic Plugin Handler versions that this Plugin is compatible with (see table below).
   - **`description`** - A long description of your Plugin detailing what it does. To include line-breaks, insert a `\n`.
   - **`icon`** - A URI to an image. If no icon is provided, the default Plugin icon will be used in the WebUI.
-  - **`tags`** - A comma separated list able to be used as keywords when searching for Plugins.
-  - **`compatibility`** - A list of Unmanic Plugin Handler versions that this Plugin is compatible with.
+  - **`id`** - A string identifier for your Plugin. Should only contain lowercase `a-z` or `_` characters.
+  - **`name`** - A very short name for your Plugin.
+  - **`platform`** - Platform compatibility of this plugin. Can be any combination of ["all", "linux", "windows", "mac"].
   - **`priorities`** - A dictionary of the initial priority that this Plugin's runners within the Plugin flow.
+  - **`tags`** - A comma separated list able to be used as keywords when searching for Plugins.
+  - **`version`** - The version of your Plugin.
 
 ##### Example:
 ```json
 {
+    "author": "Josh.5",
+    "compatibility": [
+        1,
+        2
+    ],
+    "description": "Specify a language tag for Unmanic to try and put as 1st subtitle track.",
+    "icon": "https://raw.githubusercontent.com/Josh5/unmanic.plugin.reorder_subtitle_streams_by_language/master/icon.png",
     "id": "reorder_subtitle_streams_by_language",
     "name": "Re-order subtitle streams by language",
-    "author": "Josh.5",
-    "version": "0.0.1",
-    "description": "Specify a language tag for Unmanic to try and put as 1st subtitle track.\n\nIn the plugin settings, specify a 'Search String'. The plugin will search the files to find matching subtitle tracks. The matching subtitle tracks will be moved to the 1st subtitle track position.\n\nExamples of search strings:\n  - 'en'\n  - 'fr'\n  - 'de'",
-    "icon": ""
-    "tags": "subtitle,ffmpeg,worker",
-    "compatibility": [
-        1
+    "platform": [
+        "all"
     ],
     "priorities": {
         "on_library_management_file_test": 99,
-        "on_worker_process": 1
-    }
+        "on_worker_process": 2
+    },
+    "tags": "subtitle,ffmpeg,library file test",
+    "version": "1.0.4"
 }
 ```
+
+##### Plugin handler compatibility:
+
+| Plugin handler | Unmanic versions |
+|----------------|------------------|
+| v1             | v0.1.0 - v0.1.4  |
+| v2             | v0.2.0 - current |
+
 
 ---
 ### Directory: `lib` *(optional)*
