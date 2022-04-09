@@ -331,3 +331,65 @@ Pages will be provided with a GET parameter either `?theme=light` or `?theme=dar
 Static assets stored in the plugins [static](/docs/development/writing_plugins/introduction#directory-static-optional) directory will 
 made available via the webserver at `/unmanic/panel/{plugin ID}/static/(.*)`
 
+---
+
+
+## Frontend - Plugin API
+*(since v0.2.0)*
+
+##### Executed:
+From front-end URL
+
+##### Function:
+`render_plugin_api(data)`
+
+##### Provided data:
+- **`content_type`** *[string]* - The content type to be set when writing back to the browser.
+- **`content`** *[string]* - The content to print to the browser.
+- **`path`** *[string]* - The path received after the '/unmanic/panel' path.
+- **`uri`** *[string]* - The request uri.
+- **`query`** *[string]* - The request query.
+- **`arguments`** *[dictionary]* - A dictionary of GET arguments received.
+- **`body`** *[dictionary]* - A dictionary of body arguments received.
+
+##### Example:
+
+<details>
+<summary>plugin.py</summary>
+
+```python
+def render_plugin_api(data):
+    """
+    Runner function - display a custom data panel in the frontend.
+
+    The 'data' object argument includes:
+        content_type                    - The content type to be set when writing back to the browser.
+        content                         - The content to print to the browser.
+        path                            - The path received after the '/unmanic/panel' path.
+        uri                             - The request uri.
+        query                           - The request query.
+        arguments                       - A dictionary of GET arguments received.
+        body                            - A dictionary of body arguments received.
+
+    :param data:
+    :return:
+    """
+
+    # Store webhook content
+    settings = Settings()
+    profile_directory = settings.get_profile_directory()
+    time_now = time.time()
+    request_body = json.loads(data.get('body', '{}'))
+    with open(os.path.join(profile_directory, 'sonarr_webhook_{}.json'.format(time_now)), 'w') as outfile:
+        json.dump(request_body, outfile, indent=2)
+
+    return
+```
+</details>
+
+
+##### Details:
+
+This Plugin runner type provides an API endpoint which may be used to receive webhook requests or function as a REST API for the plugin.
+
+Pages will be served from `/unmanic/plugin_api/{plugin ID}`.
