@@ -90,7 +90,9 @@ Just prior to the execution of the command subprocess within an Unmanic Worker p
 ##### Function:
 `on_worker_process(data)`
 
-##### Provided data:
+##### Provided data:        
+  - **`worker_log`** *[list]* - The log lines that are being tailed by the frontend (can be empty).
+  - **`library_id`** *[integer]* - The library that the current task is associated with.
   - **`exec_command`** *[list]* - A command that Unmanic should execute (can be empty).
   - **`command_progress_parser`** *[callable]* - A function that Unmanic can use to parse the STDOUT of the command to collect progress stats (can be empty).
   - **`file_in`** *[string]* - The source file to be processed by the command.
@@ -135,11 +137,13 @@ def on_worker_process(data):
     Runner function - enables additional configured processing jobs during the worker stages of a task.
 
     The 'data' object argument includes:
-        exec_command            - A command that Unmanic should execute. Can be empty.
-        command_progress_parser - A function that Unmanic can use to parse the STDOUT of the command to collect progress stats. Can be empty.
-        file_in                 - The source file to be processed by the command.
-        file_out                - The destination that the command should output (may be the same as the file_in if necessary).
-        original_file_path      - The absolute path to the original file.
+        worker_log              - Array, the log lines that are being tailed by the frontend. Can be left empty.
+        library_id              - Number, the library that the current task is associated with.
+        exec_command            - Array, a subprocess command that Unmanic should execute. Can be empty.
+        command_progress_parser - Function, a function that Unmanic can use to parse the STDOUT of the command to collect progress stats. Can be empty.
+        file_in                 - String, the source file to be processed by the command.
+        file_out                - String, the destination that the command should output (may be the same as the file_in if necessary).
+        original_file_path      - String, the absolute path to the original file.
         repeat                  - Boolean, should this runner be executed again once completed with the same variables.
 
     :param data:
