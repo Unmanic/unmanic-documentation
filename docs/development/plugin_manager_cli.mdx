@@ -21,11 +21,11 @@ $ unmanic --manage_plugins
 Starting migrations
 There is nothing to migrate
 UnmanicLogger - SETUP LOGGER
-[?] What would you like to do?: Test installed plugins
- > Test installed plugins
-   List installed plugins
+[?] What would you like to do?: List all installed plugins
+ > List all installed plugins
+   Test plugins
    Create new plugin
-   Reload plugin from disk
+   Reload all plugins from disk
    Remove plugin
    Exit
 ```
@@ -35,8 +35,8 @@ From here you may select on of the available options.
 
 | Option                    | Description                                                                          |
 |---------------------------|--------------------------------------------------------------------------------------|
-| Test installed plugins    | Executes tests against all runners of all currently installed Plugins                |
-| List installed plugins    | Lists all currently installed Plugins                                                |
+| List installed plugins    | Lists all currently installed Plugins and their status within Unmanic's database     |
+| Test plugins              | Menu. Lists all currently installed Plugins. Select one to test it                   |
 | Create new plugin         | Executes a guided process to generate a new Plugin template                          |
 | Reload plugin from disk   | Reload all Plugin data into the database and update any requirements                 |
 | Remove plugin             | Delete the Plugin directory and all contents and remove the Plugin from the database |
