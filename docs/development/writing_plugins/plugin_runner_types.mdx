@@ -59,7 +59,7 @@ def on_library_management_file_test(data):
     if file_extension.lower() in ['flv']:
         data['add_file_to_pending_tasks'] = True
 
-    return data
+    return
 ```
 </details>
 
@@ -163,7 +163,7 @@ def on_worker_process(data):
 
         
 
-    return data
+    return
 ```
 </details>
 
@@ -216,7 +216,7 @@ def on_postprocessor_file_movement(data):
     :return:
     """
 
-    return data
+    return
 ```
 </details>
 
@@ -269,7 +269,7 @@ def on_postprocessor_task_results(data):
     :param data:
     :return:
     """
-    return data
+    return
 ```
 </details>
 
@@ -315,7 +315,7 @@ def render_frontend_panel(data):
         content = f.read()
         data['content'] = content.replace("{cache_buster}", str(uuid.uuid4()))
 
-    return data
+    return
 ```
 </details>
 
