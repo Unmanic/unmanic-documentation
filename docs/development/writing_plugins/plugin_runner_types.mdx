@@ -324,3 +324,10 @@ def render_frontend_panel(data):
 
 This Plugin runner type provides a *Data Panel* which will be displayed to the front-end.
 
+Pages will be served from `/unmanic/ui/data-panels?pluginId={plugin ID}`.
+
+Pages will be provided with a GET parameter either `?theme=light` or `?theme=dark` to assist with theme mapping with the main frontend.
+
+Static assets stored in the plugins [static](/docs/development/writing_plugins/introduction#directory-static-optional) directory will 
+made available via the webserver at `/unmanic/panel/{plugin ID}/static/(.*)`
+

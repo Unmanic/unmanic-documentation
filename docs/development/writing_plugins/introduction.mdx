@@ -22,7 +22,8 @@ my_new_plugin
 ├── lib
 ├── package.json
 ├── plugin.py
-└── requirements.txt
+├── requirements.txt
+└── static
 ```
 
 
@@ -116,6 +117,14 @@ This file will be imported and it's functions called byt he main Unmanic process
 This file will be read during the plugin build in GitHub. Any Python modules listed will be installed and packaged with the plugin.
 
 Python modules will be installed to `{plugin root}/site-packages`.
+
+
+---
+### Directory: `static` *(optional)*
+
+Location of any static assets to be served via the webserver.
+
+Assets located in this directory will be available via the webserver at `/unmanic/panel/{plugin ID}/static/(.*)`.
 
 
 ## Plugin Module
