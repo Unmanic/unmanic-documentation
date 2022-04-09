@@ -130,15 +130,13 @@ of your Plugin.
 #### Runners
 
 The Plugin module is made up of defined **runner** functions. A Plugin may include multiple
-runner functions such that it is executed at multiple stages of the library optimisation process,
-however it is recommended that a Plugin carry out only a single task and therefore only include
-a single runner function.
+runner functions such that it is executed at multiple stages of the library optimisation process.
 
 A **data** parameter is provided to the runner functions. This data parameter is a dictionary
 object of information pertaining to that stage of the library optimisation process.
-Whatever data schema is provided to a Plugin runner must also be returned at the end of that 
-function. During the function, that data may be manipulated as you see fit. However, a Plugin 
-runner may fail if data is removed from that data dictionary.
+This data object's schema that is provided to a plugin runner should still exist once the plugin runner function has completed execution.
+During the function, that data may be manipulated as you see fit. 
+A plugin runner may fail if data is removed from that data dictionary.
 
 Plugins should be tested with the [**Plugin Manager CLI**](/docs/development/plugin_manager_cli) before publishing changes to ensure
 that the returned data matches the required schema for all included runner functions.
@@ -148,7 +146,7 @@ that the returned data matches the required schema for all included runner funct
 ```python
 def on_worker_process(data):
     ...
-    return data
+    return
 ```
 
 
