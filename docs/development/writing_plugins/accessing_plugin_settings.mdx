@@ -184,9 +184,15 @@ Fetches a configuration value from the Settings object.
 If no key is provided, this method will return a full dictionary
 of all configured options.
 
+:::caution
+If no *library_id* is provided to the Settings object, then it will return the global settings.
+If no config has been saved for the given *library_id*, this method will fallback to returning the global settings.
+See example below.
+:::
+
 ##### Example:
 ```python
-    settings = Settings()
+    settings = Settings(library_id=data.get('library_id'))
 
     # Fetch a single value
     enable_feature = settings.get_setting('Enable Feature')
@@ -210,10 +216,16 @@ your Plugin's functions also.
 
 Settings are stored on disk in order to be persistent across restarts.
 
+:::caution
+If no *library_id* is provided to the Settings object, then it will be stored in the global settings file.
+If no config has been saved for the given *library_id*, this method will create that library's config file.
+See example below.
+:::
+
 
 ##### Example:
 ```python
-    settings = Settings()
+    settings = Settings(library_id=data.get('library_id'))
     enable_feature = settings.set_setting('Enable Feature', False)
 ```
 
@@ -284,7 +296,8 @@ class Settings(PluginSettings):
         "Comma separated list of file extensions to process.":  'ts',
     }
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super(Settings, self).__init__(*args, **kwargs)
         self.form_settings = {
             "Comma separated list of file extensions to process.":  self.__set_allowed_extensions_form_settings(),
         }

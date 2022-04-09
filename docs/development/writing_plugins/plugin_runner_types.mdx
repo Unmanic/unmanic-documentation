@@ -145,7 +145,7 @@ def on_worker_process(data):
     :param data:
     :return:
     """
-    settings = Settings()
+    settings = Settings(library_id=data.get('library_id'))
     system = System()
     system_info = system.info()
 
