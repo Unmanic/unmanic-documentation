@@ -109,7 +109,6 @@ module.exports = {
                     type: 'category',
                     label: 'Installation',
                     items: [
-                        'advanced/hardware_accelerated_encoding_nvenc',
                         'advanced/hardware_accelerated_encoding_vaapi',
                         'advanced/docker_compose_cifs_mounts',
                     ],
@@ -120,6 +119,7 @@ module.exports = {
             type: 'category',
             label: 'Guides',
             items: [
+                'guides/nvidia_support_unmanic_on_linux',
                 'guides/filebot_post_processor',
                 'guides/unmanic_windows_install',
                 'guides/unmanic_macos_install'
