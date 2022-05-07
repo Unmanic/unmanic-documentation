@@ -126,4 +126,13 @@ module.exports = {
             ],
         },
     ],
+    stats: [
+        {
+            type: 'category',
+            label: 'Welcome',
+            items: [
+                'overview',
+            ],
+        }
+    ],
 };

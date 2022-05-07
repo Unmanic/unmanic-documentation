@@ -24,6 +24,12 @@ module.exports = {
                     label: "Docs",
                     position: "left",
                 },
+                {
+                    to: "stats/",
+                    activeBasePath: "stats",
+                    label: "Stats",
+                    position: "left",
+                },
                 /*{to: 'blog', label: 'Blog', position: 'left'},*/
                 {
                     href: "https://github.com/Unmanic",
