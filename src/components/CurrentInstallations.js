@@ -32,7 +32,7 @@ function CurrentInstallationsChart() {
     //const [chartLinux, setChartLinux] = useState([])
     useEffect(() => {
         const fetchData = async () => {
-            await fetch(`${unmanicSiteApiBase}/stats/installations/active-count/week/all`, {
+            await fetch(`${unmanicSiteApiBase}/api/stats/installations/active-count/week/all`, {
                 method: 'GET'
             }).then((response) => {
                 response.json().then((json) => {

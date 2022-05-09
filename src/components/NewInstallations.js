@@ -45,7 +45,7 @@ function NewInstallationsChart() {
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetch(`${unmanicSiteApiBase}/stats/installations/time-series/month`, {
+            await fetch(`${unmanicSiteApiBase}/api/stats/installations/time-series/month`, {
                 method: 'GET'
             }).then((response) => {
                 response.json().then((json) => {
@@ -61,7 +61,7 @@ function NewInstallationsChart() {
     }, [unmanicSiteApiBase])
     useEffect(() => {
         const fetchData = async () => {
-            await fetch(`${unmanicSiteApiBase}/stats/installations/time-series/month/filter/x86`, {
+            await fetch(`${unmanicSiteApiBase}/api/stats/installations/time-series/month/filter/x86`, {
                 method: 'GET'
             }).then((response) => {
                 response.json().then((json) => {
@@ -77,7 +77,7 @@ function NewInstallationsChart() {
     }, [unmanicSiteApiBase])
     useEffect(() => {
         const fetchData = async () => {
-            await fetch(`${unmanicSiteApiBase}/stats/installations/time-series/month/filter/armv7l`, {
+            await fetch(`${unmanicSiteApiBase}/api/stats/installations/time-series/month/filter/armv7l`, {
                 method: 'GET'
             }).then((response) => {
                 response.json().then((json) => {
@@ -93,7 +93,7 @@ function NewInstallationsChart() {
     }, [unmanicSiteApiBase])
     useEffect(() => {
         const fetchData = async () => {
-            await fetch(`${unmanicSiteApiBase}/stats/installations/time-series/month/filter/aarch64`, {
+            await fetch(`${unmanicSiteApiBase}/api/stats/installations/time-series/month/filter/aarch64`, {
                 method: 'GET'
             }).then((response) => {
                 response.json().then((json) => {

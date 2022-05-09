@@ -125,14 +125,5 @@ module.exports = {
                 'guides/unmanic_macos_install'
             ],
         },
-    ],
-    stats: [
-        {
-            type: 'category',
-            label: 'Welcome',
-            items: [
-                'overview',
-            ],
-        }
-    ],
+    ]
 };
