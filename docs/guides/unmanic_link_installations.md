@@ -21,7 +21,7 @@ This guide will describe the use of a main installation with access to the libra
 
 ### Setup
 
-* On `main`, setup a [library](/docs/configuration/libraries/adding_libraries.mdx) following the normal instructions. Let us call the library `Guide`.
+* On `main`, setup a [Library](/docs/configuration/libraries/adding_libraries) following the normal instructions. Let us call the library `Guide`.
 
 * On `remote`, create a new library. The name of this library has to be **exactly** the same as the library in `main`, in this case `Guide`. You can either export the library from `main` and import it on `remote`, see tip below, or set it up manually. This library only needs plugins for making changes, i.e. encoding. "Scanning" plugins, such as filter by size, are not needed.
 
@@ -32,7 +32,7 @@ Library name must be identical on both installations.
 It is recommended to create a new library for this, instead of using the default library.
 :::
 
-* [Link](/docs/configuration/linking.mdx) the installs:
+* [Link](/docs/configuration/link_settings) the installs:
     * On `main`, add `remote` as remote installation and enable _"Send tasks to this installation when workers are available"_. _"Preload some tasks on the remote installation Pending Tasks queue"_ is optional.
     <img className={"screenshot"} src={require('/img/guides/unmanic_link_installations_images/link_from_main.png').default} />
 
