@@ -1,0 +1,63 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ "master" ]
+    paths-ignore:
+      - ".github/**"
+      - "!.github/workflows/**"
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  Test-Build:
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Setup NodeJS
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
+      # Install
+      - name: Install
+        id: install-step
+        run: |
+          yarn install --frozen-lockfile
+      # Build
+      - name: Build
+        id: build-step
+        run: |
+          yarn build
+
+  Deploy:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/master'
+    steps:
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Setup NodeJS
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
+      # Install
+      - name: Install
+        id: install-step
+        run: |
+          yarn install --frozen-lockfile
+      # Build
+      - name: Build
+        id: build-step
+        run: |
+          yarn build
+      # Publish
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build

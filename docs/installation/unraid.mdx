@@ -17,25 +17,36 @@ import ReactPlayer from 'react-player';
 
 ## Instructions:
 
-  1. Navigate to the **Docker** tab and scroll down to the bottom where it says "Template Repositories".
-  2. Enter in a URL of https://github.com/Josh5/unraid-docker-templates in the "Template repositories" field.
-  3. Click on the "Save" button
+  1. Navigate to the **Apps** tab and search for "Unmanic" in the search box.
+  2. Click on the "Install" button
 
-<img className={"screenshot"} src={require('/img/unraid-docker-templates.png').default} />
+<img className={"screenshot"} src={require('/img/unraid-install-ca1.png').default} />
 
-
-  4. Scroll back to the bottom of the **Docker** tab and then click on the "Add Container" button.
-  5. Click on the "Template" drop-down menu and select the *unmanic* template.
-
-<img className={"screenshot"} src={require('/img/unraid-select-unmanic-template.png').default} />
-
-  6. Modify the WebUI variables as desired:
-  
-> Note:
-> The Encoding Cache Directory is where files are written while they are being transcoded. 
-> Setting this to /dev/shm/unmanic will cause the files to be written to a RAM tmpfs. Set this to whatever you like.
+  3. Modify the container variables as desired:
 
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-volumes.png').default} />
+
+:::tip
+### Configuring RAM as the *Cache Directory*.
+There are two main options:
+
+#### 1) Use /dev/shm/
+The simplest way to set the *Cache Directory* to a ramdisk is to set this path as `/dev/shm/unmanic`.
+This path is a tmpfs mount, however it is limited to 50% of your total system memory by default.
+
+----
+#### 2) Create a custom tmpfs mount
+If you wish to use more than 50% of your memory, add the following snippet to your Extra Parameters
+(changing *20g* to the upper limit of whatever amount of RAM you wish to use):
+```
+--mount type=tmpfs,destination=/tmp/unmanic_tmpfs,tmpfs-size=20g
+```
+This does not reserve this amount of RAM for the container. It only creates a mount limited to the amount specified.
+You will still be limited to the amount of RAM available on the system as shared by all other processes.
+
+----
+Whatever option above that you choose, you will need ensure you have enough available memory for the container to use this location as the cache.
+:::
 
   7. Scroll to the bottom and click the "APPLY" button
  
@@ -45,11 +56,6 @@ Once the image is downloaded you should see it appear in the **Docker** tab.
 
 ## Some optional configuration steps:
 
-### Multiple libraries:
-
-<img className={"screenshot"} src={require('/img/unraid-unmanic-template-multiple-libraries.png').default} />
-
- 
 ### Nvidia GPU hardware encoding:
 
 To use your NVIDIA GPU for hardware encoding in this container, follow these steps:

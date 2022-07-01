@@ -123,8 +123,9 @@ module.exports = {
                 'guides/filebot_post_processor',
                 'guides/unmanic_windows_install',
                 'guides/unmanic_macos_install',
+                'guides/unmanic_kubernetes_install',
                 'guides/unmanic_link_installations'
             ],
         },
-    ],
+    ]
 };
