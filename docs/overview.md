@@ -14,9 +14,9 @@ You can use it to convert your files into a single, uniform format, manage file 
 
 Unmanic provides you with the following main functions:
 
-- A scheduler built in to scan your whole library for files that do not conform to your configured file presets. Files found requiring processing are then queued.
+- A built-in scheduler scans your whole library for files that do not conform to your configured file presets. Files found requiring processing are then queued.
 
-- A file/directory monitor. When a file is modified, or a new file is added in your library, Unmanic is able to again test that against your configured file presets. Like the first function, if this file requires processing, it is added to a queue for processing.
+- A file/directory monitor. When a file is modified or a new file is added to your library, Unmanic can test the file against your configured presets. Like the first function, if this file requires processing, it is added to a queue for processing.
 
 - A handler to manage running multiple file manipulation tasks at a time.
 
