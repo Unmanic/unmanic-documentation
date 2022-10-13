@@ -45,5 +45,5 @@ You can export the library configuration from `main` using the export button, co
 <img className={"screenshot"} src={require('/img/guides/unmanic_link_installations_images/export_config.png').default} />
 
 You can then use import on `remote`, paste the code you got from `main`.
-<img className={"screenshot"} src={require('/img/guides/unmanic_link_installations_images/import_config.png').default} />
+<img className={"screenshot"} src={require('/img/guides/general/import_config.png').default} />
 :::

@@ -119,12 +119,13 @@ module.exports = {
             type: 'category',
             label: 'Guides',
             items: [
-                'guides/nvidia_support_unmanic_on_linux',
-                'guides/filebot_post_processor',
                 'guides/unmanic_windows_install',
                 'guides/unmanic_macos_install',
                 'guides/unmanic_kubernetes_install',
-                'guides/unmanic_link_installations'
+                'guides/unmanic_link_installations',
+                'guides/nvidia_support_unmanic_on_linux',
+                'guides/filebot_post_processor',
+                'guides/script_subtitle_stripping'
             ],
         },
     ]

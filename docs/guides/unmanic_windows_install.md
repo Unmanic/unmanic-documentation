@@ -1,6 +1,6 @@
 ---
-title: Unmanic Windows 10 Install guide
-description: Unmanic Windows 10 Install guide
+title: Install Unmanic - Windows 10 (WSL + Docker)
+description: Unmanic Windows 10 Install Guide
 id: unmanic_windows_install
 ---
 
