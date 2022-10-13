@@ -15,12 +15,22 @@ Stripping subtitle streams is really simple. This guide will add a simple script
 Optionally, you will have the ability to specify a number of streams that you wish to keep.
 
 
-## Notes:
-
+:::caution
 Currently, this setup does not container a library scan file test runner. 
 Therefore, it will not process files without another plugin in the library's 
 plugin flow to test that the scanned files need to be processed.
+:::
 
+:::tip
+Compliment this configuration with the plugin **Re-order subtitle streams by language**.
+
+You can re-order your subtitle streams to have a particular language first, 
+then use this process to strip out all the ones remaining.
+:::
+
+## Instructions:
+
+:::note
 Once installed, you can configure the script by editing the top section:
 ```
 ###################################################################
@@ -33,8 +43,7 @@ Once installed, you can configure the script by editing the top section:
 NUMBER_OF_SUB_STREAMS_TO_KEEP=1
 ###################################################################
 ```
-
-## Instructions:
+:::
 
 
 <Tabs
