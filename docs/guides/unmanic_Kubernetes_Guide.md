@@ -1,6 +1,6 @@
 ---
-title: Unmanic Kubernetes Install guide
-description: Unmanic Kubernetes Install guide
+title: Install Unmanic - Kubernetes
+description: Unmanic Kubernetes Install Guide
 id: unmanic_kubernetes_install
 ---
 

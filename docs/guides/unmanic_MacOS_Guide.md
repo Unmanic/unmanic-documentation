@@ -1,6 +1,6 @@
 ---
-title: Unmanic MacOS Install guide
-description: Unmanic MacOS Install guide
+title: Install Unmanic - MacOS
+description: Unmanic MacOS Install Guide
 id: unmanic_macos_install
 ---
 

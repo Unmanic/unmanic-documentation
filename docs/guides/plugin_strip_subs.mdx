@@ -1,0 +1,251 @@
+---
+title: Subtitle Stripping
+description: Strip subtitle streams out of video files
+id: script_subtitle_stripping
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+![Difficulty](https://img.shields.io/badge/Difficulty-easy-green?style=flat)
+![Setup Time](https://img.shields.io/badge/Setup%20Time-5%20minutes-green?style=flat)
+[![Original Author](https://img.shields.io/badge/Original%20Author-josh5-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/josh5)
+
+
+Stripping subtitle streams is really simple. This guide will add a simple script that will strip subtitle streams from your file.
+Optionally, you will have the ability to specify a number of streams that you wish to keep.
+
+
+## Notes:
+
+Currently, this setup does not container a library scan file test runner. 
+Therefore, it will not process files without another plugin in the library's 
+plugin flow to test that the scanned files need to be processed.
+
+Once installed, you can configure the script by editing the top section:
+```
+###################################################################
+# CONFIG:
+# NUMBER_OF_SUB_STREAMS_TO_KEEP
+#   Specify the number of subtitle streams to keep.
+#   Script will preserve the number of subtitle streams specified 
+#     in this value. All others will be stripped out.
+#   Set this value to 0 to remove all subtitle streams.
+NUMBER_OF_SUB_STREAMS_TO_KEEP=1
+###################################################################
+```
+
+## Instructions:
+
+
+<Tabs
+  defaultValue="manual_config"
+  values={[
+    {label: 'Manual Config', value: 'manual_config'},
+    {label: 'Unmanic Library Import', value: 'library_import'},
+  ]}>
+  <TabItem value="library_import">
+  Import this via the Unmanic library config importer.
+  <img className={"screenshot"} style={{ width: '400px' }} src={require('/img/guides/general/import_config.png').default} />
+
+  Once imported, modify the library to suit your needs.
+
+  ```json
+{
+    "plugins": {
+        "enabled_plugins": [
+        {
+            "plugin_id": "processor_script",
+            "has_config": true,
+            "settings": {
+            "input_type": "bash",
+            "script": "#!/usr/bin/env bash\n###\n# File: strip-subs.sh\n# Project: tmp.BXJ7lwK6lZ\n# File Created: Friday, 14th October 2022 5:35:18 am\n# Author: Josh Sunnex (jsunnex@gmail.com)\n# -----\n# Last Modified: Friday, 14th October 2022 7:17:32 am\n# Modified By: Josh Sunnex (jsunnex@gmail.com)\n###\n\n###################################################################\n# CONFIG:\n# NUMBER_OF_SUB_STREAMS_TO_KEEP\n#   Specify the number of subtitle streams to keep.\n#   Script will preserve the number of subtitle streams specified \n#     in this value. All others will be stripped out.\n#   Set this value to 0 to remove all subtitle streams.\nNUMBER_OF_SUB_STREAMS_TO_KEEP=3\n###################################################################\n\n# Parse Args\n__library_id=\"\"\n__output_cache_file=\"\"\n__original_source_file=\"\"\n__original_source_size=\"\"\n__source_file=\"\"\n__source_size=\"\"\n__return_data_file=\"\"\n__positional_args=()\nfor i in \"${@}\"; do\n  case $i in\n    --library-id=*)\n      __library_id=\"${i#*=}\"\n      shift # past argument=value\n      ;;\n    --output-cache-file=*)\n      __output_cache_file=\"${i#*=}\"\n      shift # past argument=value\n      ;;\n    --original-source-file=*)\n      __original_source_file=\"${i#*=}\"\n      shift # past argument=value\n      ;;\n    --original-source-size=*)\n      __original_source_size=\"${i#*=}\"\n      shift # past argument=value\n      ;;\n    -s=*|--source-file=*)\n      __source_file=\"${i#*=}\"\n      shift # past argument=value\n      ;;\n    --source-size=*)\n      __source_size=\"${i#*=}\"\n      shift # past argument=value\n      ;;\n    --return-data-file=*)\n      __return_data_file=\"${i#*=}\"\n      shift # past argument=value\n      ;;\n    -*|--*)\n      echo \"Unknown option $i\"\n      exit 1\n      ;;\n    *)\n      __positional_args+=(\"$1\") # save positional arg\n      shift # past argument\n      ;;\n  esac\ndone\nset -- \"${__positional_args[@]}\" # restore positional parameters\n\n# Helper functions\n__jq_item() {\n    echo \"${1}\" | base64 --decode | jq -r \"${2}\"\n}\n\n# Generate ffmpeg command\necho\necho \"Probing file '${__source_file}'...\"\nprobe=$(ffprobe -show_format -show_streams -print_format json -loglevel quiet \"${__source_file}\")\nif [[ $? -gt 0 ]]; then\n    # Probably not a video file\n    echo \"Unable to probe file. This is probably not a valid video file so will ignore. EXIT!\"\n    exit 0\nfi\n# Ensure no further pipes fail\nset -eo pipefail\n\necho\necho \"Building ffmpeg args...\"\necho\nargs=\"-hide_banner -loglevel info -i '${__source_file}' -strict -2 -max_muxing_queue_size 10240 -map 0 -c:v copy -c:a copy\"\nsubtitle_streams_count=0\nfound_things_to_do=\"false\"\nfor stream in $(echo \"${probe}\" | jq -r '.streams[] | @base64'); do\n    index=$(__jq_item \"${stream}\" '.index')\n    codec_type=$(__jq_item \"${stream}\" '.codec_type')\n    codec_name=$(__jq_item \"${stream}\" '.codec_name')\n    echo \"  Stream #${index}: {type:${codec_type}, codec:${codec_name}}\"\n    if [[ \"${codec_type}\" == \"subtitle\" ]]; then\n        sub_language=$(__jq_item \"${stream}\" '.tags.language')\n        sub_title=$(__jq_item \"${stream}\" '.tags.title')\n        echo \"    - Subtitile Info: {language:${sub_language}, title:${sub_title}}\"\n        if [[ \"${subtitle_streams_count}\" -ge \"${NUMBER_OF_SUB_STREAMS_TO_KEEP}\" ]]; then\n            echo \"      - MARKING FOR REMOVAL\"\n            args=\"${args} -map -0:s:${subtitle_streams_count}\"\n            found_things_to_do=\"true\"\n        else\n            args=\"${args} -c:s:${subtitle_streams_count} copy\"\n            echo \"      - MARKING FOR COPY\"\n        fi\n        ((subtitle_streams_count+=1))\n    elif [[ \"${codec_type}\" == \"video\" ]]; then\n        vid_width=$(__jq_item \"${stream}\" '.width')\n        vid_height=$(__jq_item \"${stream}\" '.height')\n        echo \"    - Video Info: {width:${vid_width}, height:${vid_height}}\"\n        echo \"      - MARKING FOR COPY\"\n    elif [[ \"${codec_type}\" == \"audio\" ]]; then\n        audio_channels=$(__jq_item \"${stream}\" '.channels')\n        audio_bit_rate=$(__jq_item \"${stream}\" '.bit_rate')\n        echo \"    - Audio Info: {channels:${audio_channels}, bit_rate:${audio_bit_rate}}\"\n        echo \"      - MARKING FOR COPY\"\n    else\n        echo \"    - Stream Info: null\"\n    fi\ndone\n# Only provide a command to execute if streams were found to need modifying\nif [[ \"${found_things_to_do}\" ]]; then\n    exec_command=\"ffmpeg ${args} -y '${__output_cache_file}'\"\nelse\n    exec_command=\"\"\nfi\necho\necho \"Command: ${exec_command}\"\n\n# Generate return object for Unmanic to execute the command\n# This script could also execute the command from here if you wish, but Unmanic will process the log differently\nreturn_object=$(jq --null-input \\\n  --arg exec_command \"${exec_command}\" \\\n  --arg file_out \"${__output_cache_file}\" \\\n  '{\"exec_command\": $exec_command, \"file_out\": $file_out}')\nif [[ ! -z ${__return_data_file} ]]; then\n    echo \"${return_object}\" > \"${__return_data_file}\"\n    cat \"${__return_data_file}\"\nfi\n",
+            "cmd": "",
+            "args": "--source-file=\"{source_file_path}\" \n--output-cache-file=\"{file_out_path}\" \n--return-data-file=\"{data_json_file}\"\n",
+            "script_dependencies": ""
+            }
+        }
+        ],
+        "plugin_flow": {
+        "library_management.file_test": [],
+        "worker.process_item": ["processor_script"],
+        "postprocessor.file_move": [],
+        "postprocessor.task_result": []
+        }
+    },
+    "library_config": {
+        "name": "| Example | Subtitle Stripping"
+    }
+}
+
+  ```
+
+  </TabItem>
+  <TabItem value="manual_config">
+  Ensure you have installed the <b>External Worker Processor Script</b> plugin.
+  <img className={"screenshot"} style={{ width: '400px' }} src={require('/img/guides/script_subtitle_stripping/external_worker_processor_script.png').default} />
+
+  Configure the plugin with the following:
+
+  #### Execution Type: 
+  > Bash Script
+
+  #### Script: 
+  ```bash
+#!/usr/bin/env bash
+###
+# File: strip-subs.sh
+# Project: tmp.BXJ7lwK6lZ
+# File Created: Friday, 14th October 2022 5:35:18 am
+# Author: Josh Sunnex (jsunnex@gmail.com)
+# -----
+# Last Modified: Friday, 14th October 2022 7:17:32 am
+# Modified By: Josh Sunnex (jsunnex@gmail.com)
+###
+
+###################################################################
+# CONFIG:
+# NUMBER_OF_SUB_STREAMS_TO_KEEP
+#   Specify the number of subtitle streams to keep.
+#   Script will preserve the number of subtitle streams specified 
+#     in this value. All others will be stripped out.
+#   Set this value to 0 to remove all subtitle streams.
+NUMBER_OF_SUB_STREAMS_TO_KEEP=1
+###################################################################
+
+# Parse Args
+__library_id=""
+__output_cache_file=""
+__original_source_file=""
+__original_source_size=""
+__source_file=""
+__source_size=""
+__return_data_file=""
+__positional_args=()
+for i in "${@}"; do
+  case $i in
+    --library-id=*)
+      __library_id="${i#*=}"
+      shift # past argument=value
+      ;;
+    --output-cache-file=*)
+      __output_cache_file="${i#*=}"
+      shift # past argument=value
+      ;;
+    --original-source-file=*)
+      __original_source_file="${i#*=}"
+      shift # past argument=value
+      ;;
+    --original-source-size=*)
+      __original_source_size="${i#*=}"
+      shift # past argument=value
+      ;;
+    -s=*|--source-file=*)
+      __source_file="${i#*=}"
+      shift # past argument=value
+      ;;
+    --source-size=*)
+      __source_size="${i#*=}"
+      shift # past argument=value
+      ;;
+    --return-data-file=*)
+      __return_data_file="${i#*=}"
+      shift # past argument=value
+      ;;
+    -*|--*)
+      echo "Unknown option $i"
+      exit 1
+      ;;
+    *)
+      __positional_args+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+set -- "${__positional_args[@]}" # restore positional parameters
+
+# Helper functions
+__jq_item() {
+    echo "${1}" | base64 --decode | jq -r "${2}"
+}
+
+# Generate ffmpeg command
+echo
+echo "Probing file '${__source_file}'..."
+probe=$(ffprobe -show_format -show_streams -print_format json -loglevel quiet "${__source_file}")
+if [[ $? -gt 0 ]]; then
+    # Probably not a video file
+    echo "Unable to probe file. This is probably not a valid video file so will ignore. EXIT!"
+    exit 0
+fi
+# Ensure no further pipes fail
+set -eo pipefail
+
+echo
+echo "Building ffmpeg args..."
+echo
+args="-hide_banner -loglevel info -i '${__source_file}' -strict -2 -max_muxing_queue_size 10240 -map 0 -c:v copy -c:a copy"
+subtitle_streams_count=0
+found_things_to_do="false"
+for stream in $(echo "${probe}" | jq -r '.streams[] | @base64'); do
+    index=$(__jq_item "${stream}" '.index')
+    codec_type=$(__jq_item "${stream}" '.codec_type')
+    codec_name=$(__jq_item "${stream}" '.codec_name')
+    echo "  Stream #${index}: {type:${codec_type}, codec:${codec_name}}"
+    if [[ "${codec_type}" == "subtitle" ]]; then
+        sub_language=$(__jq_item "${stream}" '.tags.language')
+        sub_title=$(__jq_item "${stream}" '.tags.title')
+        echo "    - Subtitile Info: {language:${sub_language}, title:${sub_title}}"
+        if [[ "${subtitle_streams_count}" -ge "${NUMBER_OF_SUB_STREAMS_TO_KEEP}" ]]; then
+            echo "      - MARKING FOR REMOVAL"
+            args="${args} -map -0:s:${subtitle_streams_count}"
+            found_things_to_do="true"
+        else
+            args="${args} -c:s:${subtitle_streams_count} copy"
+            echo "      - MARKING FOR COPY"
+        fi
+        ((subtitle_streams_count+=1))
+    elif [[ "${codec_type}" == "video" ]]; then
+        vid_width=$(__jq_item "${stream}" '.width')
+        vid_height=$(__jq_item "${stream}" '.height')
+        echo "    - Video Info: {width:${vid_width}, height:${vid_height}}"
+        echo "      - MARKING FOR COPY"
+    elif [[ "${codec_type}" == "audio" ]]; then
+        audio_channels=$(__jq_item "${stream}" '.channels')
+        audio_bit_rate=$(__jq_item "${stream}" '.bit_rate')
+        echo "    - Audio Info: {channels:${audio_channels}, bit_rate:${audio_bit_rate}}"
+        echo "      - MARKING FOR COPY"
+    else
+        echo "    - Stream Info: null"
+    fi
+done
+# Only provide a command to execute if streams were found to need modifying
+if [[ "${found_things_to_do}" ]]; then
+    exec_command="ffmpeg ${args} -y '${__output_cache_file}'"
+else
+    exec_command=""
+fi
+echo
+echo "Command: ${exec_command}"
+
+# Generate return object for Unmanic to execute the command
+# This script could also execute the command from here if you wish, but Unmanic will process the log differently
+return_object=$(jq --null-input \
+  --arg exec_command "${exec_command}" \
+  --arg file_out "${__output_cache_file}" \
+  '{"exec_command": $exec_command, "file_out": $file_out}')
+if [[ ! -z ${__return_data_file} ]]; then
+    echo "${return_object}" > "${__return_data_file}"
+    cat "${__return_data_file}"
+fi
+
+  ```
+
+  #### Arguments: 
+  ```bash
+--source-file="{source_file_path}" 
+--output-cache-file="{file_out_path}" 
+--return-data-file="{data_json_file}"
+  ```
+
+  </TabItem>
+</Tabs>
