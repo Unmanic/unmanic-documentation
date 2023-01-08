@@ -22,7 +22,7 @@ id: synology
   3. Configure container ports
       - Local Port 8888 can be changed to whatever you prefer. 
       Example: If set to "38888" the Web-UI will be accessible on port 38888 (http://server_ip:38888).
-
+      
 <img className={"screenshot"} src={require('/img/synology-container-ports.jpg').default} />
 
   3. Configure container environment
@@ -34,6 +34,35 @@ id: synology
 
 Finish setting up the container and run for the first time. Check if everything's running properly.
 
+### How to Find UID and GID on Synology without using SSH
+1. Go to Control Panel -> Task Scheduler -> Create -> Triggered Task -> User-defined script
+2. In General type the name of the task "id" in Task: field
+3. Check out "Enabled" checkbox. This task will only run manually when needed.
+
+![image](https://user-images.githubusercontent.com/17689978/211188001-72178f70-3425-4d38-a6e2-4bc778ff21d2.png)
+
+4. In Task Settings type "id" (make sure to use only lowercase)
+
+![image](https://user-images.githubusercontent.com/17689978/211188203-a1ebb961-a4ea-4202-9e40-da9d55e75e60.png)
+
+5. Click Ok button.
+6. Go to Control Panel -> Task Scheduler -> Settings. 
+7. Check "Save output results" and select a foleder where to save results in "Save To" field and click "Ok" button.
+
+![image](https://user-images.githubusercontent.com/17689978/211188445-016334ca-a4a3-4591-b525-148b2a59a460.png)
+
+8. Run "id" task.
+
+![image](https://user-images.githubusercontent.com/17689978/211188540-79c4be04-e60b-4aa2-a1e9-cafc89194db1.png)
+
+9. Open File Station, navigate to folder selected to save results, there should be a folder (name of the folder will match the task name) with a output.log file containing both UID and GID.
+
+![image](https://user-images.githubusercontent.com/17689978/211188609-cb59fb23-3e1e-470c-b022-79c742b9c37b.png)
+
+Optional: 
+
+10. Go to Control Panel -> Task Scheduler -> Settings. 
+11. Check out "Save output results" unless you want to continue to save task results.
 
 ## Some optional configuration steps:
 
@@ -58,3 +87,7 @@ In the freshly downloaded .json file add the following text as shown in the pict
 Import the modified .json file to your Synology NAS Docker Station and run the container.
 
 Your Unmanic container should now be able to use HW-Acceleration with any supported Plugins.
+
+
+
+
