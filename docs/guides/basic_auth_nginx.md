@@ -19,14 +19,18 @@ sudo apt install nginx apache2-utils
 ## Password File
 
 We will be creating a password file under the path `/etc/apache2/.htpasswd`  
-To create the file and a first user run this command. **This overwrites an existing file in that path**  
+To create the file and a first user run this command.  
 You will be prompted to enter a password.
+
+:::caution
+If a file already exists in that path it will be overwritten!  
+:::
 
 ```sh
 sudo htpasswd -c /etc/apache2/.htpasswd [USER]
 ```
 
-If you want to add more users to the same file, remove the `-c` option.
+If you want to add more users to the same file, use the command without the `-c` option.
 
 ```sh
 sudo htpasswd /etc/apache2/.htpasswd [USER]
@@ -41,7 +45,7 @@ The permissions on the .htpasswd file should look something like this:
 ## Nginx Config
 
 Now we'll be going over the nginx config.  
-On Debian site configurations go into `/etc/nginx/sites-available/`  
+On Debian, site configurations go into `/etc/nginx/sites-available/`  
 Create a new file under that directory
 
 Open the file in your preferred editor and insert the following content:
@@ -56,11 +60,11 @@ server {
     add_header X-Content-Type-Options "nosniff";
 
 
-    client_max_body_size [YOUR MAX SIZE];
+    client_max_body_size [MAX FILE SIZE];
 
     location / {
         # Proxy main traffic
-        proxy_pass http://[UNMANIC HOST];
+        proxy_pass http://[UNMANIC IP];
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -88,10 +92,10 @@ server {
 
 You'll have to change some of the settings from the file above to fit your setup.
 
-1. server_name: If available, set this to your domain name. Otherwise you can remove this line
+1. server_name: If available, set this to your domain name. You can remove this line if you don't use a domain.
 2. client_max_body_size: Only necessary for linked installations. Set this value higher than the largest video file you want to transcode. **If this value is too small, files won't be transferred and fail to transcode**
    You can enter a value like `50G` for 50 GBs or completely disable this check with `client_max_body_size 0;`
-3. proxy_pass: If you run Nginx and Unmanic on the same server with default settings this will be `http://127.0.0.1:8888`. Otherwise change the ip address and port number to match with your setup
+3. proxy_pass: If you run Nginx and Unmanic on the same server with default settings this will be `http://127.0.0.1:8888`. Else, change the ip address and port number to match with your setup
 4. auth_basic_user_file: Insert the path of your "htpasswd" File. If you followed this guide, it should be `/etc/apache2/.htpasswd`
 
 Optionally, you can also set up SSL certificates and uncomment the `listen *:443 ssl http2;` and the two below. Modify them to point to your certificate file and key and make sure to remove the `listen *:80;` above.
@@ -116,4 +120,4 @@ Reload Nginx to install the new configuration file
 sudo systemctl reload nginx
 ```
 
-If everything went well, you should be seeing a login prompt now if you try to access your server through the webbrowser.
+If everything went well, you should be seeing a login prompt now if you try to access your server through the web browser.
