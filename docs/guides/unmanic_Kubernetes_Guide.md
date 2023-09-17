@@ -94,6 +94,67 @@ To start the deployment and service, run the following command: `kubectl create 
 
 To delete the deployment and service, run the following command: `kubectl delete -f unmanic.yaml`
 
+## Running Unmanic Rootless
+
+In kubernetes you can run containers as non root, doing so will allow you to harden the system for outside/inside threats.
+Use securityContext to set the user to be used by the app, make sure your library storage is also set to the same uid/gid as you specify here.
+
+To not run the s6-overlay(which needs root) add ``command: ["/usr/local/bin/unmanic-service"]``.
+
+Specify as a env the home location which is supposed to be set to the config volume location.
+
+
+Use only as reference
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unmanic
+  labels:
+    app: unmanic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unmanic
+  template:
+    metadata:
+      labels:
+        app: unmanic
+    spec:
+      securityContext:
+        runAsUser: 568 # in this case i will be using user 568, change how you like
+        runAsGroup: 568
+        fsGroup: 568
+      containers:
+      - name: unmanic
+        image: josh5/unmanic:latest
+        command: ["/usr/local/bin/unmanic-service"] # Hard requirement for running rootless
+        ports:
+        - containerPort: 8888
+          protocol: TCP
+          name: http
+        env:
+        - name: HOME # Hard requirement for running rootless
+          value: "/config" 
+        volumeMounts:
+        - name: unmanic-config
+          mountPath: /config
+        - name: media
+          mountPath: /media
+      volumes:
+        - name: unmanic-config
+          persistentVolumeClaim:
+            claimName: unmanic-rbd # In this example I am using a persistentvolume claim, change as you see fit
+        - name: media
+          nfs:
+            server: IP
+            path: /path/to/export/folder
+```
+
+Its possible that not all plugins will work.
+Tested with: Transcode Video Files and File Size Metrics Data Panel
+
 ## Tuning Kubernetes Unmanic Configuration
 
 Note that the following values should be tuned based on need:
