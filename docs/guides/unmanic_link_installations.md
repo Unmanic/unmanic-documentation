@@ -60,7 +60,7 @@ For the purposes of this exercise, our objective now is to ensure all work is se
 - Add a tag to the library on `main`. We'll use the string "work" with no quotes. Remember to hit the Enter key after typing the string or the tag won't persist.
 - Add the same tag to the library on `remote`.
 - Add the same tag to the worker on `remote`.
-- Ensure this tag is not present on `remote's` worker.
+- Ensure this tag is not present on `main's` worker.
 
 With this setup in place, the work flow operates as follows:
 - The library on `main` will be used to initiate all pending task (based on scans or file monitoring).
