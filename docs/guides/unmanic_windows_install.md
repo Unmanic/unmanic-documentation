@@ -208,3 +208,51 @@ Restart option will not resolve the issue.
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/quit_docker.png').default} />
 
 Restart Docker Desktop and restart Unmanic from the Ubuntu bash window.
+
+### 5) NVIDIA hardware acceleration for Unmanic on Windows
+
+With WSL2, and a recent NVIDIA GPU and driver you can access hardware acceleration on Windows. Pascal and later GPUs are supported with a minimum driver or R495.
+
+Install NVIDIA GeForce Game Ready or NVIDIA RTX Quadro Windows display driver on your system with a compatible GeForce or NVIDIA RTX/Quadro card from https://www.nvidia.com/Download/index.aspx. This is the only driver you need to install. Do not install any Linux display driver in WSL.
+
+Confirm that your NVIDIA GPU is accessible in WSL by running:
+
+``` docker run --rm --gpus all --entrypoint="" josh5/unmanic nvidia-smi```
+
+Update the Docker Engine settings to enable the NVIDIA container runtime:
+
+```
+{
+  "builder": {
+    "gc": {
+      "defaultKeepStorage": "20GB",
+      "enabled": true
+    }
+  },
+  "experimental": false,
+  "runtimes": {
+    "nvidia": {
+      "path": "/usr/bin/nvidia-container-runtime",
+      "runtimeArgs": []
+    }
+  }
+}
+```
+
+Update your start-unmanic.sh script to add the NVIDIA runtime and GPUs
+
+```
+# NVIDIA_VISIBLE_DEVICES - The GPUs that will be accessible to the container
+NVIDIA_VISIBLE_DEVICES=all
+
+docker run -ti --rm \
+    -e PUID=${PUID} \
+    -e PGID=${PGID} \
+    -e NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES} \
+    --runtime=nvidia \
+    -p 8888:8888 \
+    -v ${CONFIG_DIR}:/config \
+    -v ${LIBRARY_DIR}:/library \
+    -v ${CACHE_DIR}:/tmp/unmanic \
+    josh5/unmanic:latest
+```
