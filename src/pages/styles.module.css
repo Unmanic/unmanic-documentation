@@ -7,15 +7,28 @@
 
 .heroBanner {
   padding: 4rem 0;
+  max-width: 1000px;
+  height: 60vh;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
+.heroTitle {
+  font-size: 56px;
+}
+.heroBlurb {
+  font-size: 18px;
+  color: var(--ifm-color-grey);
+  margin-bottom: 2rem;
+}
 
-@media screen and (max-width: 966px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.pageContainer {
+}
+.pageContent {
+  margin: 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .buttons {
@@ -23,7 +36,20 @@
   align-items: center;
   justify-content: center;
 }
-
+.getStarted {
+  padding: 10px 100px;
+  background-color: var(--ifm-color-primary);
+  border-radius: 25px;
+  color: rgba(255, 255, 255, 0.95);
+  transition: ease-in-out 0.2s;
+  font-weight: 600;
+}
+.getStarted:hover {
+  color: white;
+  text-decoration: none;
+  box-shadow: none;
+  box-shadow: 1px 4px 15px #007eaf88;
+}
 .features {
   display: flex;
   align-items: center;
@@ -34,4 +60,16 @@
 .featureImage {
   height: 200px;
   width: 200px;
+}
+
+@media screen and (max-width: 820px) {
+  .pageContent {
+    margin: 2rem;
+  }
+  .heroBanner {
+    padding: 2rem 0;
+  }
+  .heroTitle {
+    font-size: 42px;
+  }
 }
