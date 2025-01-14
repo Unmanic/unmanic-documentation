@@ -12,6 +12,35 @@ import "slick-carousel/slick/slick-theme.css";
 // Import React video player
 import ReactPlayer from "react-player";
 
+const quickLinks = [
+  {
+    title: "What is Unmanic?",
+    description: (
+      <>
+        Unmanic gives you the power to automate the management of any file
+        library
+      </>
+    ),
+    link: "https://docs.unmanic.app/docs/",
+  },
+  {
+    title: "Get Started",
+    description: (
+      <>Unmanic's basic features can be configured in under 2 minutes</>
+    ),
+    link: "https://docs.unmanic.app/docs/requirements",
+  },
+  {
+    title: "Unmanic Central",
+    description: <>Get real time analytics from your Unmanic instances</>,
+  },
+  {
+    title: "GitHub Repository",
+    description: <>Check out the source code on the Unmanic Github</>,
+    link: "https://github.com/Unmanic",
+  },
+];
+
 const features = [
   {
     title: "Quick to configure",
@@ -63,6 +92,15 @@ const features = [
     description: <>Unmanic's code is released opensource under GPL v3.</>,
   },
 ];
+
+function QuickLink({ title, description, link }) {
+  return (
+    <a href={link} className={styles.quickLink}>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </a>
+  );
+}
 
 function Feature({ imageUrl, title, description }) {
   const imgUrl = useBaseUrl(imageUrl);
@@ -147,6 +185,15 @@ export default function Home() {
             </div>
           </header>
           <main>
+            {/* Quick Links Section */}
+            {quickLinks && quickLinks.length > 0 && (
+              <section className={styles.quickLinksContainer}>
+                {quickLinks.map((props, idx) => (
+                  <QuickLink key={idx} {...props} />
+                ))}
+              </section>
+            )}
+
             {features && features.length > 0 && (
               <section className={styles.features}>
                 <div className="container">

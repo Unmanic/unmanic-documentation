@@ -8,10 +8,11 @@
 .heroBanner {
   padding: 4rem 0;
   max-width: 1000px;
-  height: 60vh;
+  /* height: 60vh; */
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* margin-bottom: 12rem; */
 }
 .heroTitle {
   font-size: 56px;
@@ -23,12 +24,14 @@
 }
 
 .pageContainer {
-}
-.pageContent {
-  margin: 2rem 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 2rem 4rem;
+}
+.pageContent {
+  width: 100%;
+  max-width: 1100px;
 }
 
 .buttons {
@@ -40,16 +43,43 @@
   padding: 10px 100px;
   background-color: var(--ifm-color-primary);
   border-radius: 25px;
-  color: rgba(255, 255, 255, 0.95);
   transition: ease-in-out 0.2s;
   font-weight: 600;
+  color: white;
 }
 .getStarted:hover {
-  color: white;
   text-decoration: none;
   box-shadow: none;
+  color: white;
   box-shadow: 1px 4px 15px #007eaf88;
 }
+
+.quickLinksContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  width: 100%;
+  margin: 8rem 0;
+}
+
+.quickLink {
+  background-color: #71717a10;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #71717a21;
+  color: var(--ifm-hero-text-color);
+  transition: ease-in-out 0.1s;
+}
+.quickLink p {
+  color: var(--ifm-hero-text-color);
+}
+.quickLink:hover {
+  background-color: transparent;
+  text-decoration: none;
+  border: 1px solid #71717a41;
+  box-shadow: 1px 4px 10px #71717a1a;
+}
+
 .features {
   display: flex;
   align-items: center;
@@ -62,14 +92,35 @@
   width: 200px;
 }
 
+@media screen and (max-width: 975px) {
+  .quickLinksContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media screen and (max-width: 820px) {
-  .pageContent {
-    margin: 2rem;
+  .pageContainer {
+    margin: 0 2rem;
   }
   .heroBanner {
     padding: 2rem 0;
   }
   .heroTitle {
     font-size: 42px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .quickLinksContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 355px) {
+  .getStarted {
+    padding: 10px 75px;
+  }
+  .heroTitle {
+    font-size: 36px;
   }
 }
