@@ -21,19 +21,20 @@ const quickLinks = [
         library
       </>
     ),
-    link: "https://docs.unmanic.app/docs/",
+    link: "/docs/",
   },
   {
     title: "Get Started",
     description: (
       <>Unmanic's basic features can be configured in under 2 minutes</>
     ),
-    link: "https://docs.unmanic.app/docs/requirements",
+    link: "/docs/requirements",
   },
-  {
-    title: "Unmanic Central",
-    description: <>Get real time analytics from your Unmanic instances</>,
-  },
+  // {
+  //   title: "Unmanic Central",
+  //   description: <>Get real time analytics from your Unmanic instances</>,
+  //   link: "",
+  // },
   {
     title: "GitHub Repository",
     description: <>Check out the source code on the Unmanic Github</>,
@@ -43,7 +44,24 @@ const quickLinks = [
 
 const features = [
   {
-    title: "Quick to configure",
+    title: "Save File Space",
+    imageUrl: "img/configure.png",
+    description: (
+      <>Unmanic can allow you to free up petabytes of storage space</>
+    ),
+  },
+  {
+    title: "Set and Forget",
+    imageUrl: "img/configure.png",
+    description: (
+      <>
+        Unmanic can run in the background, so you do not need to manually set
+        tasks or actively monitor
+      </>
+    ),
+  },
+  {
+    title: "Quick to Setup",
     imageUrl: "img/configure.png",
     description: (
       <>
@@ -59,18 +77,9 @@ const features = [
       <>Unmanic has been designed to be simple to install and easy to use.</>
     ),
   },
+
   {
-    title: "Powerful for advanced users",
-    imageUrl: "img/advanced-settings.png",
-    description: (
-      <>
-        Unmanic has been built with advanced features that allow more advanced
-        users to dial in their library optimisation.
-      </>
-    ),
-  },
-  {
-    title: "Multi-tasking",
+    title: "Multi-Tasking",
     imageUrl: "img/multi-tasking.svg",
     description: (
       <>Unmanic can manage multiple file conversion tasks at a time.</>
@@ -83,6 +92,16 @@ const features = [
       <>
         Unmanic is fully extensible. You have the ability to write any Plugin to
         run any task.
+      </>
+    ),
+  },
+  {
+    title: "Powerful for Advanced Users",
+    imageUrl: "img/advanced-settings.png",
+    description: (
+      <>
+        Unmanic has been built with advanced features that allow more advanced
+        users to dial in their library optimisation.
       </>
     ),
   },
@@ -105,14 +124,16 @@ function QuickLink({ title, description, link }) {
 function Feature({ imageUrl, title, description }) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
-    <div className={clsx("col col--4", styles.feature)}>
+    <div className={styles.feature}>
       {imgUrl && (
-        <div className="text--center">
-          <img className={styles.featureImage} src={imgUrl} alt={title} />
+        <div className={styles.featureImgContainer}>
+          <img className={styles.featureImg} src={imgUrl} alt={title} />
         </div>
       )}
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <div>
+        <h3>{title}</h3>
+        <p>{description}</p>
+      </div>
     </div>
   );
 }
@@ -166,15 +187,14 @@ export default function Home() {
         <div className={styles.pageContent}>
           <header className={styles.heroBanner}>
             <div className={styles.container}>
-              <div className="margin-bottom--lg">
+              <div>
                 <h1 className={styles.heroTitle}>
                   The Ultimate Library Optimiser Tool
                 </h1>
                 <p className={styles.heroBlurb}>
-                  Unmanic gives you the power to automate the management of any
-                  file library through the use of customised modular task flows
-                  to suit your specific needs, giving you the ultimate, simple
-                  to configure, set-and-forget library optimisation tool.
+                  Unmanic gives you the power to automate the management of your
+                  file library. Easily organise, convert, and manage files to
+                  suit your needs
                 </p>
                 <div className={styles.buttons}>
                   <Link className={styles.getStarted} to={useBaseUrl("docs/")}>
@@ -194,17 +214,17 @@ export default function Home() {
               </section>
             )}
 
-            {features && features.length > 0 && (
-              <section className={styles.features}>
-                <div className="container">
-                  <div className="row">
-                    {features.map((props, idx) => (
-                      <Feature key={idx} {...props} />
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
+            {/* Features Section */}
+            <div className={styles.featuresContainer}>
+              <h2>Why use Unmanic?</h2>
+              {features && features.length > 0 && (
+                <section className={styles.featuresWrapper}>
+                  {features.map((props, idx) => (
+                    <Feature key={idx} {...props} />
+                  ))}
+                </section>
+              )}
+            </div>
           </main>
         </div>
       </div>
