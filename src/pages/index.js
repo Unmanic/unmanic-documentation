@@ -45,14 +45,14 @@ const quickLinks = [
 const features = [
   {
     title: "Save File Space",
-    imageUrl: "img/configure.png",
+    imageUrl: "img/save-file-space-icon.png",
     description: (
       <>Unmanic can allow you to free up petabytes of storage space</>
     ),
   },
   {
     title: "Set and Forget",
-    imageUrl: "img/configure.png",
+    imageUrl: "img/set-and-forget-icon.png",
     description: (
       <>
         Unmanic can run in the background, so you do not need to manually set
