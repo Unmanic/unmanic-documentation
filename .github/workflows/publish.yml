@@ -36,8 +36,8 @@ jobs:
         run: npm run build
 
   Deploy:
-    runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
     steps:
       # Checkout
       - name: Checkout

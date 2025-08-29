@@ -45,44 +45,23 @@ Ensure that the repository is forked into your account.
 ---
 
 
-### Configure a GitHub Token
+### Cleanup branches
 
-We will rely on [GitHub Actions](https://github.com/features/actions) to test, build, commit and push our repo to the "*repo*" branch of this git repository.
+You need to rename the default branch to *master* or *main* on your GitHub Fork. If you don't do this, then the GitHub actions will not publish the plugins.
 
-In order for GitHub Action workflow to do this, we need to add a secret variable to our repo that contains a authorisation token for our GitHub account.
+To do this, open your GitHub fork in a browser and navigate to the branches screen.
 
-Follow the guide provided [here](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-to generate a personal access token. Note down that token as once you have generated it, you cannot see it again.
+<img className={"screenshot"} src={require('/img/unmanic-plugins-show-branches-git-repo-fork.png').default} />
 
-You will need to create a personal access token authorised for the following things:
+Select the **Rename Branch** button.
 
-- repo (Full control of private repositories)
-  - repo:status
-  - repo_deployment
-  - public_repo
-  - repo:invite
-  - security_events
+<img className={"screenshot"} src={require('/img/unmanic-plugins-show-branches-git-repo-fork-rename-examples.png').default} />
 
-<img className={"screenshot"} src={require('/img/github-generating-pat.png').default} />
+Rename the to either **master** or **main**. Select the *Master* branch. Then click **Update**.
 
-:::warning
-These tokens are sensitive and contain the ability to access/modify your GitHub account. 
-Don't go sharing this information with anyone.
-:::
+<img className={"screenshot"} src={require('/img/unmanic-plugins-rename-branch-git-repo-fork.png').default} />
 
-Once you have done that, open the settings tab on your fork repo.
-
-<img className={"screenshot"} src={require('/img/unmanic-plugins-settings-tab-git-repo-fork.png').default} />
-
-Then select **Secrets** and then **New repository secret**
-
-<img className={"screenshot"} src={require('/img/unmanic-plugins-add-repo-secret-git-repo-fork.png').default} />
-
-Enter the name as "**GH_TOKEN**" and then enter the value as the token you created following the steps in the link above.
-
-<img className={"screenshot"} src={require('/img/unmanic-plugins-add-repo-secret-git-repo-fork-2.png').default} />
-
-Click the **Add secret** button.
+Click the green "**Rename Branch.**" button.
 
 ---
 
@@ -102,34 +81,6 @@ cd unmanic-plugins
 ---
 
 
-### Checkout the template
-
-Start by checking out the *template* branch. This branch contains the basic setup required to get started...
-
-```
-git checkout template
-```
-
-Create a new branch called *master* from the template branch
-
-```
-git checkout -b master
-```
-
-If this is the first time you have cloned this branch it is recommended to push at this point.
-
-:::warning
-Only carry out this step if you have not pushed to *master* before.
-This will overwrite anything that already exists in your remote *master* branch.
-:::
-
-```
-git push -f origin master
-```
-
----
-
-
 ### Adding Plugin source to repo
 
 All Plugin source files are added under the `source` directory.
@@ -138,27 +89,6 @@ These should be added under a directory named the same as the Plugin ID.
 Add the files to your source directory and commit.
 
 <img className={"screenshot"} src={require('/img/unmanic-plugins-commit-plugin-to-git-repo-fork.png').default} />
-
----
-
-
-### Cleanup branches
-
-You need to set your *master* branch as the default branch on your GitHub Fork.
-
-To do this, open your GitHub fork in a browser and navigate to the branches screen.
-
-<img className={"screenshot"} src={require('/img/unmanic-plugins-show-branches-git-repo-fork.png').default} />
-
-Select the **Switch default branch** button.
-
-<img className={"screenshot"} src={require('/img/unmanic-plugins-switch-default-branch-git-repo-fork-1.png').default} />
-
-Select the **Switch to another branch** button. Select the *Master* branch. Then click **Update**.
-
-<img className={"screenshot"} src={require('/img/unmanic-plugins-switch-default-branch-git-repo-fork-2.png').default} />
-
-Click the "*I understand, update the default branch.*" button.
 
 ---
 
