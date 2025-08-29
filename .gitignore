@@ -1,4 +1,5 @@
 # Dependencies
+/.cache
 /node_modules
 
 # Production

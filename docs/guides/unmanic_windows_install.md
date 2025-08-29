@@ -8,7 +8,6 @@ id: unmanic_windows_install
 ![Setup Time](https://img.shields.io/badge/Setup%20Time-30%20minutes-orange?style=flat)
 [![Original Author](https://img.shields.io/badge/Original%20Author-austinsr1-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/austinsr1)
 
-
 ## Requirements
 
 :::note
@@ -22,17 +21,16 @@ This requires Windows 10, Version 1903, Build 18362 or higher.
 To check this, press windows key R.
 
 In the run dialog, type:
+
 ```
 winver
 ```
+
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/winver_run.png').default} />
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/winver.png').default} />
 
-
-If you are not running Version 1903, Build 18362 or higher, you can
-download the Windows Update Assistant from Microsoft.
-<https://www.microsoft.com/en-us/software-download/windows10> . This
-will update your system to the newest Windows 10 version.
+If you are not running Version 1903, Build 18362 or higher, you can download the Windows Update Assistant from Microsoft [Microsoft](https://www.microsoft.com/en-us/software-download/windows10).
+This will update your system to the newest Windows 10 version.
 
 ## Instructions
 
@@ -43,10 +41,12 @@ As an administrator account, open a cmd window by pressing windows key R
 
 In the run dialog, enter the command, cmd and click ok. Enter the
 following command in the cmd window:
+
 ```
 wsl --install -d Ubuntu
 ```
-Once the command has finished, reboot your computer. 
+
+Once the command has finished, reboot your computer.
 
 After rebooting, the Ubuntu install will continue. This will take a few
 minutes. Do not close the Ubuntu dialog box while it is installing.
@@ -56,10 +56,10 @@ You will eventually see a prompt to Enter new UNIX username: prompt.
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/username.png').default} />
 
 Select a username and press enter. It will now prompt for a "New
-password". Enter a password and press enter. 
+password". Enter a password and press enter.
 
-It will then ask you to "Retype new password". Verify your password and press enter. 
-You will now be at a bash prompt. If at any point, you close the Ubuntu bash window, 
+It will then ask you to "Retype new password". Verify your password and press enter.
+You will now be at a bash prompt. If at any point, you close the Ubuntu bash window,
 you can re-open it by pressing windows key R and typing: bash then press ok.
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/run_bash.png').default} />
 
@@ -73,10 +73,12 @@ sudo command. This will prompt for the password that you set earlier.
 As an example, we will use the Windows drive letter Y for the location
 of our library.
 
-In your Ubuntu bash window, type: 
+In your Ubuntu bash window, type:
+
 ```
 sudo mkdir /library
-``` 
+```
+
 This will create a local mount point where Unmanic will be able to see your media.
 
 Next, we will want to make sure this drive will be mounted after
@@ -90,17 +92,20 @@ Next, we will add the drive entry to the fstab file.
 With the following command, we will want to leave the quotes in place.
 Replace Y with the drive letter of your mounted library.
 
-From your Ubuntu bash window, type: 
+From your Ubuntu bash window, type:
+
 ```
 echo "Y: /library drvfs defaults 0 0" >> /etc/fstab
 ```
 
-Next, we will need to mount the drive. From the Ubuntu bash window, type: 
+Next, we will need to mount the drive. From the Ubuntu bash window, type:
+
 ```
 mount -a
 ```
 
 To verify the drive is now mounted, type:
+
 ```
 df -h
 ```
@@ -113,8 +118,7 @@ The drive will be shown somewhere in the listed entries.
 
 Next we will install Docker for Windows.
 
-Docker for Windows can be found at
-<https://docs.docker.com/desktop/windows/install/>
+Docker for Windows can be found [here](https://docs.docker.com/desktop/windows/install/).
 
 Once the Docker Desktop Installer has been downloaded, run the
 installer.
@@ -148,18 +152,19 @@ Click Apply & Restart.
 Next we will install the Unmanic docker container.
 
 Open the Ubuntu bash window and type:
+
 ```
 sudo docker pull josh5/unmanic
 ```
 
-Finally, we will go to the Unmanic documentation page to get the shell
-script that will pass all the required flags to Unmanic.
-<https://docs.unmanic.app/docs/installation/docker>
+Finally, we will go to the [Unmanic documentation page](https://docs.unmanic.app/docs/installation/docker) to get the shell script that will pass all the required flags to Unmanic.
 
 In the Ubuntu bash window, type:
+
 ```
 sudo nano -w /usr/local/bin/start-unmanic.sh
 ```
+
 This will open the text editor nano.
 
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/new_nano.png').default} />
@@ -176,12 +181,14 @@ and press enter to save and exit.
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/save_nano.png').default} />
 
 Next, we will set the shell script to be executable. In the Ubuntu bash
-window, type: 
+window, type:
+
 ```
 sudo chmod 755 /usr/local/bin/start-unmanic.sh
 ```
 
-Finally, in the Ubuntu bash window, type: 
+Finally, in the Ubuntu bash window, type:
+
 ```
 sudo start-unmanic.sh
 ```
@@ -192,7 +199,7 @@ Click the Allow access button.
 <img className={"screenshot"} src={require('/img/guides/unmanic_windows_install_images/windows_security_alert.png').default} />
 
 Unmanic is now running in Docker. To access Unmanic, open a web browser
-window to <http://localhost:8888>
+window to `http://localhost:8888`
 
 ### 4) Troubleshooting common issues
 
@@ -217,7 +224,7 @@ Install NVIDIA GeForce Game Ready or NVIDIA RTX Quadro Windows display driver on
 
 Confirm that your NVIDIA GPU is accessible in WSL by running:
 
-``` docker run --rm --gpus all --entrypoint="" josh5/unmanic nvidia-smi```
+` docker run --rm --gpus all --entrypoint="" josh5/unmanic nvidia-smi`
 
 Update the Docker Engine settings to enable the NVIDIA container runtime:
 

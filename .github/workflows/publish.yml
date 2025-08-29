@@ -2,12 +2,12 @@ name: Build and Release
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ['master']
     paths-ignore:
-      - ".github/**"
-      - "!.github/workflows/**"
+      - '.github/**'
+      - '!.github/workflows/**'
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   Test-Build:
@@ -17,21 +17,23 @@ jobs:
       # Checkout
       - name: Checkout
         uses: actions/checkout@v3
+
       # Setup NodeJS
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: yarn
+          node-version: 22
+          cache: '.cache/npm'
+          cache-dependency-path: package-lock.json
+
       # Install
       - name: Install
         id: install-step
-        run: |
-          yarn install --frozen-lockfile
+        run: npm ci --cache .cache/npm --prefer-offline
+
       # Build
       - name: Build
         id: build-step
-        run: |
-          yarn build
+        run: npm run build
 
   Deploy:
     runs-on: ubuntu-20.04
@@ -40,24 +42,27 @@ jobs:
       # Checkout
       - name: Checkout
         uses: actions/checkout@v3
+
       # Setup NodeJS
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: yarn
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
       # Install
       - name: Install
         id: install-step
-        run: |
-          yarn install --frozen-lockfile
+        run: npm ci --cache .cache/npm --prefer-offline
+
       # Build
       - name: Build
         id: build-step
-        run: |
-          yarn build
+        run: npm run build
+
       # Publish
       - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e #v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
