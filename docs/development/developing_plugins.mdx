@@ -5,9 +5,8 @@ id: developing_plugins
 ---
 
 Users are able to [develop their own Plugins](/docs/development/writing_plugins/introduction)
-and either host them within their own repo or submit them to be included into the 
+and either host them within their own repo or submit them to be included into the
 [official repository](https://github.com/Unmanic/unmanic-plugins/tree/official).
-
 
 ## More in-depth look at what a Plugin is
 
@@ -18,44 +17,48 @@ At these specific stages of the library optimisation process, Unmanic will call
 each enabled Plugin in turn and then, upon completion of the Plugin execution,
 Unmanic will continue with subsequent process for that stage.
 
-During a call to a Plugin, said plugin will be given a set of data pertaining to the state 
-of a task or the information regarding the process about to be carried out. 
+During a call to a Plugin, said plugin will be given a set of data pertaining to the state
+of a task or the information regarding the process about to be carried out.
 A Plugin may use this data to:
 
-  - Manipulate the subsequent process.
-  - Use that data to carry out functions outside of the scope of the Unmanic application.
+- Manipulate the subsequent process.
+- Use that data to carry out functions outside of the scope of the Unmanic application.
 
 A Plugin may be written such that it is executed at multiple stages of the library
 optimisation process. However, it is best practice ensuring that a Plugin is designed to carry out
 only a single task.
 
-
 ## Types of Plugins
 
 The current list of supported types:
 
-| Type                         | Stage              | Documentation                                                  |
-|------------------------------|--------------------|----------------------------------------------------------------|
-| File test                    | Library Management | [LINK](/docs/development/writing_plugins/plugin_runner_types#library-management---file-test) |
-| Processing file              | Worker             | [LINK](/docs/development/writing_plugins/plugin_runner_types#worker---processing-file) |
-| File movements               | Post-processor     | [LINK](/docs/development/writing_plugins/plugin_runner_types#post-processor---file-movements) |
-| Marking task success/failure | Post-processor     | [LINK](/docs/development/writing_plugins/plugin_runner_types#post-processor---marking-task-successfailure) |
-
+| Type                         | Stage              | Documentation                                                                         |
+| ---------------------------- | ------------------ | ------------------------------------------------------------------------------------- |
+| File test                    | Library Management | [LINK](/docs/development/writing_plugins/plugin_runner_types#file-test)               |
+| Processing file              | Worker             | [LINK](/docs/development/writing_plugins/plugin_runner_types#process-file)            |
+| File movements               | Post-processor     | [LINK](/docs/development/writing_plugins/plugin_runner_types#file-movement)           |
+| Marking task success/failure | Post-processor     | [LINK](/docs/development/writing_plugins/plugin_runner_types#task-result)             |
+| Data Panel                   | Frontend           | [LINK](/docs/development/writing_plugins/plugin_runner_types#data-panel)              |
+| Plugin API                   | Frontend           | [LINK](/docs/development/writing_plugins/plugin_runner_types#plugin-api)              |
+| File queued                  | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#file-queued)             |
+| Task queued                  | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#task-queued)             |
+| Task scheduled               | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#task-scheduled)          |
+| Worker process started       | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#worker-process-started)  |
+| Worker process complete      | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#worker-process-complete) |
+| Postprocessor started        | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#postprocessor-started)   |
+| Postprocessor complete       | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#postprocessor-complete)  |
+| Scan complete                | Events             | [LINK](/docs/development/writing_plugins/plugin_runner_types#scan-complete)           |
 
 ## Plugins repositories
 
 Unmanic hosts an official repository of plugins for Unmanic.
 
-This is hosted on [GitHub](https://github.com/Unmanic/unmanic-plugins/tree/official) under the "*official*" branch.
+This is hosted on [GitHub](https://github.com/Unmanic/unmanic-plugins/tree/official) under the "_official_" branch.
 
 Anyone is able to provide Pull Request to update existing plugins or add new plugins to this repository.
 Any additions will be vetted and tested to ensure they uphold the standard expected of official plugins.
 
 If you wish to create your own repository to host or develop your own plugins, follow the guide here:
 
-* [Creating Your Own Repository](/docs/development/plugin_repos/creating_your_own_repo)
-* [Adding a Custom Repository to Unmanic](/docs/configuration/plugins/adding_a_custom_plugin_repo)
-
-
-
-
+- [Creating Your Own Repository](/docs/development/plugin_repos/creating_your_own_repo)
+- [Adding a Custom Repository to Unmanic](/docs/configuration/plugins/adding_a_custom_plugin_repo)

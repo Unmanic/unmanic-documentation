@@ -2,41 +2,49 @@
 title: Plugin Runners
 id: plugin_runner_types
 ---
-import TOCInline from '@theme/TOCInline';
 
+import TOCInline from "@theme/TOCInline";
 
-This page outlines the various Plugin types and their 
+This page outlines the various Plugin types and their
 [**runners**](/docs/development/writing_plugins/introduction#runners).
-
 
 <TOCInline toc={toc} />
 
 ---
 
+## Library Management
 
-## Library Management - File test
+Library Management plugins run during scans and file tests. Use them to **decide what should be processed** (queue/skip), adjust priority, or annotate reasons to ignore a file. They shape the workload **before** any heavy processing occurs and can share small snippets of context for later runners.
 
-##### Executed:
+### File Test
+
+#### Details:
+
+This runner is best for adding or overriding file tests during library scans or file watch events. It allows you to decide if a file should enter the queue, adjust its priority, or append reasons why it should be skipped.
+
+#### Executed:
+
 After Unmanic carries out tests on a file to determine if it should be added to the task queue. Prior to returning a result of said tests.
 
-##### Function:
+#### Function:
+
 `on_library_management_file_test(data)`
 
-##### Provided data:
-  - **`library_id`** *[integer]* - The library that the current task is associated with
-  - **`path`** *[string]* - String containing the full path to the file being tested.
-  - **`issues`** *[list]* - List of currently found issues for not processing the file.
-  - **`add_file_to_pending_tasks`** *[boolean]* - Boolean, is the file currently marked to be added to the queue for processing.
-  - **`priority_score`** *[integer]* - An additional score that can be added to set the position of the new task in the task queue.
-  - **`shared_info`** *[dictionary]* - Information provided by previous plugin runners. This can be appended to for subsequent runners.
+#### Provided data:
 
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`path`** _[string]_ - String containing the full path to the file being tested.
+- **`issues`** _[list]_ - List of currently found issues for not processing the file.
+- **`add_file_to_pending_tasks`** _[boolean]_ - Boolean, is the file currently marked to be added to the queue for processing.
+- **`priority_score`** _[integer]_ - Integer, an additional score that can be added to set the position of the new task in the task queue.
+- **`shared_info`** _[dictionary]_ - Dictionary, information provided by previous plugin runners. This can be appended to for subsequent runners.
 
-##### Example:
+#### Example:
 
 <details>
 <summary>plugin.py</summary>
 
-For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/custom_ffmpeg_process/plugin.py)
+For an up-to-date example, see the [Example Plugins Repo](https://github.com/Unmanic/unmanic-plugins/blob/examples/source/example_library_management_file_test/plugin.py)
 
 ```python
 import os
@@ -68,17 +76,14 @@ def on_library_management_file_test(data):
 
     return
 ```
+
 </details>
 
-
-##### Details:
-
-This Plugin runner should be used when you wish to create custom actions or tests to be carried
-out on a file during the file test triggered by either the Library scan or the Library event watcher.
-
+:::note
 When you fail a test, you should also update the `issues` list provided in the `data` dictionary.
 
 For example:
+
 ```python
 data['issues'].append({
     'id':      '<PLUGIN NAME>',
@@ -86,28 +91,41 @@ data['issues'].append({
 })
 ```
 
+:::
+
 ---
 
+## Worker
 
-## Worker - Processing file
+Worker plugins define **how the file is processed**. They typically build an `exec_command` for Unmanic to run, or use `PluginChildProcess` to execute Python work while streaming logs/progress to the UI. This family is the core of the pipeline where transcoding, muxing, probing, and other compute-heavy steps happen.
 
-##### Executed:
+### Process File
+
+#### Details:
+
+This runner configures how a worker processes a file. It is typically used to build or modify the command line for transcoding, inject custom logic, or use the `PluginChildProcess` helper to run Python code with live logs and progress updates. It’s ideal for handling the actual “work” stage of a task.
+
+#### Executed:
+
 Just prior to the execution of the command subprocess within an Unmanic Worker process.
 
-##### Function:
+#### Function:
+
 `on_worker_process(data)`
 
-##### Provided data:        
-  - **`worker_log`** *[list]* - The log lines that are being tailed by the frontend (can be empty).
-  - **`library_id`** *[integer]* - The library that the current task is associated with.
-  - **`exec_command`** *[list]* - A command that Unmanic should execute (can be empty).
-  - **`command_progress_parser`** *[callable]* - A function that Unmanic can use to parse the STDOUT of the command to collect progress stats (can be empty).
-  - **`file_in`** *[string]* - The source file to be processed by the command.
-  - **`file_out`** *[string]* - The destination that the command should output (can be the same as the *file_in* if necessary).
-  - **`original_file_path`** *[string]* - The absolute path to the original library file.
-  - **`repeat`** *[boolean]* - Sets if this runner should be executed again once completed with the same variables.
+#### Provided data:
 
-##### Example:
+- **`task_id`** _[integer]_ - A unique identifier of the task.
+- **`worker_log`** _[list]_ - The log lines that are being tailed by the frontend. Can be left empty.
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`exec_command`** _[list or string]_ - A subprocess command that Unmanic should execute. Can be left empty.
+- **`command_progress_parser`** _[callable or None]_ - Function, a function that Unmanic can use to parse the STDOUT of the command to collect progress stats. Can be empty.
+- **`file_in`** _[string]_ - String, the source file to be processed by the command.
+- **`file_out`** _[string]_ - String, the destination that the command should output (may be the same as the file_in if necessary).
+- **`original_file_path`** _[string]_ - String, the absolute path to the original file.
+- **`repeat`** _[boolean]_ - Boolean, should this runner be executed again once completed with the same variables.
+
+#### Example:
 
 <details>
 <summary>plugin.py</summary>
@@ -126,7 +144,7 @@ class Settings(PluginSettings):
 
     This class has a number of methods available to it for accessing these settings:
 
-        > get_setting(<key>)            - Fetch a single setting value. Or leave the 
+        > get_setting(<key>)            - Fetch a single setting value. Or leave the
                                         key argument empty and return the full dictionary.
         > set_setting(<key>, <value>)   - Set a singe setting value.
                                         Used by the Unmanic WebUI to save user settings.
@@ -144,6 +162,7 @@ def on_worker_process(data):
     Runner function - enables additional configured processing jobs during the worker stages of a task.
 
     The 'data' object argument includes:
+        task_id                 - Integer, unique identifier of the task.
         worker_log              - Array, the log lines that are being tailed by the frontend. Can be left empty.
         library_id              - Number, the library that the current task is associated with.
         exec_command            - Array, a subprocess command that Unmanic should execute. Can be empty.
@@ -168,40 +187,81 @@ def on_worker_process(data):
     if not settings.get_setting('Execute Command'):
         data['exec_command'] = False
 
-        
+
 
     return
 ```
+
 </details>
 
+###### Spawning your own child process
 
-##### Details:
+Instead of setting `exec_command`, a plugin may use the `PluginChildProcess`
+helper to perform complex or Python-only work in a separate process while still
+integrating with Unmanic’s log tail and progress reporting.
 
-This Plugin runner should be used for carrying any custom command execution stages.
-The runner itself is only required to configure the parameters of the command execution.
-The main Unmanic process will take the data dictionary returned from this runner and execute
-the command within it's own shell.
+```python
+from unmanic.libs.unplugins.child_process import PluginChildProcess
+
+proc = PluginChildProcess(plugin_id="<your_plugin_id>", data=data)
+
+def child_work(log_queue, prog_queue):
+    # Any Python code here
+    for i in range(10):
+        # emit a UI log line:
+        log_queue.put(f"step {i}/10 completed")
+        # emit progress 0–100:
+        prog_queue.put((i + 1) * 10)
+        time.sleep(1)
+
+# Runs child_work in its own process, returns True if exit code==0
+success = proc.run(child_work)
+```
+
+In this mode the `PluginChildProcess` helper:
+
+1. Spawns the child via `multiprocessing.Process`.
+2. Registers its PID & start time with the worker’s `default_progress_parser`.
+3. Drains `log_queue` → appends to `data["worker_log"]` for UI tail.
+4. Drains `prog_queue` → passes to `command_progress_parser(line_text)` to update the progress bar.
+5. Automatically unsets the child process PID on exit to reset all tracked subprocess metrics
+   in the Unmanic Worker (CPU, memory, progress, etc.).
+
+This approach is useful when you need more control than an external command, or when your
+plugin logic is entirely in Python but you still want progress feedback and log visibility
+in the Unmanic frontend.
 
 ---
 
+## Post-processor
 
-## Post-processor - File movements
+Post-processor plugins handle **what happens after processing**: moving/copying outputs, deciding whether to remove the source, and reacting to final success/failure. They’re perfect for **finalization and notifications**—publishing results, cleaning up, or triggering follow-up workflows once outcomes are known.
 
-##### Executed:
+### File movement
+
+#### Details:
+
+This runner is designed for controlling how completed cache files are moved or copied to their final destinations. It can be used to add extra copies, override default moves, or adjust cleanup behavior when handling finished outputs.
+
+#### Executed:
+
 Just prior to file copy operation from cached output file to source file's directory.
 
-##### Function:
+#### Function:
+
 `on_postprocessor_file_movement(data)`
 
-##### Provided data:
-  - **`source_data`** *[dictionary]* - Data pertaining to the original source file.
-  - **`remove_source_file`** *[boolean]* - Sets if Unmanic should remove the original source file after all copy operations are complete.
-  - **`copy_file`** *[boolean]* - Sets if Unmanic should run a copy operation with the returned data variables.
-  - **`file_in`** *[string]* - The converted cache file to be copied by the postprocessor.
-  - **`file_out`** *[string]* - The destination file that the file will be copied to.
-  - **`run_default_file_copy`** *[boolean]* - Whether Unmanic should perform the default file copy.
+#### Provided data:
 
-##### Example:
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`source_data`** _[dictionary]_ - Information about the source file for the task.
+- **`remove_source_file`** _[boolean]_ - If true, tells Unmanic to remove the original source file after all copy operations are complete. (default: 'True' if file name has changed)
+- **`copy_file`** _[boolean]_ - If true, tells Unmanic to run a copy operation with the returned data variables. (default: 'False')
+- **`file_in`** _[string]_ - The converted cache file to be copied by the postprocessor.
+- **`file_out`** _[string]_ - The destination file that the file will be copied to.
+- **`run_default_file_copy`** _[boolean]_ - If true, tells Unmanic to run the default post-process file movement. (default: 'True')
+
+#### Example:
 
 <details>
 <summary>plugin.py</summary>
@@ -214,12 +274,13 @@ def on_postprocessor_file_movement(data):
     Runner function - configures additional postprocessor file movements during the postprocessor stage of a task.
 
     The 'data' object argument includes:
-        source_data             - Dictionary containing data pertaining to the original source file ('abspath' and 'basename').
-        remove_source_file      - Boolean, should Unmanic remove the original source file after all copy operations are complete.
-        copy_file               - Boolean, should Unmanic run a copy operation with the returned data variables.
-        file_in                 - The converted cache file to be copied by the postprocessor.
-        file_out                - The destination file that the file will be copied to.
-        run_default_file_copy   - Whether Unmanic should perform the default file copy.
+        library_id              - Integer, the library that the current task is associated with.
+        source_data             - Dictionary, data pertaining to the original source file.
+        remove_source_file      - Boolean, should Unmanic remove the original source file after all copy operations are complete. (default: 'True' if file name has changed)
+        copy_file               - Boolean, should Unmanic run a copy operation with the returned data variables. (default: 'False')
+        file_in                 - String, the converted cache file to be copied by the postprocessor.
+        file_out                - String, the destination file that the file will be copied to.
+        run_default_file_copy   - Boolean, should Unmanic run the default post-process file movement. (default: 'True')
 
     :param data:
     :return:
@@ -227,12 +288,8 @@ def on_postprocessor_file_movement(data):
 
     return
 ```
+
 </details>
-
-
-##### Details:
-
-This Plugin runner should be used for executing additional file movements of a completed task.
 
 :::note
 
@@ -242,24 +299,34 @@ This Plugin runner is only executed on a successfully completed task.
 
 ---
 
+### Task Result
 
-## Post-processor - Marking task success/failure
+#### Details:
 
-##### Executed:
+This runner fires once a task has completed and provides the overall success or failure status. It’s useful for sending webhooks, writing to logs or databases, triggering notifications, or performing cleanup actions when tasks succeed or fail.
+
+#### Executed:
+
 Just prior to the task cache directory cleanup.
 
-##### Function:
+#### Function:
+
 `on_postprocessor_task_results(data)`
 
-##### Provided data:
-  - **`final_cache_path`** *[string]* - The path to the final cache file that was then used as the source for all destination files.
-  - **`library_id`** *[integer]* - The library that the current task is associated with.
-  - **`task_processing_success`** *[boolean]* - Specifies if all task processes complete successfully.
-  - **`file_move_processes_success`** *[boolean]* - Specifies if all postprocessor movement tasks complete successfully.
-  - **`destination_files`** *[list]* - All file paths created by postprocessor file movements.
-  - **`source_data`** *[dictionary]* - Data pertaining to the original source file.
+#### Provided data:
 
-##### Example:
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`task_id`** _[integer]_ - A unique identifier of the task.
+- **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
+- **`final_cache_path`** _[string]_ - The path to the final cache file that was then used as the source for all destination files.
+- **`task_processing_success`** _[boolean]_ - True if all task processes complete successfully.
+- **`file_move_processes_success`** _[boolean]_ - True if all postprocessor movement tasks complete successfully.
+- **`destination_files`** _[list]_ - List containing all file paths created by postprocessor file movements.
+- **`source_data`** _[dictionary]_ - Information about the source file for the task.
+- **`start_time`** _[float]_ - UNIX timestamp when the task began.
+- **`finish_time`** _[float]_ - UNIX timestamp when the task completed.
+
+#### Example:
 
 <details>
 <summary>plugin.py</summary>
@@ -272,39 +339,63 @@ def on_postprocessor_task_results(data):
     Runner function - provides a means for additional postprocessor functions based on the task success.
 
     The 'data' object argument includes:
-        final_cache_path                - The path to the final cache file that was then used as the source for all destination files.
         library_id                      - The library that the current task is associated with.
+        task_id                         - Integer, unique identifier of the task.
+        task_type                       - String, "local" or "remote".
+        final_cache_path                - The path to the final cache file that was then used as the source for all destination files.
         task_processing_success         - Boolean, did all task processes complete successfully.
         file_move_processes_success     - Boolean, did all postprocessor movement tasks complete successfully.
         destination_files               - List containing all file paths created by postprocessor file movements.
         source_data                     - Dictionary containing data pertaining to the original source file.
+        start_time                      - Float, UNIX timestamp when the task began.
+        finish_time                     - Float, UNIX timestamp when the task completed.
 
     :param data:
     :return:
     """
     return
 ```
+
 </details>
 
 ---
 
+## Frontend
 
-## Frontend - Data Panel
-*(since v0.1.0)*
+Frontend plugins extend the web UI and API.
+Use this family to build interactive experiences or glue code between Unmanic and other tools.
 
-##### Executed:
+### Data Panel
+
+#### Details:
+
+This runner provides a custom data panel displayed in the Unmanic web UI. It’s best used to present plugin-specific configuration, statistics, or interactive elements directly in the frontend.
+
+This is also useful for recording stats against your configured libraries.
+
+Pages will be served from `/unmanic/ui/data-panels?pluginId={plugin ID}`.
+
+Pages will be provided with a GET parameter either `?theme=light` or `?theme=dark` to assist with theme mapping with the main frontend.
+
+Static assets stored in the plugins [static](/docs/development/writing_plugins/introduction#directory-static-optional) directory will
+made available via the webserver at `/unmanic/panel/{plugin ID}/static/(.*)`
+
+#### Executed:
+
 From front-end URL
 
-##### Function:
+#### Function:
+
 `render_frontend_panel(data)`
 
-##### Provided data:
-- **`content_type`** *[string]* - The content type to be set when writing back to the browser.
-- **`content`** *[string]* - The content to print to the browser.
-- **`path`** *[string]* - The path received after the '/unmanic/panel' path.
-- **`arguments`** *[dictionary]* - A dictionary of GET arguments received.
+#### Provided data:
 
-##### Example:
+- **`content_type`** _[string]_ - The content type to be set when writing back to the browser.
+- **`content`** _[string]_ - The content to print to the browser.
+- **`path`** _[string]_ - The path received after the '/unmanic/panel' path.
+- **`arguments`** _[dictionary]_ - A dictionary of GET arguments received.
+
+#### Example:
 
 <details>
 <summary>plugin.py</summary>
@@ -330,42 +421,40 @@ def render_frontend_panel(data):
 
     return
 ```
+
 </details>
-
-
-##### Details:
-
-This Plugin runner type provides a *Data Panel* which will be displayed to the front-end.
-
-Pages will be served from `/unmanic/ui/data-panels?pluginId={plugin ID}`.
-
-Pages will be provided with a GET parameter either `?theme=light` or `?theme=dark` to assist with theme mapping with the main frontend.
-
-Static assets stored in the plugins [static](/docs/development/writing_plugins/introduction#directory-static-optional) directory will 
-made available via the webserver at `/unmanic/panel/{plugin ID}/static/(.*)`
 
 ---
 
+### Plugin API
 
-## Frontend - Plugin API
-*(since v0.2.0)*
+#### Details:
 
-##### Executed:
+This runner exposes a plugin-managed REST-style endpoint. It’s suited for receiving webhooks, serving JSON to the frontend, or integrating with external systems.
+
+Pages will be served from `/unmanic/plugin_api/{plugin ID}`.
+
+#### Executed:
+
 From front-end URL
 
-##### Function:
+#### Function:
+
 `render_plugin_api(data)`
 
-##### Provided data:
-- **`content_type`** *[string]* - The content type to be set when writing back to the browser.
-- **`content`** *[string]* - The content to print to the browser.
-- **`path`** *[string]* - The path received after the '/unmanic/panel' path.
-- **`uri`** *[string]* - The request uri.
-- **`query`** *[string]* - The request query.
-- **`arguments`** *[dictionary]* - A dictionary of GET arguments received.
-- **`body`** *[dictionary]* - A dictionary of body arguments received.
+#### Provided data:
 
-##### Example:
+- **`content_type`** _[string]_ - The content type to be set when writing back to the browser.
+- **`content`** _[dictionary]_ - The content to print to the browser.
+- **`status`** _[integer]_ - The HTTP status code for the response.
+- **`method`** _[string]_ - The request method.
+- **`path`** _[string]_ - The path received after the '/unmanic/panel' path.
+- **`uri`** _[string]_ - The request uri.
+- **`query`** _[string]_ - The request query.
+- **`arguments`** _[dictionary]_ - A dictionary of GET arguments received.
+- **`body`** _[dictionary]_ - A dictionary of body arguments received.
+
+#### Example:
 
 <details>
 <summary>plugin.py</summary>
@@ -378,6 +467,8 @@ def render_plugin_api(data):
     The 'data' object argument includes:
         content_type                    - The content type to be set when writing back to the browser.
         content                         - The content to print to the browser.
+        status                          - The HTTP status code for the response.
+        method                          - The request method.
         path                            - The path received after the '/unmanic/panel' path.
         uri                             - The request uri.
         query                           - The request query.
@@ -398,11 +489,209 @@ def render_plugin_api(data):
 
     return
 ```
+
 </details>
 
+---
 
-##### Details:
+## Events
 
-This Plugin runner type provides an API endpoint which may be used to receive webhook requests or function as a REST API for the plugin.
+Events plugins emit structured data at key moments in a task’s lifecycle (queueing, scheduling, worker start/finish, postprocessor start/finish, library scan complete, etc.). They’re ideal for **observability and orchestration**: push webhooks/metrics, mirror state to dashboards, audit task flow, or trigger downstream automations. Events runners don’t change how work is done; they **report** and enable external systems to react in real time.
 
-Pages will be served from `/unmanic/plugin_api/{plugin ID}`.
+### File queued
+
+#### Details:
+
+Emitted when a file passes library tests and is added to the pending queue. Useful for logging, triggering alerts, or updating external systems that monitor incoming workload.
+
+#### Executed:
+
+When a file has been tested and marked to be added to the pending task queue.
+
+#### Function:
+
+`emit_file_queued(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`file_path`** _[string]_ - The full path to the file being queued.
+- **`priority_score`** _[integer]_ - The priority score assigned to this task.
+- **`issues`** _[list]_ - Any file issues that were raised.
+
+---
+
+### Task queued
+
+#### Details:
+
+Emitted when a task object is created and added to the execution queue. This is a good place to notify external systems that work has officially been scheduled.
+
+#### Executed:
+
+When a task is created and added to the execution queue.
+
+#### Function:
+
+`emit_task_queued(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`task_id`** _[integer]_ - A unique identifier of the task.
+- **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
+- **`source_data`** _[dictionary]_ - Information about the source file for the task.
+
+---
+
+### Task scheduled
+
+#### Details:
+
+Emitted once a task is assigned to run locally or remotely. Useful for tracking distribution of tasks across workers or monitoring scheduling latency.
+
+#### Executed:
+
+When a task is scheduled for execution.
+
+#### Function:
+
+`emit_task_scheduled(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`task_id`** _[integer]_ - A unique identifier of the task.
+- **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
+- **`task_schedule_type`** _[string]_ - Will tell where the task was scheduled either "local" or "remote".
+- **`remote_installation_info`** _[dictionary]_ - Information about the remote installation for a given task. Empty for local tasks.
+- **`source_data`** _[dictionary]_ - Information about the source file for the task.
+
+---
+
+### Worker process started
+
+#### Details:
+
+Emitted as soon as a worker begins processing. Use it to track active tasks, allocate monitoring resources, or update external dashboards.
+
+#### Executed:
+
+At the very start of a worker processing a task.
+
+#### Function:
+
+`emit_worker_process_started(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
+- **`original_file_path`** _[string]_ - String, absolute path to the original source file.
+- **`task_cache_path`** _[string]_ - String, the target cache path for this task.
+- **`worker_runners_info`** _[dictionary]_ - Dict, per-runner metadata with initial status ("pending") and success (False).
+
+---
+
+### Worker process complete
+
+#### Details:
+
+Emitted once a worker completes processing. It provides the success status, log, and metadata. Use this to record results, calculate processing times, or trigger alerts for failures.
+
+#### Executed:
+
+When a worker finishes processing a task.
+
+#### Function:
+
+`emit_worker_process_complete(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
+- **`original_file_path`** _[string]_ - String, absolute path to the original source file.
+- **`final_cache_path`** _[string]_ - String, path to the final cache file location.
+- **`overall_success`** _[boolean]_ - Boolean, True if all processing completed successfully.
+- **`worker_runners_info`** _[dictionary]_ - Dict, per-runner metadata including status and success.
+- **`worker_log`** _[list]_ - The log lines that are being tailed by the frontend. Can be left empty.
+
+---
+
+### Postprocessor started
+
+#### Details:
+
+Emitted when the postprocessor begins handling a task. This event is useful for systems that want to track the full lifecycle from processing to file placement.
+
+#### Executed:
+
+When the post-processor picks up a task.
+
+#### Function:
+
+`emit_postprocessor_started(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`task_id`** _[integer]_ - A unique identifier of the task.
+- **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
+- **`cache_path`** _[string]_ - String, path to the task’s cache file.
+- **`source_data`** _[dictionary]_ - Information about the source file for the task.
+
+---
+
+### Postprocessor complete
+
+#### Details:
+
+Emitted after a task has been fully processed and logged in history. It’s useful for auditing, syncing results to external databases, or triggering downstream workflows.
+
+#### Executed:
+
+After a task is fully post-processed and recorded in history.
+
+#### Function:
+
+`emit_postprocessor_complete(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`task_id`** _[integer]_ - A unique identifier of the task.
+- **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
+- **`source_data`** _[dictionary]_ - Information about the source file for the task.
+- **`destination_data`** _[dictionary]_ - Information about the final output file after postprocessing for the task.
+- **`task_success`** _[boolean]_ - True if the task succeeded.
+- **`start_time`** _[float]_ - UNIX timestamp when the task began.
+- **`finish_time`** _[float]_ - UNIX timestamp when the task completed.
+- **`processed_by_worker`** _[string]_ - String, identifier of the worker that processed it.
+- **`log`** _[string]_ - String, full text of the task log.
+
+---
+
+### Scan complete
+
+#### Details:
+
+Emitted whenever a library scan finishes. This can be used to record scan stats, update UI elements, or notify external systems that the library is in sync.
+
+#### Executed:
+
+After a library scan completes.
+
+#### Function:
+
+`emit_scan_complete(data)`
+
+#### Provided data:
+
+- **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
+- **`library_name`** _[string]_ - String, the human-readable name of the library.
+- **`library_path`** _[string]_ - String, filesystem path to the library.
+- **`scan_start_time`** _[float]_ - Float, UNIX timestamp when the scan started.
+- **`scan_end_time`** _[float]_ - Float, UNIX timestamp when the scan ended.
+- **`scan_duration`** _[float]_ - Float, duration of the scan in seconds.
+- **`files_scanned_count`** _[integer]_ - Integer, total number of files scanned.
