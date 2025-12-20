@@ -167,6 +167,13 @@ const config = {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
       },
+      algolia: {
+        appId: "GW4VW2R433",
+        apiKey: "ac32e2c0b0406179fbf20136bcbeb700",
+        indexName: "unmanic",
+        contextualSearch: true,
+        insights: false,
+      },
     }),
 };
 
