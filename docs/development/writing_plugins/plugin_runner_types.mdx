@@ -203,8 +203,6 @@ integrating with Unmanic’s log tail and progress reporting.
 ```python
 from unmanic.libs.unplugins.child_process import PluginChildProcess
 
-proc = PluginChildProcess(plugin_id="<your_plugin_id>", data=data)
-
 def child_work(log_queue, prog_queue):
     # Any Python code here
     for i in range(10):
@@ -214,8 +212,10 @@ def child_work(log_queue, prog_queue):
         prog_queue.put((i + 1) * 10)
         time.sleep(1)
 
-# Runs child_work in its own process, returns True if exit code==0
-success = proc.run(child_work)
+def on_worker_process(data):
+    # Runs child_work in its own process, returns True if exit code==0
+    proc = PluginChildProcess(plugin_id="<your_plugin_id>", data=data)
+    success = proc.run(child_work)
 ```
 
 In this mode the `PluginChildProcess` helper:
