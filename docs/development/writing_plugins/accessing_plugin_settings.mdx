@@ -10,9 +10,8 @@ All Plugins are able to be configured using a "PluginSettings" class.
 This job of this class is to hold a dictionary of settings accessible to the Plugin
 class and able to be configured by users from within the Unmanic WebUI.
 
-The `Settings` class should be included in your Plugin's `plugin.py` file if you wish 
+The `Settings` class should be included in your Plugin's `plugin.py` file if you wish
 to have the option of enabling configuration options for the Plugin's users.
-
 
 ##### Example
 
@@ -114,9 +113,8 @@ class Settings(PluginSettings):
     }
 
 ```
+
 </details>
-
-
 
 ## Available methods
 
@@ -130,41 +128,44 @@ the user configured options.
 
 :::
 
-
 ---
+
 #### *classmethod* **get_plugin_directory()**
 
 Returns the absolute path to the Plugin's directory.
 This is where the Plugin is currently installed.
 
-##### Example:
+##### Example
+
 ```python
     settings = Settings()
     plugin_directory = settings.get_plugin_directory()
     db_file = os.path.abspath(os.path.join(plugin_directory, '..', '..', 'config', 'unmanic.db'))
 ```
 
-
 ---
+
 #### *classmethod* **get_profile_directory()**
 
-Return the absolute path to the Plugin's profile directory. 
+Return the absolute path to the Plugin's profile directory.
 This is where where Plugin settings are saved and where all mutable data for the Plugin should be stored.
 
-##### Example:
+##### Example
+
 ```python
     settings = Settings()
     profile_directory = settings.get_profile_directory()
     db_file = os.path.abspath(os.path.join(profile_directory, 'history.db'))
 ```
 
-
 ---
+
 #### *classmethod* **get_form_settings()**
 
 Return the current form settings.
 
-##### Example:
+##### Example
+
 ```python
     settings = Settings()
     form_settings = settings.get_form_settings()
@@ -172,13 +173,13 @@ Return the current form settings.
         return True
 ```
 
-
 ---
+
 #### *classmethod* **get_setting(** [*key*] **)**
 
 Parameters:
 
- - key (str) – the configuration option key.
+- key (str) – the configuration option key.
 
 Fetches a configuration value from the Settings object.
 If no key is provided, this method will return a full dictionary
@@ -190,7 +191,8 @@ If no config has been saved for the given *library_id*, this method will fallbac
 See example below.
 :::
 
-##### Example:
+##### Example
+
 ```python
     settings = Settings(library_id=data.get('library_id'))
 
@@ -201,16 +203,16 @@ See example below.
     all_options = settings.get_setting()
 ```
 
-
 ---
+
 #### *classmethod* **set_setting(** *key*, *value* **)**
 
 Parameters:
 
- - key (str) – the configuration option key.
- - value – the configuration option value.
+- key (str) – the configuration option key.
+- value – the configuration option value.
 
-The `set_setting` method is used by the Unmanic WebUI to save 
+The `set_setting` method is used by the Unmanic WebUI to save
 user settings. However you are able to access this method from
 your Plugin's functions also.
 
@@ -222,13 +224,12 @@ If no config has been saved for the given *library_id*, this method will create 
 See example below.
 :::
 
+##### Example
 
-##### Example:
 ```python
     settings = Settings(library_id=data.get('library_id'))
     enable_feature = settings.set_setting('Enable Feature', False)
 ```
-
 
 ## Adding settings to your Plugin
 
@@ -239,11 +240,10 @@ There are two basic settings options. Boolean (True/False) and String.
 If you enter a default value that is a Boolean, then Unmanic will treat it as such and will
 present this option to the user as a `<input type="checkbox">` in the Unmanic web UI.
 
-If you enter a default value that is a String, then Unmanic will present this option to the 
+If you enter a default value that is a String, then Unmanic will present this option to the
 user as a `<input type="text">` in the Unmanic web UI.
 
-
-##### Example:
+##### Example
 
 If you are to create a settings class with the following values.
 
@@ -259,35 +259,33 @@ Then it will be displayed in the browser as:
 
 <img className={"screenshot"} src={require('/img/unmanic-plugin-settings-basic.png').default} />
 
-
-
-
 ## Advanced form input in WebUI
 
-You can use a basic text and checkbox input form for your Plugin as shown above. In most cases, this 
-should be enough. However, sometimes you may wish to include more advanced form input options to configure 
+You can use a basic text and checkbox input form for your Plugin as shown above. In most cases, this
+should be enough. However, sometimes you may wish to include more advanced form input options to configure
 your Plugin.
 
 You can overwrite the default form elements with the `form_settings` class variable.
 This class variable can be used to:
-  - [Dynamically show/hide settings](#dynamically-showhide-settings)
-  - [Overwrite the input labels](#overwriting-labels)
-  - [Create select drop-down inputs](#select-drop-downs)
-  - [Create textarea inputs](#textarea)
-  - [Create directory browser inputs](#select-directory)
-  - [Create slider inputs](#slider)
 
+- [Dynamically show/hide settings](#dynamically-showhide-settings)
+- [Mark sub-settings](#sub-settings)
+- [Overwrite the input labels](#overwriting-labels)
+- [Create select drop-down inputs](#select-drop-downs)
+- [Create textarea inputs](#textarea)
+- [Create directory browser inputs](#select-directory)
+- [Create slider inputs](#slider)
 
 ### Dynamically show/hide settings
+
 *(since v0.1.0)*
 
-If you want your Plugin's settings options to change based on the input of other options such as a checkbox, 
+If you want your Plugin's settings options to change based on the input of other options such as a checkbox,
 you can do this by adding an `__init__(self)` method to your Settings class.
 
 Inside this method, modify the form_settings object according what you need.
 
-
-##### Example:
+##### Example
 
 ```python
 class Settings(PluginSettings):
@@ -312,7 +310,48 @@ class Settings(PluginSettings):
 <img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-dynamic-hidden1.png').default} />
 <img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-dynamic-hidden2.png').default} />
 
+### Sub-settings
 
+*(since v0.3.0)*
+
+If you want a setting to appear visually grouped under another option (for example, a dependent option that only makes sense when a checkbox is enabled), you can mark it as a sub-setting.
+
+Add `sub_setting: True` to that setting's form configuration to indent it and draw a left border in the WebUI.
+
+##### Example
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "Enable feature": False,
+        "Feature level":  "medium",
+    }
+
+    form_settings = {
+        "Enable feature": {
+            "label": "Enable feature",
+        },
+        "Feature level":  {
+            "label":       "Feature level",
+            "input_type":  "select",
+            "sub_setting": True,
+            "select_options": [
+                {
+                    "value": "low",
+                    "label": "Low",
+                },
+                {
+                    "value": "medium",
+                    "label": "Medium",
+                },
+                {
+                    "value": "high",
+                    "label": "High",
+                },
+            ],
+        },
+    }
+```
 
 ### Overwriting labels
 
@@ -320,8 +359,7 @@ You may wish to have a long, descriptive label for your input field.
 
 Adding a `label` entry to your `form_settings` dictionary will overwrite this value in the WebUI
 
-
-##### Example:
+##### Example
 
 ```python
 class Settings(PluginSettings):
@@ -337,8 +375,6 @@ class Settings(PluginSettings):
 
 <img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-labels.png').default} />
 
-
-
 ### Select drop-downs
 
 You can use form input select elements if you configure an `input_type` as "select" entry to your `form_settings` dictionary.
@@ -346,8 +382,7 @@ When you set the `input_type` as "select", you must also add a list of `select_o
 
 Each `select_options` should consist of a dictionary containing a `value` and a `label`.
 
-
-##### Example:
+##### Example
 
 ```python
 class Settings(PluginSettings):
@@ -381,18 +416,15 @@ class Settings(PluginSettings):
 
 <img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-select.png').default} />
 
-
-
 ### Textarea
 
-You may wish to allow multi-line input for your string variables. 
+You may wish to allow multi-line input for your string variables.
 
 By default, Unmanic's WebUI will treat a string input as a "text" input type. This will generate a `<input type="text">` element.
 
 You can override this in Unmanic's WebUI by setting the `input_type` as "textarea" in your `form_settings` dictionary.
 
-
-##### Example:
+##### Example
 
 ```python
 class Settings(PluginSettings):
@@ -409,18 +441,16 @@ class Settings(PluginSettings):
 
 <img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-textarea.png').default} />
 
-
-
 ### Select directory
+
 *(since v0.0.8)*
 
-If you intend to use a text input for specifying a path to a directory, you could use Unmanic's directory select browser popup rather 
+If you intend to use a text input for specifying a path to a directory, you could use Unmanic's directory select browser popup rather
 than require the path to be entered manually.
 
 This can be done by setting an `input_type` as "browse_directory" entry to your `form_settings` dictionary.
 
-
-##### Example:
+##### Example
 
 ```python
 class Settings(PluginSettings):
@@ -436,17 +466,15 @@ class Settings(PluginSettings):
 
 <img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-browse-directory.png').default} />
 
-
-
 ### Slider
+
 *(since v0.1.0)*
 
 If your Plugin config option is to accept an integer and you have a set max/min value, you may wish to use the slider.
 
 This can be done by setting an `input_type` as "slider" entry to your `form_settings` dictionary.
 
-
-##### Example:
+##### Example
 
 ```python
 class Settings(PluginSettings):
