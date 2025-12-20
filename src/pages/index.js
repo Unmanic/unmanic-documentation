@@ -30,16 +30,16 @@ const quickLinks = [
     ),
     link: "/docs/requirements",
   },
-  // {
-  //   title: "Unmanic Central",
-  //   description: <>Get real time analytics from your Unmanic instances</>,
-  //   link: "",
-  // },
   {
-    title: "GitHub Repository",
-    description: <>Check out the source code on the Unmanic Github</>,
-    link: "https://github.com/Unmanic",
+    title: "Unmanic Central",
+    description: <>Get real time analytics from your Unmanic instances</>,
+    link: "https://central.unmanic.app/",
   },
+  // {
+  //   title: "GitHub Repository",
+  //   description: <>Check out the source code on the Unmanic Github</>,
+  //   link: "https://github.com/Unmanic",
+  // },
 ];
 
 const features = [

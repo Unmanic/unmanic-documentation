@@ -67,8 +67,9 @@ p {
 }
 
 .quickLinksContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   width: 100%;
   margin: 6rem 0;
@@ -81,6 +82,8 @@ p {
   border: 1px solid #71717a10;
   color: var(--ifm-hero-text-color);
   transition: ease-in-out 0.1s;
+  flex: 1 1 calc((100% - 2rem) / 3);
+  max-width: calc((100% - 2rem) / 3);
 }
 .quickLink p {
   color: var(--ifm-hero-text-color);
@@ -160,7 +163,11 @@ p {
 
 @media screen and (max-width: 650px) {
   .quickLinksContainer {
-    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+  .quickLink {
+    flex-basis: 100%;
+    max-width: 100%;
   }
   .featuresWrapper {
     grid-template-columns: 1fr;
@@ -169,7 +176,11 @@ p {
 
 @media screen and (max-width: 500px) {
   .quickLinksContainer {
-    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+  .quickLink {
+    flex-basis: 100%;
+    max-width: 100%;
   }
   .heroBlurb {
     font-size: 16px;
