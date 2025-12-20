@@ -4,7 +4,6 @@ description: Unmanic Writing Plugins > Accessing Plugin Settings
 id: plugin_settings
 ---
 
-
 All Plugins are able to be configured using a "PluginSettings" class.
 
 This job of this class is to hold a dictionary of settings accessible to the Plugin
@@ -130,12 +129,12 @@ the user configured options.
 
 ---
 
-#### *classmethod* **get_plugin_directory()**
+#### _classmethod_ **get_plugin_directory()**
 
 Returns the absolute path to the Plugin's directory.
 This is where the Plugin is currently installed.
 
-##### Example
+##### Example:
 
 ```python
     settings = Settings()
@@ -145,12 +144,12 @@ This is where the Plugin is currently installed.
 
 ---
 
-#### *classmethod* **get_profile_directory()**
+#### _classmethod_ **get_profile_directory()**
 
 Return the absolute path to the Plugin's profile directory.
 This is where where Plugin settings are saved and where all mutable data for the Plugin should be stored.
 
-##### Example
+##### Example:
 
 ```python
     settings = Settings()
@@ -160,11 +159,11 @@ This is where where Plugin settings are saved and where all mutable data for the
 
 ---
 
-#### *classmethod* **get_form_settings()**
+#### _classmethod_ **get_form_settings()**
 
 Return the current form settings.
 
-##### Example
+##### Example:
 
 ```python
     settings = Settings()
@@ -175,7 +174,7 @@ Return the current form settings.
 
 ---
 
-#### *classmethod* **get_setting(** [*key*] **)**
+#### _classmethod_ **get_setting(** [*key*] **)**
 
 Parameters:
 
@@ -186,12 +185,12 @@ If no key is provided, this method will return a full dictionary
 of all configured options.
 
 :::caution
-If no *library_id* is provided to the Settings object, then it will return the global settings.
-If no config has been saved for the given *library_id*, this method will fallback to returning the global settings.
+If no _library_id_ is provided to the Settings object, then it will return the global settings.
+If no config has been saved for the given _library_id_, this method will fallback to returning the global settings.
 See example below.
 :::
 
-##### Example
+##### Example:
 
 ```python
     settings = Settings(library_id=data.get('library_id'))
@@ -205,7 +204,7 @@ See example below.
 
 ---
 
-#### *classmethod* **set_setting(** *key*, *value* **)**
+#### _classmethod_ **set_setting(** _key_, _value_ **)**
 
 Parameters:
 
@@ -219,12 +218,12 @@ your Plugin's functions also.
 Settings are stored on disk in order to be persistent across restarts.
 
 :::caution
-If no *library_id* is provided to the Settings object, then it will be stored in the global settings file.
-If no config has been saved for the given *library_id*, this method will create that library's config file.
+If no _library_id_ is provided to the Settings object, then it will be stored in the global settings file.
+If no config has been saved for the given _library_id_, this method will create that library's config file.
 See example below.
 :::
 
-##### Example
+##### Example:
 
 ```python
     settings = Settings(library_id=data.get('library_id'))
@@ -243,7 +242,7 @@ present this option to the user as a `<input type="checkbox">` in the Unmanic we
 If you enter a default value that is a String, then Unmanic will present this option to the
 user as a `<input type="text">` in the Unmanic web UI.
 
-##### Example
+##### Example:
 
 If you are to create a settings class with the following values.
 
@@ -257,7 +256,10 @@ class Settings(PluginSettings):
 
 Then it will be displayed in the browser as:
 
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-basic.png').default} />
+<img
+  className={"screenshot"}
+  src={require("/img/unmanic-plugin-settings-basic.png").default}
+/>
 
 ## Advanced form input in WebUI
 
@@ -278,14 +280,14 @@ This class variable can be used to:
 
 ### Dynamically show/hide settings
 
-*(since v0.1.0)*
+_(since v0.1.0)_
 
 If you want your Plugin's settings options to change based on the input of other options such as a checkbox,
 you can do this by adding an `__init__(self)` method to your Settings class.
 
 Inside this method, modify the form_settings object according what you need.
 
-##### Example
+##### Example:
 
 ```python
 class Settings(PluginSettings):
@@ -307,18 +309,28 @@ class Settings(PluginSettings):
         return values
 ```
 
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-dynamic-hidden1.png').default} />
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-dynamic-hidden2.png').default} />
+<img
+  className={"screenshot"}
+  src={
+    require("/img/unmanic-plugin-settings-advanced-dynamic-hidden1.png").default
+  }
+/>
+<img
+  className={"screenshot"}
+  src={
+    require("/img/unmanic-plugin-settings-advanced-dynamic-hidden2.png").default
+  }
+/>
 
 ### Sub-settings
 
-*(since v0.3.0)*
+_(since v0.3.0)_
 
 If you want a setting to appear visually grouped under another option (for example, a dependent option that only makes sense when a checkbox is enabled), you can mark it as a sub-setting.
 
 Add `sub_setting: True` to that setting's form configuration to indent it and draw a left border in the WebUI.
 
-##### Example
+##### Example:
 
 ```python
 class Settings(PluginSettings):
@@ -359,7 +371,7 @@ You may wish to have a long, descriptive label for your input field.
 
 Adding a `label` entry to your `form_settings` dictionary will overwrite this value in the WebUI
 
-##### Example
+##### Example:
 
 ```python
 class Settings(PluginSettings):
@@ -373,7 +385,10 @@ class Settings(PluginSettings):
     }
 ```
 
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-labels.png').default} />
+<img
+  className={"screenshot"}
+  src={require("/img/unmanic-plugin-settings-advanced-labels.png").default}
+/>
 
 ### Select drop-downs
 
@@ -382,7 +397,7 @@ When you set the `input_type` as "select", you must also add a list of `select_o
 
 Each `select_options` should consist of a dictionary containing a `value` and a `label`.
 
-##### Example
+##### Example:
 
 ```python
 class Settings(PluginSettings):
@@ -414,7 +429,10 @@ class Settings(PluginSettings):
     }
 ```
 
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-select.png').default} />
+<img
+  className={"screenshot"}
+  src={require("/img/unmanic-plugin-settings-advanced-select.png").default}
+/>
 
 ### Textarea
 
@@ -424,7 +442,7 @@ By default, Unmanic's WebUI will treat a string input as a "text" input type. Th
 
 You can override this in Unmanic's WebUI by setting the `input_type` as "textarea" in your `form_settings` dictionary.
 
-##### Example
+##### Example:
 
 ```python
 class Settings(PluginSettings):
@@ -439,18 +457,21 @@ class Settings(PluginSettings):
     }
 ```
 
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-textarea.png').default} />
+<img
+  className={"screenshot"}
+  src={require("/img/unmanic-plugin-settings-advanced-textarea.png").default}
+/>
 
 ### Select directory
 
-*(since v0.0.8)*
+_(since v0.0.8)_
 
 If you intend to use a text input for specifying a path to a directory, you could use Unmanic's directory select browser popup rather
 than require the path to be entered manually.
 
 This can be done by setting an `input_type` as "browse_directory" entry to your `form_settings` dictionary.
 
-##### Example
+##### Example:
 
 ```python
 class Settings(PluginSettings):
@@ -464,17 +485,23 @@ class Settings(PluginSettings):
     }
 ```
 
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-browse-directory.png').default} />
+<img
+  className={"screenshot"}
+  src={
+    require("/img/unmanic-plugin-settings-advanced-browse-directory.png")
+      .default
+  }
+/>
 
 ### Slider
 
-*(since v0.1.0)*
+_(since v0.1.0)_
 
 If your Plugin config option is to accept an integer and you have a set max/min value, you may wish to use the slider.
 
 This can be done by setting an `input_type` as "slider" entry to your `form_settings` dictionary.
 
-##### Example
+##### Example:
 
 ```python
 class Settings(PluginSettings):
@@ -495,4 +522,7 @@ class Settings(PluginSettings):
     }
 ```
 
-<img className={"screenshot"} src={require('/img/unmanic-plugin-settings-advanced-slider.png').default} />
+<img
+  className={"screenshot"}
+  src={require("/img/unmanic-plugin-settings-advanced-slider.png").default}
+/>
