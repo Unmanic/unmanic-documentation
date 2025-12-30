@@ -10,7 +10,7 @@ The `./temp` directory includes cloned projects that can be used as source code 
 - `./temp/unmanic-frontend` -- the source code for the Unmanic frontend that is built into the main Unmanic application.
 - `./temp/unmanic-plugins` -- the official repo of unmanic plugins. The source for each plugin is in `./temp/unmanic-plugins/source`.
 
-Use `./clone-projects.sh` to clone these repositories and pull the latest changes into `./temp`.
+Use `./devops/clone-refrence-projects.sh` to clone these repositories and pull the latest changes into `./temp`.
 
 ## Documentation scope
 

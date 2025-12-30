@@ -1,8 +1,8 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import {Card, CardContent, Container, Grid} from "@mui/material";
-import NewInstallationsChart from "../components/NewInstallations";
-import CurrentInstallationsChart from "../components/CurrentInstallations";
+import NewInstallationsChart from "../components/installations/NewInstallations";
+import CurrentInstallationsChart from "../components/installations/CurrentInstallations";
 
 
 export default function MyReactPage() {

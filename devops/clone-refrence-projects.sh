@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 ###
-# File: clone-projects.sh
+# File: clone-refrence-projects.sh
 # Project: unmanic-documentation
 # File Created: Saturday, 20th December 2025 2:45:35 pm
 # Author: Josh.5 (jsunnex@gmail.com)
 # -----
-# Last Modified: Saturday, 20th December 2025 2:45:56 pm
+# Last Modified: Tuesday, 30th December 2025 1:13:20 pm
 # Modified By: Josh.5 (jsunnex@gmail.com)
 ###
 
@@ -13,7 +13,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEMP_DIR="${SCRIPT_DIR}/temp"
+TEMP_DIR="${SCRIPT_DIR}/../temp"
 
 declare -A REPOS=(
     ["unmanic"]="https://github.com/Unmanic/unmanic.git"
