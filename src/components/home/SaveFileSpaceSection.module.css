@@ -166,6 +166,8 @@
   color: var(--ifm-color-content-secondary);
   font-size: 1rem;
   line-height: 1.6;
+  font-weight: 400;
+  opacity: 0.85;
 }
 
 @media screen and (max-width: 900px) {

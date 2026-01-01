@@ -83,27 +83,27 @@ function SaveFileSpaceSection() {
             </p>
             <ul className={styles.detailList}>
               <li>
-                Remove bloat: strip unnecessary streams, attachments, or
-                metadata you do not need
+                <strong>Remove bloat:</strong> strip unnecessary streams,
+                attachments, or metadata you do not need
               </li>
               <li>
-                Standardize outputs: keep formats and settings consistent across
-                your library
+                <strong>Standardize outputs:</strong> keep formats and settings
+                consistent across your library
               </li>
               <li>
-                Compress media: use FFmpeg to shrink video (and audio) while
-                preserving the tracks you want
+                <strong>Compress media:</strong> use FFmpeg to shrink video (and
+                audio) while preserving the tracks you want
               </li>
               <li>
-                Convert and tidy files: turn documents into PDFs, normalize
-                image metadata, and fix orientation
+                <strong>Convert and tidy files:</strong> turn documents into
+                PDFs, normalize image metadata, and fix orientation
               </li>
             </ul>
           </div>
         </div>
         <div className={styles.chartCard} data-scroll-reveal>
           <div className={styles.chartHeader}>
-            <span>Total File Size Change</span>
+            <span>Total Disk Space Saved</span>
             <span className={styles.chartUnit}>GB</span>
           </div>
           <div className={styles.chartPlot}>
