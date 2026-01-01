@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "docusaurus": "docusaurus",
-        "start": "docusaurus start --no-open",
+        "start": "docusaurus start --no-open --port 3421",
         "build": "docusaurus build",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
@@ -23,6 +23,7 @@
         "@mui/material": "^7.3.1",
         "chart.js": "^4.5.0",
         "clsx": "^2.0.0",
+        "gsap": "^3.13.0",
         "prism-react-renderer": "^2.3.0",
         "react": "^19.0.0",
         "react-chartjs-2": "^5.3.0",

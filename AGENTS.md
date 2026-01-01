@@ -17,3 +17,12 @@ Use `./devops/clone-refrence-projects.sh` to clone these repositories and pull t
 All documentation is stored in Markdown files in `./docs`. This project builds a static site hosted on GitHub Pages.
 
 One particular focus of the documentation is how to create plugins.
+
+## Frontend conventions (home page)
+
+- Home page-specific components live under `src/components/home` and are imported by `src/pages/index.js`.
+- Shared components are organized into feature subfolders under `src/components` (for example `installations` and `diagrams`).
+- Home page sections are wrapped with `HomeSection`, which exposes data attributes to drive a fixed background transition system.
+- The fixed background is defined in `src/pages/styles.module.css`, while scroll-driven background changes are handled in `src/components/home/useHomePageScroll.js`.
+- Section backgrounds are set via `HomeSection` props (`backgroundColor`, `backgroundImage`, `backgroundBlur`) rather than per-section CSS backgrounds.
+- Static assets for home visuals live under `static/img/home` (for example `static/img/home/file-size-metrics-data-panel.png`).

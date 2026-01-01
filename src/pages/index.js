@@ -5,6 +5,8 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
+import SaveFileSpaceSection from "../components/home/SaveFileSpaceSection";
+import { useHomePageScroll } from "../components/home/useHomePageScroll";
 // Import react-slick and slick-carousel
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -178,12 +180,18 @@ function VideoSlider() {
 export default function Home() {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
+
+  useHomePageScroll();
   return (
     <Layout
       title={`Optimise your file library ${siteConfig.title}`}
       description="Unmanic is a simple tool for optimising your file library to a single, uniform format."
     >
-      <div className={styles.pageContainer}>
+      <div className={styles.homeBackdrop} aria-hidden="true">
+        <div className={styles.homeBackdropImage} />
+        <div className={styles.homeBackdropFade} />
+      </div>
+      <div className={styles.pageContainer} data-home-page>
         <div className={styles.pageContent}>
           <header className={styles.heroBanner}>
             <div className={styles.container}>
@@ -225,6 +233,7 @@ export default function Home() {
                 </section>
               )}
             </div>
+            <SaveFileSpaceSection />
           </main>
         </div>
       </div>
