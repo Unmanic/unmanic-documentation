@@ -7,6 +7,7 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 import SaveFileSpaceSection from "../components/home/SaveFileSpaceSection";
 import ExtensiblePluginsSection from "../components/home/ExtensiblePluginsSection";
+import GetStartedSection from "../components/home/GetStartedSection";
 import { useHomePageScroll } from "../components/home/useHomePageScroll";
 // Import react-slick and slick-carousel
 import Slider from "react-slick";
@@ -236,6 +237,7 @@ export default function Home() {
             </div>
             <SaveFileSpaceSection />
             <ExtensiblePluginsSection />
+            <GetStartedSection />
           </main>
         </div>
       </div>

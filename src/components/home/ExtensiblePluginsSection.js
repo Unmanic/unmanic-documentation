@@ -14,7 +14,7 @@ function ExtensiblePluginsSection() {
       subtitle="Start simple, then layer in plugins for every workflow."
       className={styles.section}
       centered
-      backgroundColor="color-mix(in srgb, #0f3f2c 40%, var(--ifm-background-color))"
+      backgroundColor="color-mix(in srgb, #0a0a34 40%, var(--ifm-background-color))"
       backgroundImage={backgroundImage}
       backgroundBlur="8px"
     >

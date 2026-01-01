@@ -87,6 +87,11 @@ p {
   opacity: var(--home-bg-fade);
 }
 
+:global(.footer) {
+  position: relative;
+  z-index: 1;
+}
+
 .buttons {
   display: flex;
   align-items: center;

@@ -1,0 +1,75 @@
+.sectionBody {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.caption {
+  max-width: 680px;
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.6;
+}
+
+.ctaRow {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2.8rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ifm-color-primary) 85%, #ffffff 15%),
+    var(--ifm-color-primary)
+  );
+  border: 1px solid color-mix(in srgb, var(--ifm-color-primary) 70%, #ffffff);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 20px
+      color-mix(in srgb, var(--ifm-color-primary) 35%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 30%, transparent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.ctaIcon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ctaIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ctaButton:hover {
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 16px 30px
+      color-mix(in srgb, var(--ifm-color-primary) 45%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 40%, transparent);
+}
+
+.ctaButton:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ifm-color-primary) 70%, #ffffff);
+  outline-offset: 3px;
+}
+
+@media screen and (max-width: 600px) {
+  .ctaButton {
+    width: 100%;
+  }
+}

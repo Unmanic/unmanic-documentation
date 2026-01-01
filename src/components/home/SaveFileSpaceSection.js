@@ -59,7 +59,7 @@ function SaveFileSpaceSection() {
       subtitle="Keep your library lean with automated file management."
       className={styles.section}
       centered
-      backgroundColor="color-mix(in srgb, var(--ifm-color-primary) 10%, var(--ifm-background-color))"
+      backgroundColor="color-mix(in srgb, #021430 40%, var(--ifm-background-color))"
       backgroundImage={backgroundImage}
       backgroundBlur="6px"
     >
