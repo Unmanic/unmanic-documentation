@@ -1,0 +1,154 @@
+.sectionBody {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.copy {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.lead {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--ifm-color-content);
+}
+
+.detail {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.6;
+}
+
+.noteCard {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: color-mix(
+    in srgb,
+    var(--ifm-color-emphasis-100) 85%,
+    transparent
+  );
+  border: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: 0 18px 45px
+    color-mix(in srgb, var(--ifm-color-emphasis-700) 18%, transparent);
+}
+
+.pluginsRow {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 92%, #ffffff 8%);
+  box-shadow: 0 20px 50px
+    color-mix(in srgb, var(--ifm-color-emphasis-800) 20%, transparent);
+}
+
+.pluginCardHeader {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ifm-color-content-secondary);
+}
+
+.cardCopy {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ifm-color-content);
+  line-height: 1.6;
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
+.cardLink::after {
+  content: "->";
+  font-size: 1.1rem;
+}
+
+.pluginGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.pluginTile {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  background: color-mix(
+    in srgb,
+    var(--ifm-color-emphasis-100) 80%,
+    transparent
+  );
+  border: 1px solid var(--ifm-color-emphasis-200);
+  min-height: 170px;
+  align-content: start;
+}
+
+.pluginHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pluginIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, transparent);
+  object-fit: cover;
+}
+
+.pluginName {
+  font-weight: 600;
+  color: var(--ifm-color-content);
+}
+
+.pluginDetail {
+  color: var(--ifm-color-content-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+@media screen and (max-width: 900px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+
+  .pluginsRow {
+    padding: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .pluginGrid {
+    grid-template-columns: 1fr;
+  }
+}
