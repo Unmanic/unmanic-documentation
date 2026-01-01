@@ -1,0 +1,166 @@
+.sectionBody {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 2rem;
+}
+
+.supporterIntro {
+  width: 100%;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.supporterLead {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--ifm-color-content-secondary);
+  text-align: center;
+}
+
+.supporterList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.supporterItem {
+  padding: 1.25rem 1.35rem;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 70%, #0b0f14);
+  border: 1px solid color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
+  box-shadow: 0 12px 30px
+    color-mix(in srgb, var(--ifm-color-emphasis-800) 14%, transparent);
+}
+
+.supporterTitle {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ifm-color-content-secondary);
+}
+
+.supporterDetail {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ifm-color-content);
+}
+
+.tableCard {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 80%, #000000);
+  background: color-mix(
+    in srgb,
+    var(--ifm-color-emphasis-100) 75%,
+    #0f141a 25%
+  );
+  box-shadow: 0 16px 40px
+    color-mix(in srgb, var(--ifm-color-emphasis-800) 18%, transparent);
+  overflow: hidden;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.6fr));
+  gap: 0.5rem;
+  padding: 1.1rem 1.5rem;
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 55%, #0b0f14);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  color: var(--ifm-color-content-secondary);
+}
+
+.tableBody {
+  display: grid;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.6fr));
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
+  align-items: center;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow:nth-child(even) {
+  background: color-mix(
+    in srgb,
+    var(--ifm-color-emphasis-100) 50%,
+    transparent
+  );
+}
+
+.featureCell {
+  font-weight: 600;
+  color: var(--ifm-color-content);
+}
+
+.planHead,
+.planCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.textValue {
+  font-weight: 600;
+  color: var(--ifm-color-content);
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(
+    in srgb,
+    var(--ifm-color-emphasis-200) 65%,
+    transparent
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-300) 70%, transparent);
+  color: var(--ifm-color-primary);
+}
+
+.icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media screen and (max-width: 700px) {
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: minmax(0, 1fr) repeat(2, minmax(0, 0.45fr));
+    padding: 1rem;
+  }
+
+  .featureCell {
+    font-size: 0.95rem;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .tableHeader {
+    font-size: 0.7rem;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+}
