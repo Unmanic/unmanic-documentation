@@ -143,10 +143,10 @@ const config = {
                 label: "Discord",
                 href: "https://unmanic.app/discord",
               },
-              {
+              /*{
                 label: "Twitter",
                 href: "https://twitter.com/jsunnex",
-              },
+              },*/
             ],
           },
           {
@@ -163,7 +163,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Josh Sunnex. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Josh Sunnex.`,
       },
       prism: {
         theme: prismThemes.github,

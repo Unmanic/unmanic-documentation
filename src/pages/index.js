@@ -29,11 +29,11 @@ const quickLinks = [
     link: "/docs/",
   },
   {
-    title: "Get Started",
+    title: "Plugin Ecosystem",
     description: (
-      <>Unmanic's basic features can be configured in under 2 minutes</>
+      <>Explore how plugins unlock file processing workflows across your library</>
     ),
-    link: "/docs/requirements",
+    link: "/docs/development/writing_plugins/introduction",
   },
   {
     title: "Unmanic Central",
@@ -113,7 +113,12 @@ const features = [
   {
     title: "Opensource",
     imageUrl: "img/opensource.svg",
-    description: <>Unmanic's code is released opensource under GPL v3.</>,
+    description: (
+      <>
+        Unlike most alternatives, Unmanic is the original project and is 100%
+        open source under GPL v3.
+      </>
+    ),
   },
 ];
 
@@ -122,6 +127,7 @@ function QuickLink({ title, description, link }) {
     <a href={link} className={styles.quickLink}>
       <h3>{title}</h3>
       <p>{description}</p>
+      <span className={styles.quickLinkCta}>More info</span>
     </a>
   );
 }
@@ -217,13 +223,13 @@ export default function Home() {
           </header>
           <main>
             {/* Quick Links Section */}
-            {quickLinks && quickLinks.length > 0 && (
+            {/* {quickLinks && quickLinks.length > 0 && (
               <section className={styles.quickLinksContainer}>
                 {quickLinks.map((props, idx) => (
                   <QuickLink key={idx} {...props} />
                 ))}
               </section>
-            )}
+            )} */}
 
             {/* Features Section */}
             <div className={styles.featuresContainer}>

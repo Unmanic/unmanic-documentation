@@ -109,7 +109,7 @@ p {
   text-decoration: none;
   box-shadow: none;
   color: white;
-  box-shadow: 1px 4px 15px #007eaf88;
+  box-shadow: 0 6px 14px #007eaf55;
 }
 
 .quickLinksContainer {
@@ -123,13 +123,17 @@ p {
 
 .quickLink {
   background-color: #71717a10;
-  border-radius: 8px;
-  padding: 1rem;
-  border: 1px solid #71717a10;
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-primary) 45%, transparent);
   color: var(--ifm-hero-text-color);
   transition: ease-in-out 0.1s;
   flex: 1 1 calc((100% - 2rem) / 3);
   max-width: calc((100% - 2rem) / 3);
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
 }
 .quickLink p {
   color: var(--ifm-hero-text-color);
@@ -137,7 +141,24 @@ p {
 .quickLink:hover {
   background-color: transparent;
   text-decoration: none;
-  border: 1px solid #71717a41;
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-primary) 70%, transparent);
+}
+
+.quickLinkCta {
+  justify-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-primary) 65%, transparent);
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .featuresContainer {
@@ -179,8 +200,8 @@ p {
   width: 60px;
   padding: 10px;
   border-radius: 25%;
-  background-color: #009edd23;
-  border: 1px solid #009edd23;
+  background-color: #7a7f8724;
+  border: 1px solid #7a7f8724;
 }
 
 @media screen and (max-width: 975px) {

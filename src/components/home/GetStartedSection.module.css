@@ -37,9 +37,9 @@
   font-size: 1rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  box-shadow: 0 10px 20px
-      color-mix(in srgb, var(--ifm-color-primary) 35%, transparent),
-    inset 0 1px 0 color-mix(in srgb, #ffffff 30%, transparent);
+  box-shadow: 0 6px 14px
+      color-mix(in srgb, var(--ifm-color-primary) 25%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 20%, transparent);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
@@ -58,9 +58,9 @@
   text-decoration: none;
   transform: translateY(-2px);
   filter: brightness(1.05);
-  box-shadow: 0 16px 30px
-      color-mix(in srgb, var(--ifm-color-primary) 45%, transparent),
-    inset 0 1px 0 color-mix(in srgb, #ffffff 40%, transparent);
+  box-shadow: 0 10px 20px
+      color-mix(in srgb, var(--ifm-color-primary) 30%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 30%, transparent);
 }
 
 .ctaButton:focus-visible {

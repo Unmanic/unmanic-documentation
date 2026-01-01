@@ -29,8 +29,8 @@
   border-radius: 16px;
   background: color-mix(in srgb, var(--ifm-color-emphasis-100) 70%, #0b0f14);
   border: 1px solid color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
-  box-shadow: 0 12px 30px
-    color-mix(in srgb, var(--ifm-color-emphasis-800) 14%, transparent);
+  box-shadow: 0 6px 18px
+    color-mix(in srgb, var(--ifm-color-emphasis-800) 10%, transparent);
 }
 
 .supporterTitle {
@@ -58,8 +58,8 @@
     var(--ifm-color-emphasis-100) 75%,
     #0f141a 25%
   );
-  box-shadow: 0 16px 40px
-    color-mix(in srgb, var(--ifm-color-emphasis-800) 18%, transparent);
+  box-shadow: 0 10px 26px
+    color-mix(in srgb, var(--ifm-color-emphasis-800) 12%, transparent);
   overflow: hidden;
 }
 

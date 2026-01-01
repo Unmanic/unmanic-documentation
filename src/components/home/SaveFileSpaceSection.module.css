@@ -39,8 +39,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  box-shadow: 0 14px 40px
-    color-mix(in srgb, var(--ifm-color-emphasis-700) 15%, transparent);
+  box-shadow: 0 8px 20px
+    color-mix(in srgb, var(--ifm-color-emphasis-700) 10%, transparent);
 }
 
 .chartHeader {

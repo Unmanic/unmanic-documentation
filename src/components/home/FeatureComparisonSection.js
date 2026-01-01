@@ -118,38 +118,64 @@ function FeatureComparisonSection() {
       centered
       backgroundColor="color-mix(in srgb, #111a20 35%, var(--ifm-background-color))"
       backgroundBlur="8px"
-    > 
+    >
       <div className={styles.sectionBody} data-scroll-reveal>
         <div className={styles.supporterIntro}>
           <p className={styles.supporterLead}>
             Unmanic is free and open source. Supporting it simply means helping
             ensure the future of the project, and no contribution is too small.
-            You can unlock supporter features by helping out in a few easy
-            ways:
+            You can unlock supporter features by helping out in a few easy ways:
           </p>
           <div className={styles.supporterList}>
             <div className={styles.supporterItem}>
               <h3 className={styles.supporterTitle}>GitHub</h3>
               <p className={styles.supporterDetail}>
-                Log in with GitHub to link your profile. Any commit to a project
-                on https://github.com/Unmanic, even a small documentation fix,
-                can bump your login to a supporter tier.
+                Log in with GitHub to link your profile.
+                <br />
+                Any commit to a project on{" "}
+                <a
+                  href="https://github.com/Unmanic"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Unmanic GitHub Org
+                </a>
+                , even a small documentation fix, can bump your login to a
+                supporter tier.
               </p>
             </div>
             <div className={styles.supporterItem}>
               <h3 className={styles.supporterTitle}>Discord</h3>
               <p className={styles.supporterDetail}>
-                Log in with Discord to link your profile. The Discord server
-                awards reputation points for helpful participation. Earning one
-                rep point per month can bump your login to a supporter tier.
+                Log in with Discord to link your profile.
+                <br />
+                The Discord server awards reputation points for helpful
+                participation. Earning one rep point per month can bump your
+                login to a supporter tier. Join the{" "}
+                <a
+                  href="https://unmanic.app/discord"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Unmanic Discord
+                </a>
+                .
               </p>
             </div>
             <div className={styles.supporterItem}>
               <h3 className={styles.supporterTitle}>Patreon</h3>
               <p className={styles.supporterDetail}>
-                Log in with Patreon to link your profile. Any Patreon supporter
-                tier unlocks supporter status. The current minimum tier is
-                $1AUD.
+                Log in with Patreon to link your profile.
+                <br />
+                <strong>Any</strong> Patreon supporter tier unlocks supporter status. Even the minimum tier of $1.50. Support via{" "}
+                <a
+                  href="http://api.unmanic.app/support-auth-api/support"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Patreon
+                </a>
+                .
               </p>
             </div>
           </div>
