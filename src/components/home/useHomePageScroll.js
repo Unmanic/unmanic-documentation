@@ -11,6 +11,10 @@ export function useHomePageScroll() {
 
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+    const showMarkers =
+      typeof window !== "undefined" &&
+      window.location.search.includes("gsapMarkers=1");
+
     const homeRoot =
       document.querySelector(".main-wrapper") || document.documentElement;
     const backdropImage = document.querySelector(
@@ -144,7 +148,8 @@ export function useHomePageScroll() {
           ease: "power2.out",
           scrollTrigger: {
             trigger: target,
-            start: "top 85%",
+            start: "top 83%",
+            markers: showMarkers,
           },
         }
       );
@@ -189,6 +194,7 @@ export function useHomePageScroll() {
             resetBackground();
           }
         },
+        markers: showMarkers,
       });
     });
 
