@@ -40,8 +40,8 @@ function SaveFileSpaceSection() {
 
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: "top 70%",
-        end: "bottom 30%",
+        start: "top 50%",
+        end: "bottom 1%",
         onEnter: animateIn,
         onEnterBack: animateIn,
         onLeave: reset,

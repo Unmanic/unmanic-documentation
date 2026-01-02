@@ -14,6 +14,41 @@ export function useHomePageScroll() {
     const showMarkers =
       typeof window !== "undefined" &&
       window.location.search.includes("gsapMarkers=1");
+    const useDefaultMarkers =
+      showMarkers &&
+      typeof window !== "undefined" &&
+      window.location.search.includes("gsapMarkerDefault=1");
+
+    const useShortScrollerLabels =
+      showMarkers &&
+      !useDefaultMarkers &&
+      typeof window !== "undefined" &&
+      window.location.search.includes("gsapMarkerShortScroller=1");
+
+    let markerStyle = null;
+    if (useShortScrollerLabels) {
+      markerStyle = document.createElement("style");
+      markerStyle.setAttribute("data-gsap-marker-style", "true");
+      markerStyle.textContent = `
+        .gsap-marker-scroller-start,
+        .gsap-marker-scroller-end {
+          color: transparent !important;
+        }
+        .gsap-marker-scroller-start::after,
+        .gsap-marker-scroller-end::after {
+          color: inherit;
+          font: inherit;
+          text-transform: none;
+        }
+        .gsap-marker-scroller-start::after {
+          content: "start";
+        }
+        .gsap-marker-scroller-end::after {
+          content: "end";
+        }
+      `;
+      document.head.appendChild(markerStyle);
+    }
 
     const homeRoot =
       document.querySelector(".main-wrapper") || document.documentElement;
@@ -59,33 +94,44 @@ export function useHomePageScroll() {
         "0.95";
 
       if (image !== currentImage) {
-        homeRoot.style.setProperty("--home-bg-image", image);
         if (backdropImage) {
           gsap.killTweensOf(backdropImage);
-          gsap.set(backdropImage, { autoAlpha: 0 });
           gsap.to(backdropImage, {
-            autoAlpha: 1,
-            duration: 0.8,
+            autoAlpha: 0,
+            duration: 0.35,
             ease: "power2.out",
+            onComplete: () => {
+              homeRoot.style.setProperty("--home-bg-image", image);
+              gsap.to(backdropImage, {
+                autoAlpha: 1,
+                duration: 0.8,
+                ease: "power2.out",
+              });
+            },
           });
+        } else {
+          homeRoot.style.setProperty("--home-bg-image", image);
         }
         currentImage = image;
       }
-      homeRoot.style.setProperty("--home-bg-color", color);
       if (color !== currentColor) {
-        gsap.fromTo(
-          homeRoot,
-          { "--home-bg-fade": 0 },
-          {
-            "--home-bg-fade": fade,
-            duration: 0.8,
-            ease: "power2.out",
-            overwrite: "auto",
-            immediateRender: false,
-          }
-        );
+        const colorTimeline = gsap.timeline({ overwrite: "auto" });
+        colorTimeline.to(homeRoot, {
+          "--home-bg-fade": 0,
+          duration: 0.2,
+          ease: "power2.out",
+        });
+        colorTimeline.add(() => {
+          homeRoot.style.setProperty("--home-bg-color", color);
+        });
+        colorTimeline.to(homeRoot, {
+          "--home-bg-fade": fade,
+          duration: 0.6,
+          ease: "power2.out",
+        });
         currentColor = color;
       } else {
+        homeRoot.style.setProperty("--home-bg-color", color);
         gsap.to(homeRoot, {
           duration: 0.5,
           ease: "power2.out",
@@ -102,7 +148,6 @@ export function useHomePageScroll() {
     };
 
     const resetBackground = () => {
-      defaultBackground = getDefaultBackground();
       if (backdropImage) {
         gsap.to(backdropImage, {
           autoAlpha: 0,
@@ -137,7 +182,9 @@ export function useHomePageScroll() {
     };
 
     const revealTargets = gsap.utils.toArray("[data-scroll-reveal]");
-    revealTargets.forEach((target) => {
+    revealTargets.forEach((target, index) => {
+      const revealId = target.getAttribute("data-scroll-reveal-id");
+      const markerId = revealId || `reveal-${index + 1}`;
       gsap.fromTo(
         target,
         { autoAlpha: 0, y: 24 },
@@ -148,7 +195,8 @@ export function useHomePageScroll() {
           ease: "power2.out",
           scrollTrigger: {
             trigger: target,
-            start: "top 83%",
+            start: "top 85%",
+            ...(useDefaultMarkers ? {} : { id: markerId }),
             markers: showMarkers,
           },
         }
@@ -183,10 +231,12 @@ export function useHomePageScroll() {
 
     const sections = gsap.utils.toArray("[data-home-section]");
     sections.forEach((section, index) => {
-      ScrollTrigger.create({
+      const sectionId =
+        section.getAttribute("id") || `home-section-${index + 1}`;
+      const trigger = ScrollTrigger.create({
         trigger: section,
-        start: "top 55%",
-        end: "bottom 45%",
+        start: "top center",
+        end: "bottom center",
         onEnter: () => applyBackground(section),
         onEnterBack: () => applyBackground(section),
         onLeaveBack: () => {
@@ -194,8 +244,18 @@ export function useHomePageScroll() {
             resetBackground();
           }
         },
+        onRefresh: (self) => {
+          if (self.isActive) {
+            applyBackground(section);
+          }
+        },
+        ...(useDefaultMarkers ? {} : { id: sectionId }),
         markers: showMarkers,
       });
+
+      if (trigger.isActive) {
+        applyBackground(section);
+      }
     });
 
     const handleThemeChange = () => {
