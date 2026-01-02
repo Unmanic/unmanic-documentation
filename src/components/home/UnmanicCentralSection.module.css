@@ -1,0 +1,149 @@
+.sectionBody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.copy {
+  display: contents;
+}
+
+.copyColumn {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.lead {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--ifm-color-content);
+}
+
+.detail {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.6;
+}
+
+.inlineLink {
+  margin: 0 0.25rem;
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+.copyBlock {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.blockTitle {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ifm-color-content-secondary);
+}
+
+.sliderCard {
+  width: 100%;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.slideImage {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  display: block;
+}
+
+.ctaRow {
+  margin-top: 30px;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2.8rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ifm-color-primary) 85%, #ffffff 15%),
+    var(--ifm-color-primary)
+  );
+  border: 1px solid color-mix(in srgb, var(--ifm-color-primary) 70%, #ffffff);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 14px
+      color-mix(in srgb, var(--ifm-color-primary) 25%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 20%, transparent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.ctaButton:hover {
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 10px 20px
+      color-mix(in srgb, var(--ifm-color-primary) 30%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 30%, transparent);
+}
+
+.ctaButton:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ifm-color-primary) 70%, #ffffff);
+  outline-offset: 3px;
+}
+
+.ctaIcon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ctaIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+:global(.slick-dots li button:before) {
+  content: "";
+  display: none;
+}
+
+:global(.slick-dots li) {
+  opacity: 0.35;
+  transition: opacity 0.2s ease;
+}
+
+:global(.slick-dots li.slick-active) {
+  opacity: 1;
+}
+
+.sliderCard :global(.slick-list) {
+  overflow: hidden;
+}
+
+.supporterNote {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ifm-color-content-secondary);
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+@media screen and (max-width: 900px) {
+  .sectionBody {
+    grid-template-columns: 1fr;
+  }
+}
