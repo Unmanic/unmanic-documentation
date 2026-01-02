@@ -32,7 +32,11 @@ const config = {
   projectName: "unmanic-documentation", // Usually your repo name.
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -109,6 +113,13 @@ const config = {
             activeBasePath: "docs",
             label: "Docs",
             position: "left",
+          },
+          {
+            href: "https://central.unmanic.app/",
+            label: "Unmanic Central",
+            position: "left",
+            target: "_blank",
+            rel: "noopener noreferrer",
           },
           // {
           //   to: "stats/",
