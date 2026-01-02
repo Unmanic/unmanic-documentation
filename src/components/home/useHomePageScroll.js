@@ -148,6 +148,11 @@ export function useHomePageScroll() {
     };
 
     const resetBackground = () => {
+      const defaultColor = "var(--ifm-background-color)";
+      const defaultImage = "none";
+      const defaultBlur = defaultBackground.blur || "6px";
+      const defaultFade = defaultBackground.fade || "0.95";
+
       if (backdropImage) {
         gsap.to(backdropImage, {
           autoAlpha: 0,
@@ -156,29 +161,23 @@ export function useHomePageScroll() {
           onComplete: () => {
             homeRoot.style.setProperty(
               "--home-bg-image",
-              defaultBackground.image || "none"
+              defaultImage
             );
           },
         });
-        currentImage = defaultBackground.image || "none";
+        currentImage = defaultImage;
       } else {
-        homeRoot.style.setProperty(
-          "--home-bg-image",
-          defaultBackground.image || "none"
-        );
+        homeRoot.style.setProperty("--home-bg-image", defaultImage);
       }
-      homeRoot.style.setProperty(
-        "--home-bg-color",
-        defaultBackground.color || "var(--ifm-background-color)"
-      );
+      homeRoot.style.setProperty("--home-bg-color", defaultColor);
       gsap.to(homeRoot, {
         duration: 0.6,
         ease: "power2.out",
-        "--home-bg-blur": defaultBackground.blur || "6px",
-        "--home-bg-fade": defaultBackground.fade || "0.95",
+        "--home-bg-blur": defaultBlur,
+        "--home-bg-fade": defaultFade,
         overwrite: "auto",
       });
-      currentColor = defaultBackground.color || "var(--ifm-background-color)";
+      currentColor = defaultColor;
     };
 
     const revealTargets = gsap.utils.toArray("[data-scroll-reveal]");
