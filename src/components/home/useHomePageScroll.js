@@ -257,6 +257,28 @@ export function useHomePageScroll() {
       }
     });
 
+    const scrollToHash = () => {
+      const { hash } = window.location;
+      if (!hash) {
+        return;
+      }
+
+      const target = document.querySelector(hash);
+      if (!target) {
+        return;
+      }
+
+      target.scrollIntoView({ block: "start" });
+    };
+
+    const scheduleHashScroll = () => {
+      requestAnimationFrame(scrollToHash);
+      setTimeout(scrollToHash, 150);
+    };
+
+    scheduleHashScroll();
+    window.addEventListener("hashchange", scheduleHashScroll);
+
     const handleThemeChange = () => {
       defaultBackground = getDefaultBackground();
     };
@@ -271,6 +293,7 @@ export function useHomePageScroll() {
       document.removeEventListener("click", handleScrollTo);
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
       themeObserver.disconnect();
+      window.removeEventListener("hashchange", scheduleHashScroll);
       homeRoot.style.removeProperty("--home-bg-image");
       homeRoot.style.removeProperty("--home-bg-color");
       homeRoot.style.removeProperty("--home-bg-blur");
