@@ -7,7 +7,7 @@ import styles from "./SaveFileSpaceSection.module.css";
 
 function SaveFileSpaceSection() {
   const backgroundImage = useBaseUrl(
-    "img/home/file-size-metrics-data-panel.png"
+    "img/home/file-size-metrics-data-panel.jpg"
   );
   const sectionRef = useRef(null);
   const beforeBarRef = useRef(null);

@@ -7,21 +7,21 @@ import styles from "./UnmanicCentralSection.module.css";
 
 const slides = [
   {
-    src: "img/home/browser-unmanic-central-dashboard-1.png",
+    src: "img/home/browser-unmanic-central-dashboard-1.jpg",
     alt: "Unmanic Central dashboard overview",
   },
   {
-    src: "img/home/browser-unmanic-central-dashboard-2.png",
+    src: "img/home/browser-unmanic-central-dashboard-2.jpg",
     alt: "Unmanic Central dashboard metrics",
   },
   {
-    src: "img/home/browser-unmanic-central-home-1.png",
+    src: "img/home/browser-unmanic-central-home-1.jpg",
     alt: "Unmanic Central home view",
   },
 ];
 
 function UnmanicCentralSection() {
-  const backgroundImage = useBaseUrl("img/home/unmanic-central-dashboard.png");
+  const backgroundImage = useBaseUrl("img/home/unmanic-central-dashboard.jpg");
 
   const sliderSettings = {
     dots: true,

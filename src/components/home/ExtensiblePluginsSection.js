@@ -5,7 +5,7 @@ import HomeSection from "./HomeSection";
 import styles from "./ExtensiblePluginsSection.module.css";
 
 function ExtensiblePluginsSection() {
-  const backgroundImage = useBaseUrl("img/home/plugin-installer-list.png");
+  const backgroundImage = useBaseUrl("img/home/plugin-installer-list.jpg");
 
   return (
     <HomeSection

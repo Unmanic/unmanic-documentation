@@ -1,0 +1,375 @@
+.sectionBody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.copy {
+  display: contents;
+}
+
+.copyColumn {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.copyBlock {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.blockTitle {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ifm-color-content-secondary);
+}
+
+.lead {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--ifm-color-content);
+}
+
+.detail {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.6;
+}
+
+.inlineLink {
+  margin-left: 0.35rem;
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+.valueGrid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.valueCard {
+  padding: 1.2rem;
+  border-radius: 18px;
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 75%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--ifm-color-emphasis-100) 45%,
+    transparent
+  );
+  box-shadow: 0 12px 24px color-mix(in srgb, #000000 12%, transparent);
+}
+
+.valueTitle {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: var(--ifm-color-content);
+}
+
+.valueCopy {
+  margin: 0;
+  color: var(--ifm-color-content-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.transferCard {
+  grid-column: 1 / -1;
+  padding: 1.6rem;
+  border-radius: 20px;
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 80%, transparent);
+  background: color-mix(in srgb, #0b1724 72%, transparent);
+  box-shadow: 0 18px 36px color-mix(in srgb, #000000 18%, transparent);
+  display: grid;
+  gap: 1.4rem;
+}
+
+.transferBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.75fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nodeColumn {
+  display: grid;
+  gap: 1rem;
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 85%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--ifm-color-emphasis-100) 40%,
+    transparent
+  );
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 6%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.nodeLocal {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ifm-color-primary) 15%, transparent),
+    color-mix(in srgb, var(--ifm-color-emphasis-100) 65%, transparent)
+  );
+}
+
+.nodeRemote {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #5eead4 18%, transparent),
+    color-mix(in srgb, var(--ifm-color-emphasis-100) 60%, transparent)
+  );
+}
+
+.nodeText {
+  display: grid;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.nodeLabel {
+  display: block;
+  font-size: clamp(0.82rem, 0.6vw + 0.6rem, 0.95rem);
+  font-weight: 600;
+  color: var(--ifm-color-content);
+}
+
+.nodeDetail {
+  display: block;
+  font-size: clamp(0.7rem, 0.5vw + 0.55rem, 0.85rem);
+  color: var(--ifm-color-content-secondary);
+  margin-top: 0.25rem;
+}
+
+.nodeRemoteImage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 110%;
+  max-width: 70%;
+  max-height: 100%;
+  opacity: 0.8;
+  pointer-events: none;
+  filter: saturate(1.1);
+  object-fit: contain;
+  object-position: top right;
+  transform: translate(6%, -8%);
+  mask-image: linear-gradient(270deg, rgba(0, 0, 0, 1) 0%, transparent 70%);
+  -webkit-mask-image: linear-gradient(
+    270deg,
+    rgba(0, 0, 0, 1) 0%,
+    transparent 90%
+  );
+}
+
+.linkColumn {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.linkTrack {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ifm-color-primary) 45%, transparent),
+    color-mix(in srgb, #5eead4 45%, transparent)
+  );
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 80%, transparent);
+  overflow: hidden;
+}
+
+.packet,
+.packetReturn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  opacity: 0;
+}
+
+.packet {
+  width: 14px;
+  height: 14px;
+  background: var(--ifm-color-primary);
+  box-shadow: 0 0 12px
+    color-mix(in srgb, var(--ifm-color-primary) 70%, transparent);
+  animation: packetSend 3.6s ease-in-out infinite;
+}
+
+.packetReturn {
+  width: 10px;
+  height: 10px;
+  background: #5eead4;
+  box-shadow: 0 0 10px color-mix(in srgb, #5eead4 65%, transparent);
+  animation: packetReturn 3.6s ease-in-out infinite;
+}
+
+.trackTop .packet {
+  animation-delay: 0s;
+}
+
+.trackTop .packetReturn {
+  animation-delay: 1.2s;
+}
+
+.trackBottom .packet {
+  animation-delay: 0.6s;
+}
+
+.trackBottom .packetReturn {
+  animation-delay: 1.8s;
+}
+
+.transferFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  color: var(--ifm-color-content-secondary);
+  font-size: 0.9rem;
+}
+
+.statusItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.statusDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ifm-color-primary) 70%, transparent);
+  box-shadow: 0 0 10px
+    color-mix(in srgb, var(--ifm-color-primary) 60%, transparent);
+  animation: statusPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes packetSend {
+  0% {
+    left: -12px;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% + 12px);
+    opacity: 0;
+  }
+}
+
+@keyframes packetReturn {
+  0% {
+    right: -12px;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    right: calc(100% + 12px);
+    opacity: 0;
+  }
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .sectionBody {
+    grid-template-columns: 1fr;
+  }
+
+  .valueGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .transferCard {
+    padding: 1.2rem;
+    gap: 1.1rem;
+  }
+
+  .transferBody {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr) minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .node {
+    padding: 0.75rem 0.85rem;
+    gap: 0.6rem;
+  }
+
+  .nodeLabel {
+    font-size: clamp(0.72rem, 1.2vw + 0.4rem, 0.85rem);
+  }
+
+  .nodeDetail {
+    font-size: clamp(0.62rem, 1.05vw + 0.35rem, 0.78rem);
+  }
+
+  .nodeRemoteImage {
+    top: 0;
+    right: 0;
+    max-width: 60%;
+    height: 120%;
+    max-height: 100%;
+    transform: translate(8%, -12%);
+  }
+
+  .linkTrack {
+    height: 8px;
+  }
+
+  .packet {
+    width: 10px;
+    height: 10px;
+  }
+
+  .packetReturn {
+    width: 8px;
+    height: 8px;
+  }
+
+  .transferFooter {
+    gap: 0.7rem;
+    font-size: 0.8rem;
+  }
+}
