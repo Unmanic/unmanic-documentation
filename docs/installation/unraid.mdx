@@ -5,7 +5,6 @@ id: unraid
 ---
 import ReactPlayer from 'react-player';
 
-
 ## Video Guide:
 
 <ReactPlayer
@@ -25,6 +24,11 @@ import ReactPlayer from 'react-player';
   3. Modify the container variables as desired:
 
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-volumes.png').default} />
+
+Here are a few common variables to consider:
+
+- Cache Directory: This is the temporary workspace where Unmanic copies files while processing. Each worker can create up to two full-size copies (input + output), so size accordingly. For example, if you process ~10 GB files with 3 workers, you should plan for up to ~60 GB of cache (10 GB x 2 x 3). If the cache directory runs out of space, jobs will fail. Use a fast disk or a dedicated share with enough headroom for your worker count and typical file sizes.
+- Library mounts: Add as many library mounts as you need, remove the defaults, or create new ones. Unmanic libraries can point at any container path you define, so choose the layout that matches your shares. Ensure the paths are readable and writable by the container user (PUID/PGID) or Unmanic will not be able to scan or write output files.
 
 :::tip
 ### Configuring RAM as the *Cache Directory*.
@@ -60,22 +64,24 @@ Once the image is downloaded you should see it appear in the **Docker** tab.
 
 To use your NVIDIA GPU for hardware encoding in this container, follow these steps:
 
-  1. Install the [Unraid Nvidia-Driver Plugin](https://forums.unraid.net/topic/98978-plugin-nvidia-driver/) to install
-    an up-to-date NVIDIA driver onto your Unraid server.
+  1. Install the [Unraid Nvidia-Driver Plugin](https://forums.unraid.net/topic/98978-plugin-nvidia-driver/) from the **Apps** tab.
 
 <img className={"screenshot"} src={require('/img/unraid-nvidia-plugin.png').default} />
 
-  2. Toggle this Docker Container template editor to "Advanced View".
-  3. In the "Extra Parameters" field, add "--runtime=nvidia".
+  2. Go to the **Settings** tab, then under **User Utilities** open the **Nvidia Driver** plugin.
+  3. Select the driver for your card, install it, and reboot the server.
+  4. Go to the **Docker** tab, click **Unmanic**, and select **Edit** to open the container template.
+  5. Toggle this Docker Container template editor to "Advanced View".
+  6. In the "Extra Parameters" field, add `--runtime=nvidia`.
 
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-nvidia-extra-params.png').default} />
 
-  4. Expand the template "Show more settings..." section near the bottom.
-  5. In the "NVIDIA_VISIBLE_DEVICES" variable, copy your GPU UUID (can be found in the Unraid Nvidia Plugin. See that forum thread for details)
+  7. Expand the template "Show more settings..." section near the bottom.
+  8. In the "NVIDIA_VISIBLE_DEVICES" variable, copy your GPU UUID (can be found in the Unraid Nvidia Plugin. See that forum thread for details)
 
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-nvidia-gpu.png').default} />
 
-Once you have completed these steps, you should be able to use the **h264_nvenc** and **hvec_nvenc** encoders.
+Once you have completed these steps, you should be able to use the **h264_nvenc** and **hvec_nvenc** encoders or use the AI upscaling plugin.
 
 ### Intel hardware encoding:
 
@@ -86,7 +92,7 @@ To use your INTEL Processor for hardware encoding in this container, follow thes
 <img className={"screenshot"} src={require('/img/unraid-intel-top-plugin.png').default} />
 
   2. Toggle this Docker Container template editor to "Advanced View".
-  3. In the "Extra Parameters" field, add "--device=/dev/dri".
+  3. In the "Extra Parameters" field, add `--device=/dev/dri`.
 
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-dri-device-extra-params.png').default} />
 
@@ -101,7 +107,7 @@ To use your AMD APU/GPU for hardware encoding in this container, follow these st
 <img className={"screenshot"} src={require('/img/unraid-radeon-top-plugin.png').default} />
 
   2. Toggle this Docker Container template editor to "Advanced View".
-  3. In the "Extra Parameters" field, add "--device=/dev/dri".
+  3. In the "Extra Parameters" field, add `--device=/dev/dri`.
 
 <img className={"screenshot"} src={require('/img/unraid-unmanic-template-dri-device-extra-params.png').default} />
 
