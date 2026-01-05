@@ -18,6 +18,15 @@ All documentation is stored in Markdown files in `./docs`. This project builds a
 
 One particular focus of the documentation is how to create plugins.
 
+## Documentation formatting
+
+- Do not hard-wrap prose in Markdown; keep sentences as single lines to simplify diffs and edits.
+
+## Community guides
+
+- Community guides belong in `./docs/guides`.
+- Each guide should include the three shields.io header chips for Difficulty, Setup Time, and Original Author.
+
 ## Frontend conventions (home page)
 
 - Home page-specific components live under `src/components/home` and are imported by `src/pages/index.js`.

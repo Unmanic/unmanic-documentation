@@ -1,8 +1,12 @@
 ---
 title: Basic Authentication with Nginx
 description: Basic Authentication with Nginx
-id: basic_auth_nginx.md
+id: basic_auth_nginx
 ---
+
+![Difficulty](https://img.shields.io/badge/Difficulty-moderate-orange?style=flat)
+![Setup Time](https://img.shields.io/badge/Setup%20Time-15%20minutes-orange?style=flat)
+[![Original Author](https://img.shields.io/badge/Original%20Author-exu--g-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/exu-g)
 
 Unmanic can use basic authentication when connecting to another instance. Authentication itself however isn't built into Unmanic. Instead a reverse proxy like Nginx must be used to handle the authentication.
 

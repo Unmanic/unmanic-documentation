@@ -41,8 +41,8 @@
     0 1px 5px #0003,
     0 2px 2px #00000024,
     0 3px 1px -2px #0000001f;
-  width: 100%;
-  margin-bottom: var(--ifm-leading);
+  width: 70%;
+  margin: 0 auto var(--ifm-leading);
 }
 .inline-text-screenshot {
   border-radius: 4px;
@@ -53,4 +53,10 @@
   height: 1.5em;
   display: inline-block;
   vertical-align: middle;
+}
+
+.mermaid-sequence .docusaurus-mermaid-container svg rect.rect {
+  stroke: #d946ef;
+  stroke-width: 2px;
+  fill: rgba(217, 70, 239, 0.02);
 }

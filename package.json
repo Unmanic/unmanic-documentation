@@ -6,6 +6,7 @@
         "docusaurus": "docusaurus",
         "start": "docusaurus start --no-open --port 3421",
         "build": "docusaurus build",
+        "check:guides": "node scripts/check-guides-shields.js",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",
         "clear": "docusaurus clear",
@@ -17,6 +18,7 @@
         "@docusaurus/core": "^3.9.2",
         "@docusaurus/plugin-client-redirects": "^3.9.2",
         "@docusaurus/preset-classic": "^3.9.2",
+        "@docusaurus/theme-mermaid": "^3.9.2",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
         "@mdx-js/react": "^3.0.0",
@@ -29,7 +31,6 @@
         "react-chartjs-2": "^5.3.0",
         "react-dom": "^19.0.0",
         "react-player": "^3.3.2",
-        "react-simple-flowchart": "^1.2.4",
         "react-slick": "^0.31.0",
         "slick-carousel": "^1.8.1"
     },

@@ -8,6 +8,7 @@ import TabItem from '@theme/TabItem';
 
 ![Difficulty](https://img.shields.io/badge/Difficulty-easy-green?style=flat)
 ![Setup Time](https://img.shields.io/badge/Setup%20Time-5%20minutes-green?style=flat)
+[![Original Author](https://img.shields.io/badge/Original%20Author-josh5-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/josh5)
 
 
 A number of plugins for Unmanic support hardware acceleration that utilise an NVIDIA GPU. This includes hardware acceleration (HWA) of video decoding/encoding in tools like FFmpeg or HandBrake CLI using the NVIDIA NVDEC/NVENC decoder/encoder.
@@ -170,4 +171,3 @@ values={[
 
   </TabItem>
 </Tabs>
-

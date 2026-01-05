@@ -1,0 +1,54 @@
+---
+title: Remote Installations
+description: Unmanic Configuration - Link - Remote Installations
+id: link_remote_installations
+---
+
+## Adding a new link
+
+To add a new link, open the *Add remote installation* dialog.
+
+<img className={"screenshot"} src={require('/img/unmanic-settings-link-add1.png').default} />
+
+Insert the **Hostname** or **IP** as well as the **port** of the remote installation that you wish to link to.
+
+<img className={"screenshot"} src={require('/img/unmanic-settings-link-add2.png').default} />
+
+Select the authentication type and add credentials if required by the remote installation.
+
+:::note
+Unmanic does not provide built-in authentication. If you need auth, place Unmanic behind a reverse proxy (for example
+Nginx) and configure authentication there. See [Basic Authentication with Nginx](/docs/guides/basic_auth_nginx).
+:::
+
+:::note
+If your remote installation is behind a proxy adding a TLS SSL layer, be sure to add *https://* before the hostname or IP.
+:::
+
+Once you add a new link, it will be displayed immediately on both installations.
+
+## Connection status
+
+<img className={"screenshot"} src={require('/img/unmanic-settings-link-connected.png').default} />
+
+When a remote installation is available, the Unmanic icon will display in colour. <img className={"inline-text-screenshot"} src={require('/img/unmanic-link-connected-icon.png').default} title={"Connected Link"} />
+
+<img className={"screenshot"} src={require('/img/unmanic-settings-link-disconnected.png').default} />
+
+When the remote installation is not available, the Unmanic icon will display in greyscale. <img className={"inline-text-screenshot"} src={require('/img/unmanic-link-disconnected-icon.png').default} title={"Disconnected Link"} />
+
+If both installations show the other remote installation icon in colour, then the link will be synchronised bi-directionally.
+That is to say, modifying the configuration either of the installations will sync that configuration over to the other.
+
+If only one installation shows the other remote installation icon in colour, then the link is synchronised one way.
+This means that settings will be pushed out from only the installation that is able to see the other.
+
+Unmanic does not require that links be configured to sync bi-directionally.
+Because of this, a link may traverse more complicated network configurations such as a NAT.
+
+## Configure remote installation link
+
+Click the configure button <img className={"inline-text-screenshot"} src={require('/img/unmanic-configure-icon.png').default} title={"Connected Link"} /> to open
+the link's configuration.
+
+For the configuration options, see [Remote installation configuration](./link_remote_configuration).

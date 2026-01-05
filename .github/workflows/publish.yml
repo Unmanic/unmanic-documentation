@@ -30,6 +30,10 @@ jobs:
         id: install-step
         run: npm ci --cache .cache/npm --prefer-offline
 
+      # Guides format check
+      - name: Check guide headers
+        run: npm run check:guides
+
       # Build
       - name: Build
         id: build-step
@@ -54,6 +58,10 @@ jobs:
       - name: Install
         id: install-step
         run: npm ci --cache .cache/npm --prefer-offline
+
+      # Guides format check
+      - name: Check guide headers
+        run: npm run check:guides
 
       # Build
       - name: Build

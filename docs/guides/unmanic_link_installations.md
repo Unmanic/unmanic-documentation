@@ -39,6 +39,11 @@ On `main`, use the plus sign to add a remote installation:
 - Click `Add`.
 - Click the `Configure` icon and enable `Send tasks to this installation when workers are available`.
 
+:::note
+Unmanic does not provide built-in authentication. If you need auth, place Unmanic behind a reverse proxy (for example
+Nginx) and configure authentication there. See [Basic Authentication with Nginx](/docs/guides/basic_auth_nginx).
+:::
+
 Once setup, the once grey logo should now turn blue. This indicates the remote installation is connected. The final result should look like this (as of version 0.2.4):
 
 <img className={"screenshot"} src={require('/img/guides/unmanic_link_installations_images/remote_connected.png').default} />

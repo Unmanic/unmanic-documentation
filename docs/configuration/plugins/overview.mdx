@@ -4,9 +4,6 @@ description: An Overview of Unmanic Plugins
 id: overview
 ---
 
-import Flowchart from '/src/components/diagrams/Flowchart';
-
-
 Unmanic features a plugin system to extend Unmanic's capabilities.
 Plugins are stand-alone scripts or "modules" that are executed by Unmanic at defined stages during its task processing.
 
@@ -24,69 +21,83 @@ Use plugins to build powerful library optimisation flows.
 
 ## Plugin execution during Task flow
 
-Sections in pink will execute plugins configured for that stage of the process.
+Sections in blue will execute plugins configured for that stage of the process.
 
-<Flowchart
-    chartCode={`
-    st=>start: Start
-    discoverFile=>operation: File discovered by Library Scanner or Event Monitor.
-    libraryTestFileStart=>operation: Library Manager creates a list of all plugin it needs for testing files.
-    libraryTestFileExecPlugin=>operation: Library Management - File test\nCheck if file should be added to pending tasks?|runner
-    libraryTestPluginRequestIgnoreFile=>condition: Did the plugin request that\nUnmanic ignore this file?
-    libraryTestPluginRequestTaskCreate=>condition: Did the plugin request that\nUnmanic create a task for this file?
-    libraryTestFileTaskCheckLoop=>condition: Has the Library Manager completed\nexecuting all plugins?
-    fileNotAdded=>operation: File not added. to pending tasks queue.
-    pendingTasks=>operation: Added to pending tasks list.
-    workerCollects=>operation: Worker picks up file from pending tasks queue.
-    workerProcessTaskStart=>operation: Worker creates a list of all plugins it needs to run.
-    workerExecPlugin=>operation: Worker - Processing file\nworker executes a single plugin.|runner
-    workerExecPluginCheck=>condition: Did the plugin execute OK?
-    workerExecPluginRequestCommand=>condition: Did the plugin request that\nUnmanic execute a command?
-    workerExecCommand=>operation: Worker executes the command given by the plugin.
-    workerExecCommandCheck=>condition: Did the command execute OK?
-    workerProcessTaskCheckLoop=>condition: Has the worker completed\nexecuting all plugins?
-    workerCompletesTask=>operation: Worker completes task and places it into a Post Processor queue
-    postProcessorFileMoveTaskStart=>operation: Post-processor creates a list of all plugins it needs to run for file movements.
-    postProcessorFileMoveExecPlugin=>operation: Post-processor - File movements\nPost-processor executes a single file movement plugin.|runner
-    postProcessorFileMoveTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all plugins?
-    postProcessorTaskSuccessTaskStart=>operation: Post-processor creates a list of all plugins it needs to run for task results.
-    postProcessorTaskSuccessExecPlugin=>operation: Post-processor - Marking task success/failure\nPost-processor executes a single task results plugin.|runner
-    postProcessorTaskSuccessTaskCheckLoop=>condition: Has the Post-processor completed\nexecuting all plugins?
-    taskSuccess=>condition: Were all jobs for this task successful?
-    completedTasksFailed=>operation: Task added to history as failure.
-    completedTasksSuccess=>operation: Task added to history as success.
-    eIgnored=>end: End - File ignored
-    eFailed=>end: End - File failed at least one stage of being processed
-    eSuccess=>end: End - File successfully processed
-    
-    st->discoverFile->libraryTestFileStart
-    libraryTestFileStart->libraryTestFileExecPlugin->libraryTestPluginRequestIgnoreFile
-    libraryTestPluginRequestIgnoreFile(yes,right)->fileNotAdded->eIgnored
-    libraryTestPluginRequestIgnoreFile(no,bottom)->libraryTestPluginRequestTaskCreate
-    libraryTestPluginRequestTaskCreate(yes,left)->pendingTasks
-    libraryTestPluginRequestTaskCreate(no,bottom)->libraryTestFileTaskCheckLoop
-    libraryTestFileTaskCheckLoop(no,left)->libraryTestFileExecPlugin
-    libraryTestFileTaskCheckLoop(yes,right)->fileNotAdded->eIgnored
-    pendingTasks->workerCollects->workerProcessTaskStart
-    workerProcessTaskStart->workerExecPlugin->workerExecPluginCheck
-    workerExecPluginCheck(no,right)->workerCompletesTask
-    workerExecPluginCheck(yes,bottom)->workerExecPluginRequestCommand
-    workerExecPluginRequestCommand(yes,bottom)->workerExecCommand
-    workerExecPluginRequestCommand(no,right)->workerProcessTaskCheckLoop
-    workerExecCommand->workerExecCommandCheck
-    workerExecCommandCheck(no,bottom)->workerCompletesTask
-    workerExecCommandCheck(yes,right)->workerProcessTaskCheckLoop
-    workerProcessTaskCheckLoop(no,right)->workerExecPlugin
-    workerProcessTaskCheckLoop(yes,bottom)->workerCompletesTask
-    workerCompletesTask->postProcessorFileMoveTaskStart->postProcessorFileMoveExecPlugin
-    postProcessorFileMoveExecPlugin(bottom)->postProcessorFileMoveTaskCheckLoop
-    postProcessorFileMoveTaskCheckLoop(no,right)->postProcessorFileMoveExecPlugin
-    postProcessorFileMoveTaskCheckLoop(yes,bottom)->postProcessorTaskSuccessTaskStart
-    postProcessorTaskSuccessTaskStart->postProcessorTaskSuccessExecPlugin
-    postProcessorTaskSuccessExecPlugin->postProcessorTaskSuccessTaskCheckLoop
-    postProcessorTaskSuccessTaskCheckLoop(no,right)->postProcessorTaskSuccessExecPlugin
-    postProcessorTaskSuccessTaskCheckLoop(yes,bottom)->taskSuccess
-    taskSuccess(no,right)->completedTasksFailed->eFailed
-    taskSuccess(yes,bottom)->completedTasksSuccess->eSuccess
-`}
-/>
+```mermaid
+%%{init: {"theme":"base","themeVariables":{
+  "fontFamily":"system-ui, -apple-system, Segoe UI, sans-serif",
+  "primaryColor":"#0f172a",
+  "primaryTextColor":"#e2e8f0",
+  "primaryBorderColor":"#38bdf8",
+  "lineColor":"#94a3b8",
+  "tertiaryColor":"#111827",
+  "tertiaryBorderColor":"#475569",
+  "secondaryColor":"#1f2937",
+  "secondaryBorderColor":"#f59e0b",
+  "noteBkgColor":"#0f172a",
+  "noteBorderColor":"#38bdf8"
+}}}%%
+flowchart TD
+  classDef plugin fill:#0b2536,stroke:#38bdf8,stroke-width:1.5px,color:#e2e8f0;
+  classDef io fill:#111827,stroke:#475569,stroke-width:1px,color:#e2e8f0;
+  classDef warn fill:#2a1f0a,stroke:#f59e0b,stroke-width:1px,color:#fef3c7;
+
+  st([Start]):::io
+  discoverFile[File discovered by Library Scanner or Event Monitor]:::io
+  libraryTestFileStart[Library Manager collects plugins for file testing]:::io
+  libraryTestFileExecPlugin[Library file test<br/>plugin execution]:::plugin
+  libraryTestPluginRequestIgnoreFile{Plugin requests ignore?}
+  libraryTestPluginRequestTaskCreate{Plugin requests task?}
+  libraryTestFileTaskCheckLoop{All library plugins executed?}
+  fileNotAdded[File not added to pending tasks]:::warn
+  pendingTasks[Added to pending tasks list]:::io
+  workerCollects[Worker picks up task]:::io
+  workerProcessTaskStart[Worker collects processing plugins]:::io
+  workerExecPlugin[Worker executes processing plugin]:::plugin
+  workerExecPluginCheck{Plugin executed OK?}
+  workerExecPluginRequestCommand{Plugin requests command?}
+  workerExecCommand[Worker executes command]:::io
+  workerExecCommandCheck{Command executed OK?}
+  workerProcessTaskCheckLoop{All worker plugins executed?}
+  workerCompletesTask[Worker finishes task<br/>and hands to post-processor]:::io
+  postProcessorFileMoveTaskStart[Post-processor collects file-move plugins]:::io
+  postProcessorFileMoveExecPlugin[Post-processor executes file-move plugin]:::plugin
+  postProcessorFileMoveTaskCheckLoop{All file-move plugins executed?}
+  postProcessorTaskSuccessTaskStart[Post-processor collects result plugins]:::io
+  postProcessorTaskSuccessExecPlugin[Post-processor executes result plugin]:::plugin
+  postProcessorTaskSuccessTaskCheckLoop{All result plugins executed?}
+  taskSuccess{All jobs successful?}
+  completedTasksFailed[Task saved as failure]:::warn
+  completedTasksSuccess[Task saved as success]:::io
+  eIgnored([End - File ignored]):::io
+  eFailed([End - Task failed]):::warn
+  eSuccess([End - Task complete]):::io
+
+  st-->discoverFile-->libraryTestFileStart
+  libraryTestFileStart-->libraryTestFileExecPlugin-->libraryTestPluginRequestIgnoreFile
+  libraryTestPluginRequestIgnoreFile-- yes -->fileNotAdded-->eIgnored
+  libraryTestPluginRequestIgnoreFile-- no -->libraryTestPluginRequestTaskCreate
+  libraryTestPluginRequestTaskCreate-- yes -->pendingTasks
+  libraryTestPluginRequestTaskCreate-- no -->libraryTestFileTaskCheckLoop
+  libraryTestFileTaskCheckLoop-- no -->libraryTestFileExecPlugin
+  libraryTestFileTaskCheckLoop-- yes -->fileNotAdded
+  pendingTasks-->workerCollects-->workerProcessTaskStart
+  workerProcessTaskStart-->workerExecPlugin-->workerExecPluginCheck
+  workerExecPluginCheck-- no -->workerCompletesTask
+  workerExecPluginCheck-- yes -->workerExecPluginRequestCommand
+  workerExecPluginRequestCommand-- yes -->workerExecCommand
+  workerExecPluginRequestCommand-- no -->workerProcessTaskCheckLoop
+  workerExecCommand-->workerExecCommandCheck
+  workerExecCommandCheck-- no -->workerCompletesTask
+  workerExecCommandCheck-- yes -->workerProcessTaskCheckLoop
+  workerProcessTaskCheckLoop-- no -->workerExecPlugin
+  workerProcessTaskCheckLoop-- yes -->workerCompletesTask
+  workerCompletesTask-->postProcessorFileMoveTaskStart-->postProcessorFileMoveExecPlugin-->postProcessorFileMoveTaskCheckLoop
+  postProcessorFileMoveTaskCheckLoop-- no -->postProcessorFileMoveExecPlugin
+  postProcessorFileMoveTaskCheckLoop-- yes -->postProcessorTaskSuccessTaskStart
+  postProcessorTaskSuccessTaskStart-->postProcessorTaskSuccessExecPlugin-->postProcessorTaskSuccessTaskCheckLoop
+  postProcessorTaskSuccessTaskCheckLoop-- no -->postProcessorTaskSuccessExecPlugin
+  postProcessorTaskSuccessTaskCheckLoop-- yes -->taskSuccess
+  taskSuccess-- yes -->completedTasksSuccess-->eSuccess
+  taskSuccess-- no -->completedTasksFailed-->eFailed
+```

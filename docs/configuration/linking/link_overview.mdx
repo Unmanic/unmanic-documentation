@@ -1,0 +1,134 @@
+---
+title: Link Overview
+description: Unmanic Configuration - Link - Overview
+id: link_overview
+---
+
+Linking lets multiple Unmanic installations cooperate so tasks can be processed across machines while keeping control in one place.
+
+## How linking works
+
+1. A local installation connects to one or more remote installations.
+2. Tasks are queued on the local installation.
+3. When a remote installation is available and configured to receive tasks, tasks are assigned to it.
+4. The task is processed on the remote worker and results are returned to the local installation for post-processing.
+
+## Remote Task flow diagram
+
+<div className="mermaid-sequence">
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{
+  "fontFamily":"system-ui, -apple-system, Segoe UI, sans-serif",
+  "primaryColor":"#0f172a",
+  "primaryTextColor":"#e2e8f0",
+  "primaryBorderColor":"#38bdf8",
+  "lineColor":"#94a3b8",
+  "actorBorder":"#38bdf8",
+  "actorBkg":"#111827",
+  "noteBkgColor":"#0f172a",
+  "noteBorderColor":"#38bdf8",
+  "labelBoxBkgColor":"#111827",
+  "labelBoxBorderColor":"#38bdf8"
+}}}%%
+sequenceDiagram
+  autonumber
+  box Local Installation
+    participant LocPending as Pending Task Queue
+    participant Foreman as Foreman
+    participant LocalPost as Post-processor
+    participant LinkMgr as Link manager
+  end
+  box Remote Installation
+    participant RmtAPI as Web API
+    participant RmtPending as Pending Task Queue
+    participant RmtForeman as Foreman
+    participant Worker as Worker
+    participant RmtPost as Post-processor
+  end
+
+  LocPending->>Foreman: Task ready
+  Foreman->>LinkMgr: Hand off task as remote
+  loop Periodic link heartbeat
+    LinkMgr->>RmtAPI: Probe API for availability/workers
+  end
+  LinkMgr->>RmtAPI: Create remote pending task
+  RmtAPI->>RmtPending: Register remote task
+  LinkMgr->>RmtAPI: Upload file payload
+  RmtAPI->>RmtPending: Cache file for task
+  RmtPending->>RmtForeman: Remote task ready
+  RmtForeman->>Worker: Assign task to worker
+  Worker-->>RmtForeman: Task processed
+  RmtForeman->>RmtPost: Hand off for completion
+  RmtPost-->>RmtAPI: Mark remote task complete without post-processing
+  loop Local status polling
+    LinkMgr->>RmtAPI: Fetch task status
+  end
+  RmtAPI-->>LinkMgr: Task complete
+  LinkMgr->>RmtAPI: Download completed file + metadata
+  LinkMgr->>Foreman: Return completed task + metadata
+  Foreman->>LocalPost: Post-process task results
+```
+
+</div>
+
+## Shared library path behavior for Remote Task
+
+If both installations can access the same files, the library paths must resolve to the same directory, even if the configured path strings are different on each machine. For example, a network share might be mounted as `/mnt/media/library` on the local host and `/media/library` on the remote host. In that case, each library points to its own local mount path, but both mounts reference the same underlying storage. When the matching file is reachable relative to the configured library path, the remote Unmanic installation reads it from the shared location instead of uploading the file through the API.
+
+<div className="mermaid-sequence">
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{
+  "fontFamily":"system-ui, -apple-system, Segoe UI, sans-serif",
+  "primaryColor":"#0f172a",
+  "primaryTextColor":"#e2e8f0",
+  "primaryBorderColor":"#38bdf8",
+  "lineColor":"#94a3b8",
+  "actorBorder":"#38bdf8",
+  "actorBkg":"#111827",
+  "noteBkgColor":"#0f172a",
+  "noteBorderColor":"#38bdf8",
+  "labelBoxBkgColor":"#111827",
+  "labelBoxBorderColor":"#38bdf8"
+}}}%%
+sequenceDiagram
+  autonumber
+  box Local Installation
+    participant LocalPost as Post-processor
+    participant LinkMgr as Link manager
+  end
+  box Remote Installation
+    participant RmtAPI as Web API
+    participant RmtPending as Pending Task Queue
+    participant RmtForeman as Foreman
+    participant Worker as Worker
+    participant RmtPost as Post-processor
+  end
+  participant Mount as Shared library path
+
+  LinkMgr->>RmtAPI: Check shared library path for task
+  RmtAPI-->>LinkMgr: Shared path exists
+  LinkMgr->>RmtAPI: Create remote task with relative path
+  RmtAPI->>RmtPending: Register remote task
+  RmtPending->>RmtForeman: Remote task ready
+  RmtForeman->>Worker: Assign task to worker
+  Worker->>Mount: Read file from shared path
+  Worker-->>RmtForeman: Task processed
+  RmtForeman->>RmtPost: Hand off for completion
+  RmtPost-->>RmtAPI: Mark remote task complete without post-processing
+  loop Local status polling
+    LinkMgr->>RmtAPI: Fetch task status
+  end
+  RmtAPI-->>LinkMgr: Task complete
+  LinkMgr->>RmtAPI: Download completed file + metadata
+  LinkMgr->>LocalPost: Post-process task results
+```
+
+</div>
+
+:::note
+For remote tasks, the remote post-processor first tries to move the final cache file into a temporary directory alongside the original source path (on the shared library path) if it is writable. If that move fails, it falls back to keeping the file in the Unmanic cache, and the local installation downloads it over HTTP.
+
+If the local installation only needs to move the processed file to replace the original, post-processing is faster.
+:::
