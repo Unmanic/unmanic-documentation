@@ -1,18 +1,14 @@
 ---
-title: Install Unmanic - Kubernetes
-description: Unmanic Kubernetes Install Guide
-id: unmanic_kubernetes_install
+title: Installation on Kubernetes
+description: Unmanic Installation on Kubernetes
+id: kubernetes
 ---
-
-![Difficulty](https://img.shields.io/badge/Difficulty-moderate-orange?style=flat)
-![Setup Time](https://img.shields.io/badge/Setup%20Time-30%20minutes-orange?style=flat)
-[![Original Author](https://img.shields.io/badge/Original%20Author-preimmortal-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/preimmortal)
 
 ## Requirements
 
-This requires a functional Kubernetes Cluster or similar (k3s, minikube, etc).
+This requires a functional Kubernetes cluster or similar (k3s, minikube, etc).
 
-For Kubernetes installation instructions
+For Kubernetes installation instructions:
 
 - [Kubernetes Getting Started Guide](https://kubernetes.io/docs/setup/)
 
@@ -24,12 +20,12 @@ K3S 1.22.7 was used to create this guide.
 
 There are two parts to running Unmanic in Kubernetes.
 
-1. Deployment - The unmanic container configuration
-2. Service - The service that exposes the unmanic container to outside the Kubernetes cluster
+1. Deployment - the Unmanic container configuration
+2. Service - the service that exposes the Unmanic container to outside the Kubernetes cluster
 
 For a basic deployment and service, create a file `unmanic.yaml` and append the following:
 
-```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -90,22 +86,22 @@ spec:
       nodePort: 30000
 ```
 
-To start the deployment and service, run the following command: `kubectl create -f unmanic.yaml`
+To start the deployment and service, run the following command: `kubectl create -f unmanic.yaml`.
 
-To delete the deployment and service, run the following command: `kubectl delete -f unmanic.yaml`
+To delete the deployment and service, run the following command: `kubectl delete -f unmanic.yaml`.
 
-## Running Unmanic Rootless
+## Running Unmanic rootless
 
-In kubernetes you can run containers as non root, doing so will allow you to harden the system for outside/inside threats.
-Use securityContext to set the user to be used by the app, make sure your library storage is also set to the same uid/gid as you specify here.
+In Kubernetes you can run containers as non-root, doing so will allow you to harden the system for outside/inside threats.
 
-To not run the s6-overlay(which needs root) add ``command: ["/usr/local/bin/unmanic-service"]``.
-
-Specify as a env the home location which is supposed to be set to the config volume location.
+Use `securityContext` to set the user to be used by the app, make sure your library storage is also set to the same UID/GID as you specify here.
 
 
-Use only as reference
-```
+Specify as an env the home location which is supposed to be set to the config volume location.
+
+Use only as reference:
+
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -123,20 +119,19 @@ spec:
         app: unmanic
     spec:
       securityContext:
-        runAsUser: 568 # in this case i will be using user 568, change how you like
+        runAsUser: 568 # In this case I will be using user 568, change how you like
         runAsGroup: 568
         fsGroup: 568
       containers:
       - name: unmanic
         image: josh5/unmanic:latest
-        command: ["/usr/local/bin/unmanic-service"] # Hard requirement for running rootless
         ports:
         - containerPort: 8888
           protocol: TCP
           name: http
         env:
         - name: HOME # Hard requirement for running rootless
-          value: "/config" 
+          value: "/config"
         volumeMounts:
         - name: unmanic-config
           mountPath: /config
@@ -145,58 +140,63 @@ spec:
       volumes:
         - name: unmanic-config
           persistentVolumeClaim:
-            claimName: unmanic-rbd # In this example I am using a persistentvolume claim, change as you see fit
+            claimName: unmanic-rbd # In this example I am using a persistent volume claim, change as you see fit
         - name: media
           nfs:
             server: IP
             path: /path/to/export/folder
 ```
 
-Its possible that not all plugins will work.
-Tested with: Transcode Video Files and File Size Metrics Data Panel
+:::warning
+It is possible that not all plugins will work.
 
-## Tuning Kubernetes Unmanic Configuration
+Note that any `apt` dependencies required by some plugins will fail to install on container startup when running as a non-root user.
+:::
+
+Tested with: Transcode Video Files and File Size Metrics Data Panel.
+
+## Tuning Kubernetes Unmanic configuration
 
 Note that the following values should be tuned based on need:
 
 - Using NFS to share the library path to Kubernetes, please update as necessary if using CIFS or another file sharing service
 - Using emptyDir for the config and cache path, please update emptyDir to more permanent paths
-- Using NodePort to expose the Unmanic service, please update when using a load balancer or other method to expose the unmanic deployment
+- Using NodePort to expose the Unmanic service, please update when using a load balancer or other method to expose the Unmanic deployment
 
 :::note
 It is important not to use `emptyDir` for the `unmanic-config` in a permanent installation because the config will be deleted upon stopping the deployment.
+
 Please consider using a more permanent volume such as iSCSI or backing up to NFS.
 
 - [Kubernetes Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
-
 :::
 
 ## Accessing Unmanic via NodePort
 
-Unmanic will be available via the web browser at following address: `<Kubernetes_Cluster_Address>:30000`
+Unmanic will be available via the web browser at following address: `<Kubernetes_Cluster_Address>:30000`.
 
-## Linux Hardware Acceleration (VA-API)
+## Linux hardware acceleration (VA-API)
 
-### Intel Integrated GPU
+### Intel integrated GPU
 
 It is possible to expose underlying Intel integrated GPU hardware that supports QSV/VA-API hardware acceleration into a Kubernetes workload. The proper method for implementing this functionality is through two additional Kubernetes add-ons:
 
-- [Node feature discovery](https://kubernetes-sigs.github.io/node-feature-discovery/) to automatically detect and label worker nodes with specialized hardware.
-- [Intel GPU Plugin](https://github.com/intel/intel-device-plugins-for-kubernetes) to automatically expose GPU hardware to workloads, e.g. `/dev/dri/renderD128`.
+- [Node feature discovery](https://kubernetes-sigs.github.io/node-feature-discovery/) to automatically detect and label worker nodes with specialized hardware
+- [Intel GPU Plugin](https://github.com/intel/intel-device-plugins-for-kubernetes) to automatically expose GPU hardware to workloads, for example `/dev/dri/renderD128`
 
 :::note
 This guide does not walk through the full installation and configuration for the aforementioned Kubernetes add-ons. This process is relatively straightforward using the most up-to-date guides from the associated links to upstream repositories.
 :::
 
-### Prerequistes
+### Prerequisites
 
 1. Validate hardware compatibility
 2. Install Intel GPU drivers
-3. Install and configure [intel-gpu-plugin](https://github.com/intel/intel-device-plugins-for-kubernetes) add-on
-4. Install and configure [node-feature-discovery](https://github.com/kubernetes-sigs/node-feature-discovery) add-on
+3. Install and configure the [intel-gpu-plugin](https://github.com/intel/intel-device-plugins-for-kubernetes) add-on
+4. Install and configure the [node-feature-discovery](https://github.com/kubernetes-sigs/node-feature-discovery) add-on
 5. Kubernetes manifest considerations
 
-### Validate Hardware Compatibility
+### Validate hardware compatibility
 
 The Kubernetes worker node exposing GPU functionality to workloads requires Intel GPU drivers to be installed at the host level. An official lookup table exists for [GPU hardware values](https://dgpu-docs.intel.com/devices/hardware-table.html) to confirm they are supported. In the following example, `[8086:9a49]` indicates the vendor `8086` (Intel) and `9a49` (GPU; Iris Xe) from the lookup table.
 
@@ -255,29 +255,29 @@ vainfo: Supported profile and entrypoints
 ... truncated list of profiles ...
 ```
 
-### Install and Configure Intel GPU Plugin
+### Install and configure Intel GPU Plugin
 
-The [intel-gpu-plugin](https://github.com/intel/intel-device-plugins-for-kubernetes) add-on will provide the ability to expose `i915` devices to pods within the cluster. Due to the continually changing nature of Kubernetes, it's recommended to use the official documentation for installation of this add-on. This process will effectively passthrough the `/dev/dri/*` devices to workloads that are requesting it.
+The [intel-gpu-plugin](https://github.com/intel/intel-device-plugins-for-kubernetes) add-on will provide the ability to expose `i915` devices to pods within the cluster. Due to the continually changing nature of Kubernetes, it is recommended to use the official documentation for installation of this add-on. This process will effectively passthrough the `/dev/dri/*` devices to workloads that are requesting it.
 
 By default, passthrough will consume the associated device for that workload. It is possible to share a device with multiple workloads at the same time. Runtime argument `-shared-dev-num 2` allows two workloads access to the GPU simultaneously. Additional information or runtime options can be found [here](https://intel.github.io/intel-device-plugins-for-kubernetes/cmd/gpu_plugin/README.html#modes-and-configuration-options).
 
 :::note
-It's important to note that exposing the GPU device is only one part of the equation. You also need to ensure any pods consuming the resources have adequate permissions to access the device. This can be achieved with addition of `supplementalGroups: [44, 109]` in the associated workload manifest. This is documented in the Supplemental Device Permissions section.
+It is important to note that exposing the GPU device is only one part of the equation. You also need to ensure any pods consuming the resources have adequate permissions to access the device. This can be achieved with addition of `supplementalGroups: [44, 109]` in the associated workload manifest. This is documented in the Supplemental Device Permissions section.
 :::
 
-### Install and Configure Node Feature Discovery (NFD)
+### Install and configure Node Feature Discovery (NFD)
 
-The [node-feature-discovery](https://github.com/kubernetes-sigs/node-feature-discovery) add-on is used to automatically label worker nodes with specialized hardware. Due to the continually changing nature of Kubernetes, it's recommended to use the official documentation for installation. Once deployed within a Kubernetes cluster, nodes containing Intel GPU hardware will be labeled with `feature.node.kubernetes.io/custom-intel-gpu=true`. You can use this label to apply affinity rules that will only schedule workloads on nodes with appropriate hardware.
+The [node-feature-discovery](https://github.com/kubernetes-sigs/node-feature-discovery) add-on is used to automatically label worker nodes with specialized hardware. Due to the continually changing nature of Kubernetes, it is recommended to use the official documentation for installation. Once deployed within a Kubernetes cluster, nodes containing Intel GPU hardware will be labeled with `feature.node.kubernetes.io/custom-intel-gpu=true`. You can use this label to apply affinity rules that will only schedule workloads on nodes with appropriate hardware.
 
-### Manifest Configuration Considerations
+### Manifest configuration considerations
 
 Additional configuration within Kubernetes is required to take advantage of the underlying hardware. The following sections will provide additional detail depending on your needs.
 
-#### Resource Management
+#### Resource management
 
 Providing resource management constraints will help to ensure a workload has adequate resources. Kubernetes will schedule workloads where the resources are available, allowing them to consume more than the `requests` values, but not beyond the `limit` value. In the following example, the workload is allowed access to the GPU device exposed through the Intel GPU plugin. Additionally, a maximum of 4 CPU cores and 8GB of memory can be consumed by the workload. The following YAML should be applied in the `deployment.spec.template.spec` section from the deployment manifest example.
 
-```
+```yaml
       resources:
         requests:
           cpu: 100m
@@ -289,9 +289,10 @@ Providing resource management constraints will help to ensure a workload has ade
           gpu.intel.com/i915: 1
 ```
 
-#### Supplemental Device Permissions
+#### Supplemental device permissions
 
 Devices exposed by Intel GPU drivers in `/dev/dri/*` have special group permissions for `video` and `render` operating system groups.
+
 ```
 $ ls -la /dev/dri
 total 0
@@ -308,18 +309,18 @@ render:x:109:
 
 In order to utilize the devices in a workload, you must ensure supplemental group permissions are applied. This can be achieved by adding a `securityContext` to the above deployment manifest. The following YAML should be applied in the `deployment.spec.template.spec` section from the deployment manifest example.
 
-```
+```yaml
       securityContext:
         supplementalGroups:
           - 44
           - 109
 ```
 
-#### Affinity Rules
+#### Affinity rules
 
-Affinity rules allow or disallow workloads from being placed where they shouldn't. For example, if only two worker nodes have compatible Intel GPU hardware, using the NFD node label `feature.node.kubernetes.io/custom-intel-gpu` will ensure workloads requiring GPU access to be scheduled on the corresponding nodes. The following YAML should be applied in the `deployment.spec.template.spec` section from the deployment manifest example.
+Affinity rules allow or disallow workloads from being placed where they should not be. For example, if only two worker nodes have compatible Intel GPU hardware, using the NFD node label `feature.node.kubernetes.io/custom-intel-gpu` will ensure workloads requiring GPU access to be scheduled on the corresponding nodes. The following YAML should be applied in the `deployment.spec.template.spec` section from the deployment manifest example.
 
-```
+```yaml
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
