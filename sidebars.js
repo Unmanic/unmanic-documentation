@@ -20,6 +20,7 @@ module.exports = {
                         'installation/docker',
                         'installation/kubernetes',
                         'installation/windows',
+                        'installation/macos',
                         'installation/unraid',
                         'installation/synology',
                     ],
