@@ -20,7 +20,6 @@ module.exports = {
                         'installation/docker',
                         'installation/kubernetes',
                         'installation/windows',
-                        'installation/windows_wsl',
                         'installation/macos',
                         'installation/unraid',
                         'installation/synology',
@@ -129,6 +128,7 @@ module.exports = {
                     type: 'category',
                     label: 'Installation',
                     items: [
+                        'advanced/windows_wsl',
                         'advanced/docker_hardware_accelerated_encoding_nvidia',
                         'advanced/docker_hardware_accelerated_encoding_vaapi',
                         'advanced/docker_compose_cifs_mounts',
