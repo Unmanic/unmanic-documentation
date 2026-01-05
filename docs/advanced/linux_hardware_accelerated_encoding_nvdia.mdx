@@ -1,0 +1,45 @@
+---
+title: Linux Hardware Acceleration - NVIDIA NVENC/NVDEC
+description: Unmanic Advanced Installation - Linux Hardware Acceleration - NVIDIA NVENC/NVDEC
+id: linux_hardware_accelerated_encoding_nvidia
+---
+
+## Overview
+
+Unmanic itself does not require hardware acceleration, but some plugins can take advantage of NVIDIA NVDEC/NVENC for faster video decoding and encoding.
+
+For example, the Transcode Videos plugin can use NVENC/NVDEC when an NVIDIA GPU is present and correctly configured.
+
+## 1) Check GPU support
+
+You can find an official list of NVIDIA graphics cards and their supported codecs [here](https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new).
+
+Check that your GPU is listed and is capable of doing what you want it to.
+
+## 2) Install the NVIDIA driver
+
+Ensure you have installed the NVIDIA drivers.
+
+You can download the latest NVIDIA GPU driver from [here](https://www.nvidia.com/Download/driverResults.aspx/187162/en-us).
+
+:::note
+The minimum required NVIDIA driver version is 418.30 for this to work in Linux.
+:::
+
+:::tip
+It is recommended to also patch drivers by following the instructions [here](https://github.com/keylase/nvidia-patch). This project removes the restriction on maximum simultaneous NVENC video encoding sessions imposed by NVIDIA on consumer-grade GPUs.
+:::
+
+## 3) Install FFmpeg with NVENC support
+
+Install FFmpeg for your operating system.
+
+It is recommended to use the [Jellyfin FFmpeg builds](https://jellyfin.org/docs/general/installation/advanced/manual#ffmpeg-installation), however any recent release of FFmpeg will work fine.
+
+To ensure your FFmpeg installation is capable of running the NVENC encoders, run this command:
+
+```
+for i in encoders decoders filters; do echo $i:; ffmpeg -hide_banner -${i} | egrep -i "npp|cuvid|nvenc|cuda|nvdec"; done
+```
+
+You should see a list of available encoders and decoders.

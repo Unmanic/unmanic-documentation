@@ -117,9 +117,17 @@ module.exports = {
             items: [
                 {
                     type: 'category',
+                    label: 'Dependencies',
+                    items: [
+                        'advanced/linux_hardware_accelerated_encoding_nvidia',
+                    ],
+                },
+                {
+                    type: 'category',
                     label: 'Installation',
                     items: [
-                        'advanced/hardware_accelerated_encoding_vaapi',
+                        'advanced/docker_hardware_accelerated_encoding_nvidia',
+                        'advanced/docker_hardware_accelerated_encoding_vaapi',
                         'advanced/docker_compose_cifs_mounts',
                     ],
                 },
