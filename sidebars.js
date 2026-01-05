@@ -18,6 +18,7 @@ module.exports = {
                     items: [
                         'installation/pip',
                         'installation/docker',
+                        'installation/windows',
                         'installation/unraid',
                         'installation/synology',
                     ],
