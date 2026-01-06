@@ -201,6 +201,19 @@ Example 3: Auto-configure enabled
 - The task is sent and processed, and the transfer uses the HTTP upload/download flow instead of a shared library path.
 - If you want shared library path behavior, then you would need to manually configure the remote library with the correct path.
 
+Example 4: Different path strings, same shared storage
+
+- Local `Media` library path is `/mnt/media/library`.
+- Remote `Media` library path is `/media/library`.
+- Both paths point to the same underlying storage (for example, the same network share mounted at different locations).
+- The remote installation resolves the relative file path under its own library path, finds the file, and uses the shared library path flow without uploading over HTTP.
+
+Example 5: Different storage, no shared path match
+
+- Local `Media` library path is `/mnt/media/library`.
+- Remote `Media` library path is `/media/library`, but it points to a different disk or share.
+- The remote installation cannot find the file at the resolved path, so it falls back to the HTTP upload/download flow.
+
 :::tip
 For verbose logging, enable `EnableDebugging` on each installation under the Logs section of the Help & Support page. When debugging is enabled, you will see details about link availability, remote task creation, file transfers, and worker assignment in the logs. This is useful for confirming that libraries are matching as expected and that tasks are being processed with the correct plugin configuration on each machine.
 :::
