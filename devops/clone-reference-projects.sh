@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###
-# File: clone-refrence-projects.sh
+# File: clone-reference-projects.sh
 # Project: unmanic-documentation
 # File Created: Saturday, 20th December 2025 2:45:35 pm
 # Author: Josh.5 (jsunnex@gmail.com)
