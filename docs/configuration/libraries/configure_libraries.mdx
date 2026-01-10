@@ -56,9 +56,97 @@ For more information, follow the instructions on [installing plugins](/docs/conf
 
 ### Plugin Flow
 
-Once you have one or more plugins added to a library, you will be able to configure their flow.
+Once you have one or more plugins added to a library, you will be able to configure their execution order within each processing stage.
 
 <img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-configuration-plugin-flow.png').default} />
 
 Use the <img className={"inline-text-screenshot"} src={require('/img/unmanic-drag-icon.png').default} title={"Move"} /> handle
 to drag the plugins into the order that you need them to be executed.
+
+#### Processing Stages
+
+Plugins are organized into four processing stages, each with its own flow that you can reorder:
+
+| Stage | Purpose | When It Runs |
+|-------|---------|--------------|
+| **Library Management - File Test** | Determine if a file should be added to the pending task queue | During library scans |
+| **Worker - Process** | Transform the file (transcode, convert, modify) | When a worker picks up the task |
+| **Post-processor - File Movement** | Control how the output file is moved or copied | After worker processing completes |
+| **Post-processor - Task Results** | React to the final success or failure of a task | After file movement |
+
+#### Why Order Matters
+
+Within each stage, plugins execute in the order shown in the flow list. The order can significantly affect results:
+
+**File Test Stage**
+- Plugins run top to bottom until one marks the file for processing
+- As soon as any plugin marks a file to be added to the queue, subsequent file test plugins do not run and the file is placed on the task queue immediately
+- Place broader filters (like file type checks) before specific ones (like codec checks)
+
+**Worker Process Stage**
+- Each plugin transforms the file in sequence
+- Output from one plugin becomes input to the next
+- Example: A plugin that extracts subtitles should run before a plugin that transcodes video
+
+**Post-processor Stages**
+- File movement plugins can override default copy/move behavior
+- Task result plugins can send notifications or trigger external actions
+- Order determines which plugin gets the final say on file placement
+
+#### Example Flow Configuration
+
+For a video transcoding workflow:
+
+1. **File Test Flow**:
+   - `Ignore files over 50GB` (skip very large files)
+   - `Limit by codec` (only process H.264 files)
+   - `Ignore if already HEVC` (skip files already in target format)
+
+2. **Worker Process Flow**:
+   - `Extract subtitles to SRT` (preserve subtitles before transcode)
+   - `Video Transcoder` (convert to HEVC)
+   - `Audio Transcoder` (normalize audio)
+
+3. **Post-processor File Movement Flow**:
+   - `Modify file movements` (customize output location)
+
+4. **Post-processor Task Results Flow**:
+   - `Notify Plex` (refresh library on success)
+   - `Discord webhook` (send completion notification)
+
+:::tip
+Review the plugin flow order after adding plugins to ensure they execute in the correct sequence.
+:::
+
+
+### Tags
+
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-library-tags.png').default} />
+
+Tags allow you to control which worker groups process tasks from this library.
+Add one or more tags to a library to route its tasks to worker groups with matching tags.
+
+**How tag matching works:**
+
+- Tasks from a library are only picked up by worker groups that share at least one common tag
+- If a library has no tags, only worker groups with no tags will process its tasks
+
+This feature enables sophisticated processing workflows:
+
+| Library Tags | Worker Group Tags | Result |
+|-------------|-------------------|--------|
+| `gpu` | `gpu` | Workers process these tasks |
+| `gpu`, `4k` | `gpu` | Workers process these tasks (one tag matches) |
+| `movies` | `gpu` | Workers will NOT process these tasks |
+| (none) | (none) | Workers process these tasks |
+| `gpu` | (none) | Workers will NOT process these tasks |
+
+:::tip
+Use tags to separate workloads by:
+- **Hardware requirements**: `gpu`, `cpu-only`, `high-memory`
+- **Media type**: `movies`, `tv`, `music`
+- **Priority**: `high-priority`, `background`
+- **Quality tier**: `4k`, `1080p`, `archive`
+:::
+
+For more information on configuring worker groups and their tags, see [Worker Settings](/docs/configuration/workers_settings).

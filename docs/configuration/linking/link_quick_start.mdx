@@ -1,0 +1,75 @@
+---
+title: Quick Start Guide
+description: Unmanic Configuration - Link - Quick Start Guide
+id: link_quick_start
+---
+
+Get two Unmanic installations linked so one can send tasks to the other.
+
+In this example:
+- **Machine A** (`192.168.1.10`) — sends tasks to be processed elsewhere
+- **Machine B** (`192.168.1.20`) — receives and processes tasks from Machine A
+
+## Step 1: Configure local settings on both machines
+
+**On Machine A** (`192.168.1.10`):
+
+1. Go to **Settings → Link**
+2. Set **Name** to something descriptive (e.g., "Main Server")
+3. Set **Public address** to `http://192.168.1.10:8888`
+4. Save
+
+**On Machine B** (`192.168.1.20`):
+
+1. Go to **Settings → Link**
+2. Set **Name** to something descriptive (e.g., "GPU Server")
+3. Set **Public address** to `http://192.168.1.20:8888`
+4. Save
+
+## Step 2: Add links on both machines
+
+**On Machine A**, add Machine B:
+
+1. Click the **+** button to add a link
+2. Enter address: `192.168.1.20` and port: `8888`
+3. Add authentication credentials if Machine B is behind a reverse proxy
+4. Click **Add**
+
+**On Machine B**, add Machine A:
+
+1. Click the **+** button to add a link
+2. Enter address: `192.168.1.10` and port: `8888`
+3. Add authentication credentials if Machine A is behind a reverse proxy
+4. Click **Add**
+
+## Step 3: Configure task direction
+
+**On Machine A** (the sender):
+
+1. Click the configure button on the link to Machine B
+2. Enable **Send tasks to this installation when workers are available**
+3. Save
+
+**On Machine B** (the receiver):
+
+1. Click the configure button on the link to Machine A
+2. Enable **Receive tasks from this installation when workers are available**
+3. Save
+
+## Step 4: Create matching libraries
+
+On Machine B, create a library with the **same name** as a library on Machine A. Tasks are routed based on matching library names.
+
+:::tip
+Enable **Auto-configure missing libraries** in the link settings on Machine A to have libraries created automatically on Machine B when tasks are sent.
+:::
+
+## Step 5: Verify the connection
+
+On both machines, the Unmanic icon next to the link should appear **in color** (not greyscale), indicating the other machine is reachable.
+
+Queue a task on Machine A and watch it get sent to Machine B for processing.
+
+---
+
+For more details on how linking works, see [Link Overview](./link_overview).

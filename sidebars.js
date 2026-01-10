@@ -70,6 +70,7 @@ module.exports = {
                             type: 'category',
                             label: 'Link',
                             items: [
+                                'configuration/linking/link_quick_start',
                                 'configuration/linking/link_overview',
                                 'configuration/linking/link_local_settings',
                                 'configuration/linking/link_remote_installations',
@@ -98,6 +99,7 @@ module.exports = {
                                 'development/writing_plugins/plugin_settings',
                                 'development/writing_plugins/system_info',
                                 'development/writing_plugins/plugin_runner_types',
+                                'development/writing_plugins/advanced_plugin_patterns',
                             ],
                         },
                         {
