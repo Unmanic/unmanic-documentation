@@ -93,6 +93,52 @@ data['issues'].append({
 
 :::
 
+#### Using shared_info
+
+The `shared_info` dictionary allows plugins to share data with subsequent plugins in the same flow. This is particularly useful for caching expensive operations like ffprobe so multiple plugins don't repeat the same work.
+
+**How it works:**
+
+1. The first plugin in the flow receives an empty `shared_info` dict
+2. That plugin can store data in `shared_info` (e.g., ffprobe results)
+3. Subsequent plugins receive the same `shared_info` with the stored data
+4. Each plugin can read existing data and/or add more
+
+**Common pattern - caching ffprobe data:**
+
+```python
+def on_library_management_file_test(data):
+    # Check if a previous plugin already probed this file
+    if 'ffprobe' in data.get('shared_info', {}):
+        # Use the cached probe data
+        probe_data = data['shared_info']['ffprobe']
+    else:
+        # No cached data - probe the file
+        probe_data = run_ffprobe(data['path'])
+
+        # Store in shared_info for subsequent plugins
+        if 'shared_info' not in data:
+            data['shared_info'] = {}
+        data['shared_info']['ffprobe'] = probe_data
+
+    # Now use probe_data for your plugin's logic
+    # ...
+```
+
+**Why this matters:**
+
+- Running ffprobe is relatively slow (disk I/O + process spawn)
+- A library with 5 file test plugins would normally probe each file 5 times
+- With shared_info caching, the file is probed once and results are reused
+- This significantly speeds up library scans on large collections
+
+**Best practices:**
+
+- Always check if data exists in `shared_info` before doing expensive operations
+- Use descriptive keys (e.g., `'ffprobe'`, `'mediainfo'`) to avoid collisions
+- Only store serializable data (dicts, lists, strings, numbers)
+- Keep stored data minimal - don't cache entire file contents
+
 ---
 
 ## Worker

@@ -1,0 +1,141 @@
+---
+title: Advanced
+description: Advanced Plugin Development Patterns
+id: advanced_plugin_patterns
+---
+
+This page covers advanced patterns for plugin development.
+
+---
+
+## Hardware Acceleration Detection
+
+Plugins that perform video encoding can leverage hardware acceleration (GPU encoding) for significantly faster processing. This section covers how to detect available hardware in your plugin.
+
+### Detecting NVIDIA GPUs
+
+Use `nvidia-smi` to detect NVIDIA GPUs and their capabilities:
+
+```python
+import subprocess
+import re
+
+def list_available_nvidia_devices():
+    """
+    Return a list of available NVIDIA CUDA devices.
+    """
+    gpu_list = []
+    try:
+        result = subprocess.check_output(['nvidia-smi', '-L'], encoding='utf-8')
+        # Parse output like: GPU 0: NVIDIA GeForce RTX 3080 (UUID: GPU-xxxx)
+        gpu_info = re.findall(r'GPU (\d+): (.+) \(UUID: (.+)\)', result)
+        for gpu_id, gpu_name, gpu_uuid in gpu_info:
+            gpu_list.append({
+                'device_id': gpu_id,
+                'name': gpu_name,
+                'uuid': gpu_uuid,
+            })
+    except FileNotFoundError:
+        # nvidia-smi not installed
+        pass
+    except subprocess.CalledProcessError:
+        # Command failed - no NVIDIA GPU present
+        pass
+    return gpu_list
+```
+
+### Detecting VAAPI Devices (Intel/AMD on Linux)
+
+VAAPI devices appear as render nodes in `/dev/dri/`:
+
+```python
+import os
+
+def list_available_vaapi_devices():
+    """
+    Return a list of available VAAPI render devices.
+    """
+    devices = []
+    dri_path = "/dev/dri"
+
+    if os.path.exists(dri_path):
+        for device in sorted(os.listdir(dri_path)):
+            if device.startswith('render'):
+                devices.append({
+                    'device': device,
+                    'path': os.path.join(dri_path, device),
+                })
+    return devices
+```
+
+### Detecting Intel QSV Devices
+
+Intel Quick Sync Video requires checking both for render devices and the Intel vendor ID:
+
+```python
+import os
+from pathlib import Path
+
+def get_intel_qsv_device():
+    """
+    Find an Intel render device for QSV encoding.
+    Returns the device path (e.g., '/dev/dri/renderD128') or None if not found.
+    """
+    dri_path = Path('/dev/dri')
+    if not dri_path.exists():
+        return None
+
+    for device in dri_path.glob("render*"):
+        # Check vendor ID in sysfs
+        vendor_path = Path(f"/sys/class/drm/{device.name}/device/vendor")
+        if vendor_path.exists():
+            vendor_id = vendor_path.read_text().strip()
+            if "0x8086" in vendor_id:  # Intel vendor ID
+                return str(device)
+    return None
+```
+
+### Dynamic Form Settings Based on Hardware
+
+Update your plugin's form settings to show/hide encoder options based on detected hardware:
+
+```python
+def get_encoder_form_settings(self):
+    """
+    Dynamically configure encoder options based on available hardware.
+    """
+    nvidia_devices = list_available_nvidia_devices()
+    vaapi_devices = list_available_vaapi_devices()
+    qsv_device = get_intel_qsv_device()
+
+    options = [
+        {"value": "libx264", "label": "CPU - libx264 (always available)"},
+        {"value": "libx265", "label": "CPU - libx265 (always available)"},
+    ]
+
+    if nvidia_devices:
+        options.append({"value": "h264_nvenc", "label": "NVIDIA - h264_nvenc"})
+        options.append({"value": "hevc_nvenc", "label": "NVIDIA - hevc_nvenc"})
+
+    if qsv_device:
+        options.append({"value": "h264_qsv", "label": "Intel QSV - h264_qsv"})
+        options.append({"value": "hevc_qsv", "label": "Intel QSV - hevc_qsv"})
+
+    if vaapi_devices:
+        options.append({"value": "h264_vaapi", "label": "VAAPI - h264_vaapi"})
+        options.append({"value": "hevc_vaapi", "label": "VAAPI - hevc_vaapi"})
+
+    return {
+        "label": "Video Encoder",
+        "input_type": "select",
+        "select_options": options,
+    }
+```
+
+### Best Practices
+
+- **Always provide a CPU fallback** - Hardware may not be available in all environments
+- **Check at form generation time** - Detect hardware when building settings forms so users only see valid options
+- **Handle detection failures gracefully** - Wrap detection code in try/except blocks
+- **Cache detection results** - Hardware doesn't change during runtime, so detect once and reuse
+- **Log detection results** - Help users troubleshoot by logging which hardware was detected

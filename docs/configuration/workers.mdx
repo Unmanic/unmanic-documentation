@@ -4,31 +4,77 @@ description: Unmanic Configuration - Workers
 id: workers_settings
 ---
 
+<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-workers2.png').default} />
 
-<img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-workers.png').default} />
-
-Under the **Workers** section of your Unmanic settings you will find a few configuration options for managing the workers.
+Under the **Workers** section of your Unmanic settings you will find configuration options for managing worker groups, scheduling, and cache settings.
 
 ---
 
+## Worker Groups
 
-## Worker count
+Worker groups allow you to organize your workers and control which tasks they process using tags.
+Each group has its own worker count and can be assigned tags that determine which libraries' tasks the workers will process.
 
-Set the number of concurrent workers that you wish this Unmanic installation to run.
+### Creating a Worker Group
+
+Click the **+** button at the bottom of the worker groups list to create a new group.
+Each worker group has the following settings:
+
+- **Name**: A friendly name for the group (auto-generated if left blank)
+- **Worker Count**: The number of concurrent workers in this group (0-12)
+- **Tags**: Tags used to match this group with libraries (see [Tag Matching](#tag-matching) below)
+- **Lock**: Prevent accidental deletion of the group
 
 :::tip
-For most people, there is no benefit to running more than 3-5 workers.
+For most people, there is no benefit to running more than 3-5 workers total across all groups.
 Depending on the type of tasks you carry out, you may find diminishing returns increasing this value beyond 5.
 
-It is recommended to start with one worker initially, and then increase this value slowly until you find the right
-balance of system resource use and task processing speed.
+It is recommended to start with one worker initially, and then increase this value slowly until you find the right balance of system resource use and task processing speed.
 :::
 
-## Worker event schedule
+### Tag Matching
 
-The worker event schedule allows you to generate an ordered list of events that can modify the state of your workers.
+Tags create a powerful system for routing tasks to specific worker groups.
+The matching rules are:
 
-### Adding an event
+- **If a worker group has tags**: Workers in that group will only pick up tasks from libraries that share at least one matching tag
+- **If a worker group has no tags**: Workers will only pick up tasks from libraries that also have no tags
+
+This allows you to create specialized processing workflows. For example:
+- A worker group tagged `gpu` can process tasks only from libraries also tagged `gpu`
+- A worker group tagged `4k` and `hdr` can handle tasks from libraries with either the `4k` or `hdr` tag
+- An untagged worker group processes tasks from untagged libraries
+
+:::note
+Library tags are configured in the library settings. See [Configuring Libraries](/docs/configuration/libraries/configure_libraries) for details.
+:::
+
+### Example Use Cases
+
+**GPU vs CPU Processing**
+
+Create two worker groups:
+1. Group "GPU Workers" with 2 workers and tag `gpu`
+2. Group "CPU Workers" with 4 workers and no tags
+
+Then tag libraries containing large files with `gpu` to route them to GPU-accelerated encoding, while smaller files go to CPU workers.
+
+**Separate Processing Pipelines**
+
+Create worker groups for different media types:
+1. Group "Movies" with tag `movies`
+2. Group "TV Shows" with tag `tv`
+3. Group "Music" with tag `music`
+
+Each group can have different worker counts optimized for the typical task duration of that media type.
+
+---
+
+## Worker Event Schedule
+
+Each worker group can have its own event schedule that modifies the state of workers at specified times.
+
+### Adding an Event
 
 <img className={"screenshot"} src={require('/img/unmanic-settings-worker-event3.png').default} />
 
@@ -38,30 +84,34 @@ It may be configured to:
 - Pause all workers
 - Resume all workers
 
-
 :::note
 Scheduling the worker count to reduce at a specified time will trigger the configuration change at that exact time.
-However, if all workers are currently processing tasks, the actual worker count will not reduce until the next worker
-becomes idle, at which point it will be terminated.
+However, if all workers are currently processing tasks, the actual worker count will not reduce until the next worker becomes idle, at which point it will be terminated.
 :::
 
-### Setting the event order
+### Setting the Event Order
 
 <img className={"screenshot"} style={{ width: '400px' }} src={require('/img/unmanic-settings-worker-event-order.png').default} />
 
-The configured worker events are executed from top to bottom. In some cases, you may wish for one event to come
-**after** another.
+The configured worker events are executed from top to bottom. In some cases, you may wish for one event to come **after** another.
 
-This can be achieved by dragging the items in the list of configured events into order that suites your needs.
+This can be achieved by dragging the items in the list of configured events into order that suits your needs.
 
+### Example Schedule
 
-## Cache path
+To reduce system load during work hours:
+1. **Daily at 08:00** - Set worker count to 1
+2. **Daily at 18:00** - Set worker count to 4
+3. **Weekend at 00:00** - Set worker count to 6
+
+---
+
+## Cache Path
 
 Set the location of the cache where task files will be temporarily stored while workers are carrying out jobs on them.
 
 :::tip
 For faster processing of I/O bound tasks, such as video encoding, try setting this to a tmpfs (RAM).
 
-However, if you do this you will need to ensure that enough RAM is available to store the average file
-size times the number of workers that you are running.
+However, if you do this you will need to ensure that enough RAM is available to store the average file size times the number of workers that you are running across all groups.
 :::
