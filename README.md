@@ -1,6 +1,7 @@
 # Unmanic Documentation Website
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This repository contains the documentation site for Unmanic, a self-hosted media library optimizer and automation tool that runs on Docker or bare metal.
+The live documentation is available at https://docs.unmanic.app/.
 
 ## Installation
 
