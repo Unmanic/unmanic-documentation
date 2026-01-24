@@ -1,0 +1,124 @@
+---
+title: Unmanic Workflow
+description: How Unmanic processes files from discovery to completion
+id: workflow
+---
+
+This section describes the complete workflow that Unmanic follows when processing files, from initial discovery through to final output.
+Much of this is represented in the flowchart displayed in the [Plugins Overview](/docs/configuration/plugins/overview) section, but this provides some additional context.
+
+## File Discovery
+
+Files enter Unmanic's processing pipeline through one of three methods:
+
+- **Library Scanning**: Unmanic periodically scans configured library paths to discover files
+- **Event Monitoring**: Unmanic watches for file system events and reacts to new or modified files in real-time
+- **API Submission**: External scripts or applications submit specific files via the API
+
+Files discovered through library scanning or event monitoring proceed to file testing to determine if they need processing.
+API submission works differently—see the File Testing section below for details.
+
+## File Testing
+
+When a file is discovered through scanning or event monitoring, Unmanic runs it through the **Library Management - File Test** plugins configured for that library.
+These plugins examine the file to determine whether it needs processing.
+
+### API Endpoints
+
+The API provides two separate endpoints for file submission:
+
+- **`/api/v2/pending/create`**: Adds the file directly to the pending tasks queue without running file test plugins. Use this when you have already determined externally that the file needs processing.
+- **`/api/v2/pending/test`**: Runs the file through the library's file test plugins but does not add it to the queue. Use this to check whether a file would be processed without actually queuing it.
+
+This separation allows scripts to either test files before deciding to queue them, or bypass testing entirely when the decision has already been made.
+
+### File Test Plugin Execution
+
+For files discovered through scanning or event monitoring, file test plugins execute in the order defined in your library's plugin flow.
+Each plugin inspects the file and can either:
+
+- **Request a task**: Mark the file for processing, which adds it to the pending tasks queue
+- **Request ignore**: Explicitly skip this file, preventing further testing
+- **Pass**: Allow the next plugin in the flow to test the file
+
+**Testing stops** as soon as any plugin requests a task or requests ignore.
+If all file test plugins pass without requesting action, the file is not added to the queue.
+
+This means you should order your file test plugins carefully—place broader filters before specific ones to ensure efficient testing.
+
+## Worker Processing
+
+Once a file is on the pending tasks queue—whether placed there by file test plugins, the `/api/v2/pending/create` endpoint, or any other method—it follows the same processing path from this point forward.
+
+When a worker picks up a task from the pending queue, it begins executing the **Worker - Process** plugins for that library.
+
+### Plugin File Testing
+
+Each worker process plugin performs its own internal test before running.
+This is necessary because a file may have been added to the queue by a different plugin, and the current plugin may not need to take any action on it.
+
+For example, if Plugin A added a file to the queue because it detected an incorrect video codec, Plugin B (which handles audio normalization) will still test the file but may determine that no audio work is needed.
+
+### The Unmanic Cache
+
+Unmanic uses a cache directory (typically `/tmp/unmanic`) as a working area for file processing.
+When a plugin needs to modify a file, it writes its output to this cache directory rather than directly to your library.
+
+This approach:
+
+- Protects your original files until processing is complete
+- Provides a consistent temporary workspace for all plugins
+- Allows the processing pipeline to be atomic—either fully successful or no changes are made
+
+### Plugin Chaining
+
+Worker process plugins execute in sequence, with each plugin's output becoming the next plugin's input.
+
+For example, in a video processing workflow:
+
+1. Plugin A reads the original file and writes a transcoded version to the cache
+2. Plugin B reads Plugin A's output from the cache, adds audio normalization, and writes a new file to the cache
+3. Plugin C reads Plugin B's output and performs final adjustments
+
+This chaining continues through all worker process plugins configured for the library.
+
+## Task Completion
+
+Once all worker process plugins have finished, Unmanic determines whether the task was successful and proceeds to post-processing.
+
+### Default File Movement Behavior
+
+By default, if the task completed successfully, Unmanic **overwrites the original source file** in the library with the processed output from the cache.
+This is Unmanic's standard behavior—replacing source files with their processed versions.
+
+If the task failed, the original file is left untouched and the cache contents are discarded.
+
+### Post-processor Flows
+
+After worker processing completes, Unmanic executes the post-processor plugin flows:
+
+**Post-processor - File Movement** plugins run first.
+These plugins can alter Unmanic's default file movement behavior.
+For example, the **Mover2** plugin allows you to customize where processed files are written, move files to different directories, or implement custom naming schemes instead of overwriting the original.
+
+**Post-processor - Task Results** plugins run last.
+These handle other necessary post-processing behaviors that may be unique to each plugin, such as:
+
+- Sending notifications (Discord, email, webhooks)
+- Updating media servers (Plex, Jellyfin, Emby)
+- Logging results or updating databases
+- Triggering external scripts or applications
+- Cache file cleanup
+
+## Summary
+
+The complete Unmanic workflow:
+
+1. **Discovery**: Files are found via scanning, event monitoring, or API
+2. **File Testing**: Library file test plugins determine if processing is needed
+3. **Queuing**: Files that need processing are added to the pending tasks queue
+4. **Worker Processing**: Workers execute process plugins in sequence, using the cache for output
+5. **File Movement**: Post-processor plugins handle final file placement (default: overwrite source)
+6. **Results Processing**: Post-processor plugins handle notifications and cleanup
+
+Understanding this workflow helps you design effective plugin flows and troubleshoot processing issues.

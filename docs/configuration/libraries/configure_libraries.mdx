@@ -27,12 +27,8 @@ If you leave this option unselected, the library scanner will ignore this librar
 When this is selected, Unmanic will start a file monitoring task against this library path.
 
 :::note
-This may cause errors on very large libraries.
-If you do have a large number of files on disk, search the internet for ["configuring Linux max_user_watches"](https://www.google.com/search?q=configuring+Linux+max_user_watches).
-:::
-:::caution
-The file monitor will increase the RAM requirements of Unmanic and as such may not be a good option for
-devices with limited RAM availability.
+File monitoring is generally an alternative to library scanning—you typically only need to enable one method or the other, not both.
+See [Event Monitoring](/docs/using_unmanic/event_monitoring) for details on when to use file monitoring and important considerations.
 :::
 
 

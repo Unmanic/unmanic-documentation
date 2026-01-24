@@ -1,0 +1,66 @@
+---
+title: Getting Started
+description: A high-level overview of how Unmanic works and the steps to get started
+id: getting_started
+---
+
+Unmanic is designed to automatically process your files by scanning your libraries and detecting work that needs to be done.
+When Unmanic identifies files that require processing, it schedules that work and executes it through a plugin-based system.
+
+## How Unmanic Works
+
+At its core, Unmanic monitors one or more libraries (directories containing your files) and determines which files need processing based on the plugins you configure.
+Plugins are modular components that you add to Unmanic and assign to individual libraries.
+Each library can have its own unique set of plugins, allowing you to tailor the processing workflow to the specific needs of different file collections.
+
+When a file is identified as needing work, it is added to the pending tasks queue.
+Workers then pick up these tasks and execute the configured plugins in sequence, performing the series of operations you've defined.
+This plugin flow architecture gives you fine-grained control over exactly what happens to your files and in what order.
+
+## Setting Up Unmanic
+
+Getting Unmanic configured to process your files involves the following steps:
+
+### 1. Determine Your Processing Goals
+
+Before configuring Unmanic, identify what work needs to be done on your library of files.
+Common use cases include transcoding video to a specific codec, converting audio formats, stripping unwanted subtitle tracks, or organizing files.
+Understanding your goals will guide which plugins you need.
+
+### 2. Set Up Your Libraries
+
+[Add one or more libraries](/docs/configuration/libraries/adding_libraries) to Unmanic, pointing each to a directory containing files you want to process.
+You can create multiple libraries for the same path if you need different plugin configurations for different file types.
+[Configure each library's](/docs/configuration/libraries/configure_libraries) settings including file extensions to monitor and paths to ignore.
+
+### 3. Install and Configure Plugins
+
+[Browse and install plugins](/docs/configuration/plugins/installing_plugins) from the official repository or add custom plugin repositories.
+Plugins handle everything from file detection to processing to post-processing actions.
+Review the [plugins overview](/docs/configuration/plugins/overview) to understand how plugins execute at different stages of task processing.
+
+### 4. Add Plugins to Your Libraries
+
+Once plugins are installed in Unmanic, [add them to your libraries](/docs/configuration/plugins/configuring_plugins) in the order you want them to execute.
+Each library maintains its own plugin flow, so you can have different processing pipelines for different directories.
+Configure each plugin's settings as needed for your specific requirements.
+
+### 5. Configure Workers
+
+[Set up worker groups](/docs/configuration/workers_settings) to control how tasks are processed.
+Workers are the processing engines that execute your plugin flows.
+You can create multiple worker groups with different configurations and associate them with specific libraries to optimize resource usage.
+
+### 6. Enable File Discovery
+
+Configure how Unmanic discovers files that need processing:
+
+- **Library Scanner**: [Configure the scanner](/docs/configuration/libraries/library_scanner) to periodically scan your libraries for files that need processing.
+- **Event Monitoring**: Enable real-time file system monitoring to detect new or changed files immediately.
+- **API Integration**: Use Unmanic's API to programmatically add files to the processing queue.
+
+## Next Steps
+
+With Unmanic configured, you can monitor progress through the [Dashboard](/docs/dashboard/pending_tasks), view active [Workers](/docs/dashboard/workers), and review [Completed Tasks](/docs/dashboard/completed_tasks).
+
+For advanced setups involving multiple Unmanic installations, see the [Link documentation](/docs/configuration/linking/link_overview) to distribute processing across machines.
