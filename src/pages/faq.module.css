@@ -1,0 +1,7 @@
+.faqPage p {
+  margin-left: 1.25rem;
+}
+
+.faqPage p:first-child {
+  margin-top: 0.35rem;
+}

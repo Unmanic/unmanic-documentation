@@ -117,6 +117,12 @@ const config = {
             position: "left",
           },
           {
+            to: "faq",
+            activeBasePath: "faq",
+            label: "FAQ",
+            position: "left",
+          },
+          {
             href: "https://central.unmanic.app/",
             label: "Unmanic Central",
             position: "left",

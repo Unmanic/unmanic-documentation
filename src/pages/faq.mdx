@@ -1,0 +1,52 @@
+---
+title: FAQ
+description: Frequently asked questions about Unmanic.
+---
+
+import styles from "./faq.module.css";
+
+<div className={styles.faqPage}>
+
+# Frequently Asked Questions
+
+## I sponsored Unmanic on Patreon. Why am I still not seeing supporter status in the app?
+
+After you become a supporter on Patreon, there are a few steps behind the scenes before your Unmanic account is marked as a current supporter. Patreon needs to confirm the pledge, then Unmanic periodically checks Patreon and matches that pledge to your Unmanic account. Because parts of this happen on a schedule, it can take a short while for the status to sync.
+
+Try this troubleshooting flow:
+
+1. Visit `https://api.unmanic.app/support-auth-api/link` and log in.
+2. Open the avatar dropdown to check your supporter status.
+3. If it has not updated yet, wait about 15 minutes, then log out and log back in to refresh the link.
+4. Restarting your container is not usually required, but you can do so after you have completed the steps above.
+
+If your status still has not updated after trying the steps above, message `Josh.5` on [Discord](https://unmanic.app/discord) with your Unmanic account email and Patreon email, and it will be resolved within 24 hours.
+
+## Where can I get help or ask questions?
+
+Join the community on Discord to ask questions, share setups, and get support from other users and contributors.
+
+[Join the Unmanic Discord](https://unmanic.app/discord)
+
+## How do I report bugs or request features?
+
+Please report issues in the most relevant repository so they reach the right maintainers.
+
+- Plugin bugs should be filed against the source repo for that plugin (the plugin info usually links to it). For example, the Transcode Video Files plugin is here: https://github.com/Unmanic/plugin.video_transcoder/
+- Core Unmanic app bugs: https://github.com/Unmanic/unmanic
+- Frontend and UI issues: https://github.com/Unmanic/unmanic-frontend
+- Documentation issues: https://github.com/Unmanic/unmanic-documentation
+
+## Where should I start if I want to develop plugins?
+
+Start with the [plugin development overview](/docs/development/developing_plugins), then follow the writing plugins guides.
+
+If you want a ready-to-run helper for building plugins with AI agents (or if you have limited coding experience), check out the plugin builder project: https://github.com/Unmanic/tool.plugin-builder
+
+It includes:
+
+- A docker-compose environment for plugin creation and testing
+- Helper scripts to clone or update upstream repos
+- Targeted instructions for your LLM agent of choice to reference
+
+</div>
