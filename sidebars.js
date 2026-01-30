@@ -31,15 +31,7 @@ module.exports = {
             type: 'category',
             label: 'Using Unmanic',
             items: [
-                {
-                    type: 'category',
-                    label: 'Dashboard',
-                    items: [
-                        'dashboard/pending_tasks',
-                        'dashboard/workers',
-                        'dashboard/completed_tasks',
-                    ],
-                },
+                'using_unmanic/getting_started',
                 {
                     type: 'category',
                     label: 'Configuration',
@@ -76,6 +68,25 @@ module.exports = {
                                 'configuration/linking/link_remote_configuration',
                             ],
                         },
+                    ],
+                },
+                'using_unmanic/workflow',
+                {
+                    type: 'category',
+                    label: 'Dashboard',
+                    items: [
+                        'dashboard/pending_tasks',
+                        'dashboard/workers',
+                        'dashboard/completed_tasks',
+                        'dashboard/data_panels',
+                    ],
+                },
+                {
+                    type: 'category',
+                    label: 'Advanced Use',
+                    items: [
+                        'using_unmanic/event_monitoring',
+                        'using_unmanic/apis',
                     ],
                 },
             ],

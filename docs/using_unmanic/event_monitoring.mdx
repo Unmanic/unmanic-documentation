@@ -1,0 +1,58 @@
+---
+title: Event Monitoring
+description: Using file system event monitoring as an alternative to library scanning
+id: event_monitoring
+---
+
+Event monitoring provides a real-time alternative to periodic library scanning.
+Instead of scanning your entire library at intervals, Unmanic can monitor file system events and respond immediately when files are created or modified.
+
+## How Event Monitoring Works
+
+When enabled, Unmanic uses file system event notifications (such as inotify on Linux) to detect when files are added or changed within your library paths.
+This allows Unmanic to react instantly to new files without waiting for a scheduled scan.
+
+## Enabling Event Monitoring
+
+Event monitoring is configured per-library in Unmanic's settings.
+Navigate to the library configuration and enable the file monitor option to start receiving real-time file events.
+
+## Considerations and Limitations
+
+### File System Compatibility
+
+Event monitoring is not compatible with all file systems.
+Network file systems (NFS, CIFS/SMB) and certain remote mounts may not properly support file system event notifications.
+If you are using a network share, you may need to rely on [library scanning](/docs/configuration/libraries/library_scanner) instead.
+
+### Handling Partial Files
+
+When files are being written to your library, the file system generates events before the file is fully written.
+This can cause Unmanic to attempt processing an incomplete file, particularly when files are being copied back from the cache after processing.
+
+To avoid this issue, use the **Limit File Search by file extension** plugin in your library's plugin flow.
+This plugin helps filter events to only trigger on files with specific extensions, avoiding processing of temporary or partial files during copy operations.
+
+### Resource Usage
+
+Event monitoring maintains a constant watch on your library directories.
+For very large libraries with many subdirectories, this may consume additional system resources compared to periodic scanning.
+
+:::note
+Large libraries may cause errors with file monitoring.
+If you have a large number of files on disk, search the internet for ["configuring Linux max_user_watches"](https://www.google.com/search?q=configuring+Linux+max_user_watches) to increase system limits.
+:::
+
+:::caution
+The file monitor will increase the RAM requirements of Unmanic and may not be a good option for devices with limited RAM availability.
+:::
+
+## When to Use Event Monitoring
+
+Event monitoring is ideal when:
+
+- You need immediate processing of new files
+- Your library is stored on a local file system with proper event support
+- You have configured appropriate plugins to handle partial file scenarios
+
+For libraries on network shares or when you prefer predictable, scheduled processing, consider using [library scanning](/docs/configuration/libraries/library_scanner) or [API-based file submission](/docs/using_unmanic/apis) instead.
