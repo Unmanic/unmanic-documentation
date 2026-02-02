@@ -69,6 +69,11 @@ const rows = [
     supporter: "Unlimited",
   },
   {
+    feature: "Linked installation discovery",
+    free: "Manual setup",
+    supporter: "Auto populated",
+  },
+  {
     feature: "Supporter-only plugin settings",
     free: "Limited",
     supporter: "Full access",
