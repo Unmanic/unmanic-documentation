@@ -4,18 +4,16 @@ description: Unmanic Writing Plugins > Accessing System Info
 id: system_info
 ---
 
-
 A Plugin has limited access to the Unmanic process' data. However, there is no limit
 on what a plugin may carryout when it's [**runner**](/docs/development/writing_plugins/introduction#runners)
 processes are called.
 
-
-To aid a Plugin in carrying out system specific tasks, a **System** class has been provided 
-to feed data to the [**Plugin module**](/docs/development/writing_plugins/introduction#plugin-module) at the 
+To aid a Plugin in carrying out system specific tasks, a **System** class has been provided
+to feed data to the [**Plugin module**](/docs/development/writing_plugins/introduction#plugin-module) at the
 discretion of the Plugin's developer.
 
-
 ##### Example:
+
 ```python
     from unmanic.libs.system import System
 
@@ -26,7 +24,7 @@ discretion of the Plugin's developer.
 In this above example, the system_info variable will be filled with a dictionary of a range
 of system information.
 
-This information my vary from system to system. See below for an example of what data may be 
+This information my vary from system to system. See below for an example of what data may be
 returned.
 
 <details>
@@ -34,177 +32,195 @@ returned.
 
 ```json
 {
-    "devices": {
-        "cpu_info": {
-            "python_version": "3.8.10.final.0 (64 bit)",
-            "cpuinfo_version": [
-                7,
-                0,
-                0
-            ],
-            "cpuinfo_version_string": "7.0.0",
-            "arch": "X86_64",
-            "bits": 64,
-            "count": 8,
-            "arch_string_raw": "x86_64",
-            "vendor_id_raw": "GenuineIntel",
-            "brand_raw": "Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz",
-            "hz_advertised_friendly": "2.6000 GHz",
-            "hz_actual_friendly": "2.8001 GHz",
-            "hz_advertised": [
-                2600000000,
-                0
-            ],
-            "hz_actual": [
-                2800121000,
-                0
-            ],
-            "stepping": 3,
-            "model": 94,
-            "family": 6,
-            "flags": [
-                "3dnowprefetch",
-                "abm",
-                "acpi",
-                "adx",
-                "aes",
-                "aperfmperf",
-                "apic",
-                "arat",
-                "arch_perfmon",
-                "art",
-                "avx",
-                "avx2",
-                "bmi1",
-                "bmi2",
-                "bts",
-                "clflush",
-                "clflushopt",
-                "cmov",
-                "constant_tsc",
-                "cpuid",
-                "cpuid_fault",
-                "cx16",
-                "cx8",
-                "de",
-                "ds_cpl",
-                "dtes64",
-                "dtherm",
-                "dts",
-                "epb",
-                "ept",
-                "ept_ad",
-                "erms",
-                "est",
-                "f16c",
-                "flexpriority",
-                "flush_l1d",
-                "fma",
-                "fpu",
-                "fsgsbase",
-                "fxsr",
-                "hle",
-                "ht",
-                "hwp",
-                "hwp_act_window",
-                "hwp_epp",
-                "hwp_notify",
-                "ibpb",
-                "ibrs",
-                "ida",
-                "intel_pt",
-                "invpcid",
-                "invpcid_single",
-                "lahf_lm",
-                "lm",
-                "mca",
-                "mce",
-                "md_clear",
-                "mmx",
-                "monitor",
-                "movbe",
-                "mpx",
-                "msr",
-                "mtrr",
-                "nonstop_tsc",
-                "nopl",
-                "nx",
-                "osxsave",
-                "pae",
-                "pat",
-                "pbe",
-                "pcid",
-                "pclmulqdq",
-                "pdcm",
-                "pdpe1gb",
-                "pebs",
-                "pge",
-                "pln",
-                "pni",
-                "popcnt",
-                "pse",
-                "pse36",
-                "pti",
-                "pts",
-                "rdrand",
-                "rdrnd",
-                "rdseed",
-                "rdtscp",
-                "rep_good",
-                "rtm",
-                "sdbg",
-                "sep",
-                "sgx",
-                "smap",
-                "smep",
-                "ss",
-                "ssbd",
-                "sse",
-                "sse2",
-                "sse4_1",
-                "sse4_2",
-                "ssse3",
-                "stibp",
-                "syscall",
-                "tm",
-                "tm2",
-                "tpr_shadow",
-                "tsc",
-                "tsc_adjust",
-                "tsc_deadline_timer",
-                "tscdeadline",
-                "vme",
-                "vmx",
-                "vnmi",
-                "vpid",
-                "x2apic",
-                "xgetbv1",
-                "xsave",
-                "xsavec",
-                "xsaveopt",
-                "xsaves",
-                "xtopology",
-                "xtpr"
-            ],
-            "l3_cache_size": 6291456,
-            "l2_cache_size": "1 MiB",
-            "l1_data_cache_size": "128 KiB",
-            "l1_instruction_cache_size": "128 KiB",
-            "l2_cache_line_size": 256,
-            "l2_cache_associativity": 6
-        },
-        "gpu_info": []
+  "devices": {
+    "cpu_info": {
+      "python_version": "3.8.10.final.0 (64 bit)",
+      "cpuinfo_version": [7, 0, 0],
+      "cpuinfo_version_string": "7.0.0",
+      "arch": "X86_64",
+      "bits": 64,
+      "count": 8,
+      "arch_string_raw": "x86_64",
+      "vendor_id_raw": "GenuineIntel",
+      "brand_raw": "Intel(R) Core(TM) i7-6770HQ CPU @ 2.60GHz",
+      "hz_advertised_friendly": "2.6000 GHz",
+      "hz_actual_friendly": "2.8001 GHz",
+      "hz_advertised": [2600000000, 0],
+      "hz_actual": [2800121000, 0],
+      "stepping": 3,
+      "model": 94,
+      "family": 6,
+      "flags": [
+        "3dnowprefetch",
+        "abm",
+        "acpi",
+        "adx",
+        "aes",
+        "aperfmperf",
+        "apic",
+        "arat",
+        "arch_perfmon",
+        "art",
+        "avx",
+        "avx2",
+        "bmi1",
+        "bmi2",
+        "bts",
+        "clflush",
+        "clflushopt",
+        "cmov",
+        "constant_tsc",
+        "cpuid",
+        "cpuid_fault",
+        "cx16",
+        "cx8",
+        "de",
+        "ds_cpl",
+        "dtes64",
+        "dtherm",
+        "dts",
+        "epb",
+        "ept",
+        "ept_ad",
+        "erms",
+        "est",
+        "f16c",
+        "flexpriority",
+        "flush_l1d",
+        "fma",
+        "fpu",
+        "fsgsbase",
+        "fxsr",
+        "hle",
+        "ht",
+        "hwp",
+        "hwp_act_window",
+        "hwp_epp",
+        "hwp_notify",
+        "ibpb",
+        "ibrs",
+        "ida",
+        "intel_pt",
+        "invpcid",
+        "invpcid_single",
+        "lahf_lm",
+        "lm",
+        "mca",
+        "mce",
+        "md_clear",
+        "mmx",
+        "monitor",
+        "movbe",
+        "mpx",
+        "msr",
+        "mtrr",
+        "nonstop_tsc",
+        "nopl",
+        "nx",
+        "osxsave",
+        "pae",
+        "pat",
+        "pbe",
+        "pcid",
+        "pclmulqdq",
+        "pdcm",
+        "pdpe1gb",
+        "pebs",
+        "pge",
+        "pln",
+        "pni",
+        "popcnt",
+        "pse",
+        "pse36",
+        "pti",
+        "pts",
+        "rdrand",
+        "rdrnd",
+        "rdseed",
+        "rdtscp",
+        "rep_good",
+        "rtm",
+        "sdbg",
+        "sep",
+        "sgx",
+        "smap",
+        "smep",
+        "ss",
+        "ssbd",
+        "sse",
+        "sse2",
+        "sse4_1",
+        "sse4_2",
+        "ssse3",
+        "stibp",
+        "syscall",
+        "tm",
+        "tm2",
+        "tpr_shadow",
+        "tsc",
+        "tsc_adjust",
+        "tsc_deadline_timer",
+        "tscdeadline",
+        "vme",
+        "vmx",
+        "vnmi",
+        "vpid",
+        "x2apic",
+        "xgetbv1",
+        "xsave",
+        "xsavec",
+        "xsaveopt",
+        "xsaves",
+        "xtopology",
+        "xtpr"
+      ],
+      "l3_cache_size": 6291456,
+      "l2_cache_size": "1 MiB",
+      "l1_data_cache_size": "128 KiB",
+      "l1_instruction_cache_size": "128 KiB",
+      "l2_cache_line_size": 256,
+      "l2_cache_associativity": 6
     },
-    "platform": [
-        "Linux",
-        "nightcrawler",
-        "5.8.0-44-generic",
-        "#50~20.04.1-Ubuntu SMP Wed Feb 10 21:07:30 UTC 2021",
-        "x86_64",
-        "x86_64"
-    ],
-    "python": "3.8.5.final.0"
+    "gpu_info": []
+  },
+  "platform": [
+    "Linux",
+    "nightcrawler",
+    "5.8.0-44-generic",
+    "#50~20.04.1-Ubuntu SMP Wed Feb 10 21:07:30 UTC 2021",
+    "x86_64",
+    "x86_64"
+  ],
+  "python": "3.8.5.final.0"
 }
 ```
 
 </details>
+
+## Directory metadata (.unmanic)
+
+Plugins can store lightweight, per-directory metadata in a hidden `.unmanic` file using `UnmanicDirectoryInfo`.
+This is useful for persisting plugin decisions (for example, marking a file as already moved or skipping a failed move) without maintaining your own database.
+The Mover2 plugin in the official repository uses this helper to track file movement attempts.
+
+### Example usage
+
+```python
+import os
+from unmanic.libs.directoryinfo import UnmanicDirectoryInfo
+
+def mark_file_as_moved(path):
+    directory_info = UnmanicDirectoryInfo(os.path.dirname(path))
+    directory_info.set('mover2', os.path.basename(path), 'Moved')
+    directory_info.save()
+
+def file_was_marked(path):
+    directory_info = UnmanicDirectoryInfo(os.path.dirname(path))
+    return directory_info.get('mover2', os.path.basename(path)) == 'Moved'
+```
+
+### Notes
+
+- The `.unmanic` file is stored alongside the files in each directory and is created on first save.
+- Options are stored in lower case, so treat keys as case-insensitive.
+- Always call `save()` after setting values or your changes will not be persisted.
