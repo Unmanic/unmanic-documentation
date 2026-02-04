@@ -108,6 +108,7 @@ module.exports = {
                                 'development/writing_plugins/creating_a_new_plugin',
                                 'development/writing_plugins/plugin_settings',
                                 'development/writing_plugins/system_info',
+                                'development/writing_plugins/sharing_data_between_plugins',
                                 'development/writing_plugins/plugin_runner_types',
                                 'development/writing_plugins/advanced_plugin_patterns',
                             ],

@@ -1,0 +1,245 @@
+---
+id: sharing_data_between_plugins
+title: Sharing Data Between Plugins
+---
+
+Plugin workflows often need to share state between runners and between different plugins in a single task. Unmanic provides helper classes to make this safe and consistent without plugins needing to manage their own storage.
+
+## TaskDataStore
+
+`TaskDataStore` is a task-scoped, in-memory store that allows plugins to share data during the lifecycle of a task. Use it when the data only matters while a task is active and should not persist once the task is complete.
+
+### Stores and behavior
+
+TaskDataStore has two separate stores:
+
+1. Runner State (immutable)
+
+- Stored per `(task_id, plugin_id, runner)`.
+- A key can only be set once; subsequent sets return `False`.
+- Intended for recording values that should not be mutated later in the task flow.
+
+2. Task State (mutable)
+
+- Stored per `task_id`.
+- Keys can be created, updated, deleted, and exported/imported as JSON.
+- Intended for shared, mutable state across plugins during the task lifecycle.
+
+### API summary
+
+Runner state (immutable):
+
+- `set_runner_value(key, value) -> bool`
+- `get_runner_value(key, default=None, plugin_id=None, runner=None) -> Any`
+
+Task state (mutable):
+
+- `set_task_state(key, value, task_id=None)`
+- `get_task_state(key, default=None, task_id=None) -> Any`
+- `delete_task_state(key, task_id=None)`
+- `export_task_state(task_id) -> dict`
+- `export_task_state_json(task_id, **json_kwargs) -> str`
+- `import_task_state(task_id, new_state: dict)`
+- `import_task_state_json(task_id, json_data: str)`
+
+### Example usage
+
+Immutable runner value:
+
+```python
+def emit_task_scheduled(data, task_data_store=None):
+    task_data_store.set_runner_value("source_size", data["source_data"]["size"])
+```
+
+Reading the value later in the same task:
+
+```python
+def on_postprocessor_task_results(data, task_data_store=None):
+    source_size = task_data_store.get_runner_value("source_size", runner="emit_task_scheduled")
+```
+
+Mutable task state:
+
+```python
+def on_worker_process(data, task_data_store=None):
+    task_data_store.set_task_state("progress_marker", "stage_1_complete")
+    return data
+```
+
+### Recommended signature style
+
+New plugins should use keyword arguments so Unmanic can pass helpers by name:
+
+```python
+def on_worker_process(data, task_data_store=None, file_metadata=None):
+    task_data_store.set_task_state("source_file_size", source_file_size)
+```
+
+### Limitations
+
+- In-memory only: data is lost on restart or crash.
+- Task lifecycle only: data is cleared when a task is deleted or marked complete.
+- Requires runner context: if no context is bound, calls will raise `RuntimeError` unless a `task_id` override is provided where supported.
+- No cross-process support: this is thread-safe but not shared across separate processes.
+
+## Directory metadata (.unmanic) (deprecated)
+
+Plugins can store lightweight, per-directory metadata in a hidden `.unmanic` file using `UnmanicDirectoryInfo`.
+This is useful for persisting plugin decisions (for example, marking a file as already moved or skipping a failed move) without maintaining your own database.
+The Mover2 plugin in the official repository uses this helper to track file movement attempts.
+
+:::warning
+This feature is deprecated in favor of the database-backed `UnmanicFileMetadata` helper class described below, and `.unmanic` support may be removed in a future Unmanic update.
+:::
+
+### Example usage
+
+```python
+import os
+from unmanic.libs.directoryinfo import UnmanicDirectoryInfo
+
+def mark_file_as_moved(path):
+    directory_info = UnmanicDirectoryInfo(os.path.dirname(path))
+    directory_info.set('mover2', os.path.basename(path), 'Moved')
+    directory_info.save()
+
+def file_was_marked(path):
+    directory_info = UnmanicDirectoryInfo(os.path.dirname(path))
+    return directory_info.get('mover2', os.path.basename(path)) == 'Moved'
+```
+
+### Notes
+
+- The `.unmanic` file is stored alongside the files in each directory and is created on first save.
+- Options are stored in lower case, so treat keys as case-insensitive.
+- Always call `save()` after setting values or your changes will not be persisted.
+
+### API summary
+
+#### Function:
+
+`get(section, option, fallback=None)`
+
+- **`section`** _[string]_ - The plugin ID or namespace you want to read.
+- **`option`** _[string]_ - The key stored for the file.
+- **`fallback`** _[any]_ - Optional default if the key does not exist.
+
+#### Function:
+
+`set(section, option, value)`
+
+- **`section`** _[string]_ - The plugin ID or namespace to write.
+- **`option`** _[string]_ - The key to set for the file.
+- **`value`** _[string]_ - The value to store.
+
+#### Function:
+
+`save()`
+
+- **No arguments** - Persists any pending changes to disk.
+
+## UnmanicFileMetadata
+
+`UnmanicFileMetadata` stores file-level metadata that persists across tasks and survives renames or moves by using a content fingerprint.
+
+The Mover2 and Video Transcoder plugins are good references:
+
+- **Mover2** shows how to write **source-scoped** metadata so the next scan can skip the original file.
+- **Video Transcoder** uses **destination-scoped** metadata for the “force transcode” feature.
+
+### How it works
+
+- During task processing, metadata is staged against the task in a temporary table.
+- When the task is written to history, the metadata is committed to the long-lived file metadata table using a content fingerprint.
+- File metadata persists even if completed tasks are deleted or cleaned up; scheduled cleanup does not remove file metadata.
+- File test runners can read metadata by file path, but they cannot write because no task exists yet.
+- Task staging stores source and destination scopes separately and preserves the source fingerprint at first source-scoped write so it can be committed even if the source file changes later.
+
+### Key behavior
+
+- File-scoped: data persists beyond task completion.
+- Shared across plugins: any plugin can read metadata written by another plugin.
+- Write restrictions: plugins may only write to their own namespace.
+- Not tied to completed tasks cleanup: deleting completed tasks does not delete file metadata.
+
+### Read-only in file test runners
+
+File test runners can read metadata by path but cannot write because no task exists yet.
+
+```python
+def on_library_management_file_test(data, file_metadata=None):
+    existing = file_metadata.get()
+    if existing.get("ignore"):
+        data["add_file_to_pending_tasks"] = False
+        data["ignore_file"] = True
+```
+
+### Read/write during task processing
+
+```python
+def on_worker_process(data, file_metadata=None):
+    current = file_metadata.get()
+    if current.get("ignore"):
+        return data
+
+    file_metadata.set({"status": "processed", "ignore": True})
+    return data
+```
+
+### Writing against the source fingerprint
+
+By default, `set()` writes metadata that will be committed against the source fingerprint. If your plugin needs to persist metadata for the destination file(s) on success, pass `use_destination_scope=True`. A plugin can write both scopes by calling `set()` twice with different `use_destination_scope` values.
+
+```python
+def on_postprocessor_file_movement(data, file_metadata=None):
+    # Persist metadata for the original source file, even if a new destination file is created.
+    file_metadata.set({"status": "Ignoring"})
+    return data
+```
+
+### Backward compatibility with `.unmanic`
+
+If your plugin needs to remain compatible with older Unmanic versions that do not expose `file_metadata`, use a fallback to `.unmanic` only when the helper is unavailable. This mirrors the approach in Mover2.
+
+```python
+def on_postprocessor_file_movement(data, file_metadata=None):
+    source_path = data.get("source_data", {}).get("abspath")
+    if file_metadata:
+        file_metadata.set({"status": "Ignoring"})
+    else:
+        directory_info = UnmanicDirectoryInfo(os.path.dirname(source_path))
+        directory_info.set("mover2", os.path.basename(source_path), "Ignoring")
+        directory_info.save()
+```
+
+### API summary
+
+#### Function:
+
+`get(plugin_id_override=None)`
+
+- **`plugin_id_override`** _[string]_ - Optional plugin ID to read another plugin’s metadata namespace.
+
+#### Function:
+
+`set(data, use_destination_scope=False)`
+
+- **`data`** _[dictionary]_ - Data to merge into your plugin’s metadata namespace.
+- **`use_destination_scope`** _[boolean]_ - When `True`, commit metadata against destination fingerprints on success. Default `False` commits against the original source fingerprint.
+
+:::note
+
+- `get()` returns the metadata scoped to your plugin ID by default.
+- `get("mover2")` returns the metadata scoped for the mover2 plugin.
+- `set()` accepts a dictionary only and merges into your plugin’s metadata namespace; set a key to `None` to remove it.
+- When `use_destination_scope=False` (default), the source file fingerprint is captured at the first call to `set()`; if the source file no longer exists at commit time, the metadata is dropped and an info log is written.
+- Task-scoped staging stores source and destination metadata separately so a single plugin can write both scopes during the same task.
+- The metadata size per plugin is limited (currently 32KB).
+- This helper is only available in the main Unmanic process; child processes cannot access it.
+
+:::
+
+## Choosing the right helper
+
+- Use `TaskDataStore` when the data only matters during a task and should not persist afterward.
+- Use `UnmanicFileMetadata` when you need to persist file-level decisions across scans, renames, or moves.

@@ -196,31 +196,3 @@ returned.
 ```
 
 </details>
-
-## Directory metadata (.unmanic)
-
-Plugins can store lightweight, per-directory metadata in a hidden `.unmanic` file using `UnmanicDirectoryInfo`.
-This is useful for persisting plugin decisions (for example, marking a file as already moved or skipping a failed move) without maintaining your own database.
-The Mover2 plugin in the official repository uses this helper to track file movement attempts.
-
-### Example usage
-
-```python
-import os
-from unmanic.libs.directoryinfo import UnmanicDirectoryInfo
-
-def mark_file_as_moved(path):
-    directory_info = UnmanicDirectoryInfo(os.path.dirname(path))
-    directory_info.set('mover2', os.path.basename(path), 'Moved')
-    directory_info.save()
-
-def file_was_marked(path):
-    directory_info = UnmanicDirectoryInfo(os.path.dirname(path))
-    return directory_info.get('mover2', os.path.basename(path)) == 'Moved'
-```
-
-### Notes
-
-- The `.unmanic` file is stored alongside the files in each directory and is created on first save.
-- Options are stored in lower case, so treat keys as case-insensitive.
-- Always call `save()` after setting values or your changes will not be persisted.
