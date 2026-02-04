@@ -5,13 +5,13 @@ title: Sharing Data Between Plugins
 
 Plugin workflows often need to share state between runners and between different plugins in a single task. Unmanic provides helper classes to make this safe and consistent without plugins needing to manage their own storage.
 
-## TaskDataStore
+## Task Data Store helper
 
-`TaskDataStore` is a task-scoped, in-memory store that allows plugins to share data during the lifecycle of a task. Use it when the data only matters while a task is active and should not persist once the task is complete.
+The **Task Data Store** helper is a task-scoped, in-memory store that allows plugins to share data during the lifecycle of a task. Use it when the data only matters while a task is active and should not persist once the task is complete.
 
 ### Stores and behavior
 
-TaskDataStore has two separate stores:
+The **Task Data Store** helper has two separate stores:
 
 1. Runner State (immutable)
 
@@ -63,7 +63,6 @@ Mutable task state:
 ```python
 def on_worker_process(data, task_data_store=None):
     task_data_store.set_task_state("progress_marker", "stage_1_complete")
-    return data
 ```
 
 ### Recommended signature style
@@ -82,14 +81,14 @@ def on_worker_process(data, task_data_store=None, file_metadata=None):
 - Requires runner context: if no context is bound, calls will raise `RuntimeError` unless a `task_id` override is provided where supported.
 - No cross-process support: this is thread-safe but not shared across separate processes.
 
-## Directory metadata (.unmanic) (deprecated)
+## Directory Info helper (.unmanic) (deprecated)
 
-Plugins can store lightweight, per-directory metadata in a hidden `.unmanic` file using `UnmanicDirectoryInfo`.
+Plugins can store lightweight, per-directory metadata in a hidden `.unmanic` file using the **Directory Info** helper.
 This is useful for persisting plugin decisions (for example, marking a file as already moved or skipping a failed move) without maintaining your own database.
 The Mover2 plugin in the official repository uses this helper to track file movement attempts.
 
 :::warning
-This feature is deprecated in favor of the database-backed `UnmanicFileMetadata` helper class described below, and `.unmanic` support may be removed in a future Unmanic update.
+This feature is deprecated in favour of the database-backed **File Metadata** helper described below, and `.unmanic` support may be removed in a future Unmanic update.
 :::
 
 ### Example usage
@@ -138,9 +137,9 @@ def file_was_marked(path):
 
 - **No arguments** - Persists any pending changes to disk.
 
-## UnmanicFileMetadata
+## File Metadata helper
 
-`UnmanicFileMetadata` stores file-level metadata that persists across tasks and survives renames or moves by using a content fingerprint.
+The **File Metadata** helper stores file-level metadata that persists across tasks and survives renames or moves by using a content fingerprint.
 
 The Mover2 and Video Transcoder plugins are good references:
 
@@ -180,21 +179,21 @@ def on_library_management_file_test(data, file_metadata=None):
 def on_worker_process(data, file_metadata=None):
     current = file_metadata.get()
     if current.get("ignore"):
-        return data
+        return
 
     file_metadata.set({"status": "processed", "ignore": True})
-    return data
+    return
 ```
 
 ### Writing against the source fingerprint
 
-By default, `set()` writes metadata that will be committed against the source fingerprint. If your plugin needs to persist metadata for the destination file(s) on success, pass `use_destination_scope=True`. A plugin can write both scopes by calling `set()` twice with different `use_destination_scope` values.
+By default, `set()` writes metadata that will be committed against destination fingerprints on success. If your plugin needs to persist metadata for the original source file, pass `use_source_scope=True`. A plugin can write both scopes by calling `set()` twice with different `use_source_scope` values.
 
 ```python
 def on_postprocessor_file_movement(data, file_metadata=None):
     # Persist metadata for the original source file, even if a new destination file is created.
-    file_metadata.set({"status": "Ignoring"})
-    return data
+    file_metadata.set({"status": "Ignoring"}, use_source_scope=True)
+    return
 ```
 
 ### Backward compatibility with `.unmanic`
@@ -205,7 +204,7 @@ If your plugin needs to remain compatible with older Unmanic versions that do no
 def on_postprocessor_file_movement(data, file_metadata=None):
     source_path = data.get("source_data", {}).get("abspath")
     if file_metadata:
-        file_metadata.set({"status": "Ignoring"})
+        file_metadata.set({"status": "Ignoring"}, use_source_scope=True)
     else:
         directory_info = UnmanicDirectoryInfo(os.path.dirname(source_path))
         directory_info.set("mover2", os.path.basename(source_path), "Ignoring")
@@ -222,17 +221,17 @@ def on_postprocessor_file_movement(data, file_metadata=None):
 
 #### Function:
 
-`set(data, use_destination_scope=False)`
+`set(data, use_source_scope=False)`
 
 - **`data`** _[dictionary]_ - Data to merge into your plugin’s metadata namespace.
-- **`use_destination_scope`** _[boolean]_ - When `True`, commit metadata against destination fingerprints on success. Default `False` commits against the original source fingerprint.
+- **`use_source_scope`** _[boolean]_ - When `True`, commit metadata against the original source fingerprint. Default `False` commits against destination fingerprints on success.
 
 :::note
 
 - `get()` returns the metadata scoped to your plugin ID by default.
 - `get("mover2")` returns the metadata scoped for the mover2 plugin.
 - `set()` accepts a dictionary only and merges into your plugin’s metadata namespace; set a key to `None` to remove it.
-- When `use_destination_scope=False` (default), the source file fingerprint is captured at the first call to `set()`; if the source file no longer exists at commit time, the metadata is dropped and an info log is written.
+- When `use_source_scope=True`, the source file fingerprint is captured at the first call to `set()`; if the source file no longer exists at commit time, the metadata is dropped and an info log is written.
 - Task-scoped staging stores source and destination metadata separately so a single plugin can write both scopes during the same task.
 - The metadata size per plugin is limited (currently 32KB).
 - This helper is only available in the main Unmanic process; child processes cannot access it.
@@ -241,5 +240,5 @@ def on_postprocessor_file_movement(data, file_metadata=None):
 
 ## Choosing the right helper
 
-- Use `TaskDataStore` when the data only matters during a task and should not persist afterward.
-- Use `UnmanicFileMetadata` when you need to persist file-level decisions across scans, renames, or moves.
+- Use the **Task Data Store** helper when the data only matters during a task and should not persist afterward.
+- Use the **File Metadata** helper when you need to persist file-level decisions across scans, renames, or moves.
