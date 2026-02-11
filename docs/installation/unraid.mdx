@@ -40,11 +40,15 @@ This path is a tmpfs mount, however it is limited to 50% of your total system me
 
 ----
 #### 2) Create a custom tmpfs mount
-If you wish to use more than 50% of your memory, add the following snippet to your Extra Parameters
-(changing *20g* to the upper limit of whatever amount of RAM you wish to use):
+If you wish to use more than 50% of your memory, set your *Cache Directory* to `/tmp/unmanic_tmpfs` 
+
+Then, add the following snippet to your *Extra Parameters* and change *20g* to the upper limit of whatever amount of RAM you wish to use:
 ```
---mount type=tmpfs,destination=/tmp/unmanic_tmpfs,tmpfs-size=20g
+--mount type=tmpfs,destination=/tmp/unmanic_tmpfs,tmpfs-size=20g,tmpfs-mode=1777
 ```
+
+<img className={"screenshot"} src={require('/img/ramcache-tmpfs-doc.png').default} />
+
 This does not reserve this amount of RAM for the container. It only creates a mount limited to the amount specified.
 You will still be limited to the amount of RAM available on the system as shared by all other processes.
 
