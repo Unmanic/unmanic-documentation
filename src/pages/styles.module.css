@@ -37,6 +37,12 @@ p {
   --home-bg-image: none;
   --home-bg-blur: 6px;
   --home-bg-fade: 0.95;
+  --home-card-bg: rgba(24, 24, 24, 0.86);
+  --home-card-bg-soft: rgba(24, 24, 24, 0.72);
+  --home-card-bg-strong: rgba(24, 24, 24, 0.92);
+  --home-card-border: rgba(0, 126, 180, 0.3);
+  --home-card-border-muted: rgba(46, 84, 100, 0.8);
+  --home-card-accent: rgba(0, 126, 180, 0.16);
 }
 
 .pageContainer {
@@ -100,7 +106,7 @@ p {
 .getStarted {
   padding: 10px 100px;
   background-color: var(--ifm-color-primary);
-  border-radius: 25px;
+  border-radius: 6px;
   transition: ease-in-out 0.2s;
   font-weight: 600;
   color: white;
@@ -151,7 +157,7 @@ p {
   align-items: center;
   gap: 0.35rem;
   padding: 0.4rem 0.9rem;
-  border-radius: 999px;
+  border-radius: 6px;
   border: 1px solid
     color-mix(in srgb, var(--ifm-color-primary) 65%, transparent);
   color: var(--ifm-color-primary);
@@ -199,9 +205,9 @@ p {
   height: 60px;
   width: 60px;
   padding: 10px;
-  border-radius: 25%;
-  background-color: #7a7f8724;
-  border: 1px solid #7a7f8724;
+  border-radius: 6px;
+  background-color: var(--home-card-bg-soft);
+  border: 1px solid var(--home-card-border);
 }
 
 @media screen and (max-width: 975px) {

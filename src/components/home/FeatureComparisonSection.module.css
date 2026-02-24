@@ -26,12 +26,9 @@
 
 .supporterItem {
   padding: 1.25rem 1.35rem;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 70%, #0b0f14);
-  border: 1px solid
-    color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
-  box-shadow: 0 6px 18px
-    color-mix(in srgb, var(--ifm-color-emphasis-800) 10%, transparent);
+  border-radius: 6px;
+  background: var(--home-card-bg);
+  border: 1px solid var(--home-card-border);
 }
 
 .supporterTitle {
@@ -70,16 +67,9 @@
 
 .tableCard {
   width: 100%;
-  border-radius: 18px;
-  border: 1px solid
-    color-mix(in srgb, var(--ifm-color-emphasis-200) 80%, #000000);
-  background: color-mix(
-    in srgb,
-    var(--ifm-color-emphasis-100) 75%,
-    #0f141a 25%
-  );
-  box-shadow: 0 10px 26px
-    color-mix(in srgb, var(--ifm-color-emphasis-800) 12%, transparent);
+  border-radius: 6px;
+  border: 1px solid var(--home-card-border);
+  background: var(--home-card-bg-strong);
   overflow: hidden;
 }
 
@@ -88,9 +78,8 @@
   grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.6fr));
   gap: 0.5rem;
   padding: 1.1rem 1.5rem;
-  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 55%, #0b0f14);
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
+  background: var(--home-card-bg);
+  border-bottom: 1px solid var(--home-card-border-muted);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.8rem;
@@ -106,8 +95,7 @@
   grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.6fr));
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
+  border-bottom: 1px solid var(--home-card-border-muted);
   align-items: center;
 }
 
@@ -116,11 +104,7 @@
 }
 
 .tableRow:nth-child(even) {
-  background: color-mix(
-    in srgb,
-    var(--ifm-color-emphasis-100) 50%,
-    transparent
-  );
+  background: var(--home-card-bg-soft);
 }
 
 .featureCell {

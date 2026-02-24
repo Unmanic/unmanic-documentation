@@ -55,8 +55,8 @@
 
 .slideImage {
   width: 100%;
-  border-radius: 14px;
-  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 6px;
+  border: 1px solid var(--home-card-border);
   display: block;
 }
 
@@ -73,7 +73,7 @@
   justify-content: center;
   gap: 0.6rem;
   padding: 0.95rem 2.8rem;
-  border-radius: 999px;
+  border-radius: 6px;
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--ifm-color-primary) 85%, #ffffff 15%),

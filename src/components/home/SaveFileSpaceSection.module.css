@@ -32,15 +32,13 @@
 
 .chartCard {
   width: 100%;
-  background: var(--ifm-color-emphasis-100);
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 18px;
+  background: var(--home-card-bg);
+  border: 1px solid var(--home-card-border);
+  border-radius: 6px;
   padding: 1.75rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  box-shadow: 0 8px 20px
-    color-mix(in srgb, var(--ifm-color-emphasis-700) 10%, transparent);
 }
 
 .chartHeader {
