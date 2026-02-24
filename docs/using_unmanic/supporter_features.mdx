@@ -1,0 +1,111 @@
+---
+title: Supporter Features
+description: Learn how supporter access, lifetime supporter status, and the project funding system work in Unmanic.
+id: supporter_features
+---
+
+Unmanic is free and open source, and standard development continues for everyone.
+
+Supporter access helps fund infrastructure and ongoing work, and it unlocks additional capabilities in Unmanic.
+
+## What Supporter Access Unlocks
+
+Supporters unlock:
+
+- Unlimited libraries
+- Unlimited linked installations
+- Advanced plugin options
+- Unmanic Central features
+- Supporter community benefits and channels
+
+## Ways To Gain Supporter Access
+
+You can gain supporter access through one of the following:
+
+### 1. Financial Support
+
+- Monthly donations through [Patreon](https://www.patreon.com/unmanic) or [GitHub Sponsors](https://github.com/sponsors/josh5)
+- Patreon donations from the minimum tier upward count toward supporter status
+- GitHub Sponsors can be monthly donations or one-off donations
+- If your total donations reach **$36 US** over the course of your support, you are granted permanent lifetime supporter status
+
+:::info Automatic Lifetime Supporter Status
+If you are currently supporting the project (or have been an active supporter at any point in the last 12 months) and your total donations in that 12-month window have reached at least **$36 US**, permanent lifetime supporter status is applied automatically.
+:::
+
+### 2. Development Contribution
+
+Development contributions are recognized across official Unmanic repositories on [GitHub](https://github.com/Unmanic).
+
+This includes code contributions, plugin work, documentation fixes, bug investigations, testing support, and other meaningful improvements that help move the project forward.
+
+Contributions do not need to be large; even small, useful improvements can be enough to qualify for supporter status.
+
+### 3. Community Participation
+
+Community participation is recognized through role assignments in the [Unmanic Discord](https://unmanic.app/discord).
+
+Roles may be granted for consistently helping others, sharing useful technical feedback, participating in testing of new features and bug fixes before release, contributing ideas that improve the project, or supporting plugin development and maintenance.
+
+As with development contributions, consistent helpful participation matters more than size, and active contributors can receive supporter status through this role-based system.
+
+## Project Funding System
+
+The [Project Funding](https://api.unmanic.app/support-auth-api/portal?project=Unmanic) system lets the community prioritize optional features that take extra work, while regular development continues as normal.
+
+Standard development work, bug fixes, and small quality improvements continue through the normal development flow and do not require funding.
+
+### Credit Conversion Tiers
+
+Credits are calculated from monthly sponsorship using progressive conversion bands, plus a repeat-support bonus.
+
+| Monthly Support         | Base Rate        | Example (Includes +20% Repeat-Support Bonus) |
+| ----------------------- | ---------------- | -------------------------------------------- |
+| $1.00 - $4.99 / month   | 5 credits per $1 | $2.50 = 12 base + 2 bonus = 14 total         |
+| $5.00 - $9.99 / month   | 6 credits per $1 | $6.00 = 36 base + 7 bonus = 43 total         |
+| $10.00 - $29.99 / month | 7 credits per $1 | $10.00 = 70 base + 14 bonus = 84 total       |
+| $30.00 - $99.99 / month | 8 credits per $1 | $30.00 = 240 base + 48 bonus = 288 total     |
+| $100.00+ / month        | 9 credits per $1 | $100.00 = 900 base + 180 bonus = 1,080 total |
+
+Support amounts below $1.00/month do not currently accrue credits.
+
+### Repeat-Support Bonus
+
+If your sponsorship remains active month to month, your account receives a continuity bonus.
+
+Current bonus: **+20%** of base monthly credits.
+
+### Proposal Cancellation
+
+If a proposal is cancelled and removed from the funding list, credits previously assigned to it are returned to your balance in the next account update cycle.
+
+## Unlocking Features in Unmanic
+
+To unlock supporter features in the Unmanic app, you need to sign in and link your Unmanic instance with a supported account.
+
+### Step-by-step login flow
+
+1. Open the left-hand navigation drawer in Unmanic.
+2. Click the **Login** button.
+3. In the login dialog, copy the code shown in Unmanic.
+
+![Unmanic login dialog](/img/unmanic-login-dialog.png)
+
+4. Click **Login with Streaming Tech**.
+5. A new browser window opens. Sign in with **Discord**, **Patreon**, or **GitHub**.
+6. After signing in, paste the code from Unmanic into the **Application Link Code** field.
+
+![Support auth API link code entry](/img/support-auth-api-enter-app-lilnk-code.png)
+
+7. Click **Submit**.
+8. Wait a few seconds. The dialog in Unmanic will close and your session will be logged in.
+
+### Important supporter-status requirement
+
+Signing in only links your account. Supporter features are unlocked only if the account you signed in with has supporter status.
+
+If you sign in with an account that does not have supporter status yet, you will still be logged in, but supporter-only features remain locked.
+
+You can review your supportership status in the user dropdown of the [Application Link Page](https://api.unmanic.app/support-auth-api/link).
+
+![Support auth API link code entry](/img/support-auth-api-supportership-status.png)

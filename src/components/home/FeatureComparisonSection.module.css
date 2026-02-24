@@ -28,7 +28,8 @@
   padding: 1.25rem 1.35rem;
   border-radius: 16px;
   background: color-mix(in srgb, var(--ifm-color-emphasis-100) 70%, #0b0f14);
-  border: 1px solid color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
+  border: 1px solid
+    color-mix(in srgb, var(--ifm-color-emphasis-200) 70%, #000000);
   box-shadow: 0 6px 18px
     color-mix(in srgb, var(--ifm-color-emphasis-800) 10%, transparent);
 }
@@ -46,6 +47,25 @@
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--ifm-color-content);
+}
+
+.supporterPricingNote {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ifm-color-content-secondary);
+  text-align: center;
+}
+
+.supporterPricingLink {
+  margin-left: 0.5rem;
+  color: var(--ifm-color-primary);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.supporterPricingLink:hover {
+  color: var(--ifm-color-primary-darker);
+  text-decoration: none;
 }
 
 .tableCard {

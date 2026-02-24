@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import HomeSection from "./HomeSection";
 import styles from "./FeatureComparisonSection.module.css";
 
@@ -147,6 +149,19 @@ function FeatureComparisonSection() {
                 </a>
                 , even a small documentation fix, can bump your login to a
                 supporter tier.
+                <br />
+                Alternatively, you can support through{" "}
+                <a
+                  href="https://github.com/sponsors/josh5"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  GitHub Sponsors
+                </a>
+                . You can choose to provide a small monthly donation or a
+                one-off donation. If your total donations reach $36 US over the
+                course of your support, you are granted permanent lifetime
+                supporter status.
               </p>
             </div>
             <div className={styles.supporterItem}>
@@ -154,9 +169,9 @@ function FeatureComparisonSection() {
               <p className={styles.supporterDetail}>
                 Log in with Discord to link your profile.
                 <br />
-                The Discord server awards reputation points for helpful
-                participation. Earning one rep point per month can bump your
-                login to a supporter tier. Join the{" "}
+                Supporter status on Discord is role-based and can be granted for
+                helpful community participation, testing and feedback, project
+                contributions, or plugin development activity. Join the{" "}
                 <a
                   href="https://unmanic.app/discord"
                   target="_blank"
@@ -172,7 +187,12 @@ function FeatureComparisonSection() {
               <p className={styles.supporterDetail}>
                 Log in with Patreon to link your profile.
                 <br />
-                <strong>Any</strong> Patreon supporter tier unlocks supporter status. Even the minimum tier of $1.50. Support via{" "}
+                <strong>Any</strong> Patreon supporter tier unlocks supporter
+                status, including the minimum tier of $1.50. If your total
+                donations reach $36 US over the course of your support, you are
+                granted permanent lifetime supporter status.
+                <br />
+                Support via{" "}
                 <a
                   href="http://api.unmanic.app/support-auth-api/support"
                   target="_blank"
@@ -184,6 +204,16 @@ function FeatureComparisonSection() {
               </p>
             </div>
           </div>
+          <p className={styles.supporterPricingNote}>
+            Support the project with a monthly contribution or unlock all
+            supporter features permanently with a one-time payment of $36 USD.
+            <Link
+              to={useBaseUrl("docs/using_unmanic/supporter_features")}
+              className={styles.supporterPricingLink}
+            >
+              Learn more about supporter features and pricing.
+            </Link>
+          </p>
         </div>
         <div className={styles.tableCard}>
           <div className={styles.tableHeader}>

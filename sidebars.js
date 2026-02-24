@@ -32,6 +32,7 @@ module.exports = {
             label: 'Using Unmanic',
             items: [
                 'using_unmanic/getting_started',
+                'using_unmanic/supporter_features',
                 {
                     type: 'category',
                     label: 'Configuration',
