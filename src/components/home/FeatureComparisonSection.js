@@ -188,9 +188,9 @@ function FeatureComparisonSection() {
                 Log in with Patreon to link your profile.
                 <br />
                 <strong>Any</strong> Patreon supporter tier unlocks supporter
-                status, including the minimum tier of $1.50. If your total
-                donations reach $36 US over the course of your support, you are
-                granted permanent lifetime supporter status.
+                status. If your total donations reach $36 US over the course of
+                your support, you are granted permanent lifetime supporter
+                status.
                 <br />
                 Support via{" "}
                 <a
