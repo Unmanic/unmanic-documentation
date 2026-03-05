@@ -1,0 +1,792 @@
+---
+title: Using a Custom FFmpeg
+description: Install or pin FFmpeg from Jellyfin, BtbN, or John Van Sickle during Unmanic container startup
+id: custom_ffmpeg_startup
+---
+
+![Difficulty](https://img.shields.io/badge/Difficulty-easy-green?style=flat)
+![Setup Time](https://img.shields.io/badge/Setup%20Time-5--10%20minutes-green?style=flat)
+[![Original Author](https://img.shields.io/badge/Original%20Author-josh5-lightgrey?style=flat?style=plastic&logo=github)](https://github.com/josh5)
+
+This guide explains how to install a custom FFmpeg build every time the Unmanic container starts by using `/config/startup.sh`.
+Unmanic intentionally keeps image dependencies conservative to preserve compatibility and avoid breakage for the widest range of users.
+That stable baseline is usually the right default, but some systems need newer or different FFmpeg builds for new hardware features, codec improvements, or driver-specific fixes.
+
+A common example is newer GPUs where newer FFmpeg builds may be required for AV1 workflows, 10-bit pipelines, or recently added hardware encode/decode support.
+The Unmanic image already provides a startup hook (`/config/startup.sh`) for exactly this kind of customization.
+
+The Unmanic Docker build installs `jellyfin-ffmpeg7` by default.
+The script below defaults to a BtbN nonfree build (source-built) using the latest release tag and auto-selected FFmpeg line, and can also install from Jellyfin or John Van Sickle builds.
+
+If you prefer a simpler approach, you can build FFmpeg outside the Unmanic container and copy the resulting `ffmpeg` and `ffprobe` binaries into `/config/.local/bin`.
+Unmanic prepends `/config/.local/bin` to `PATH`, so those binaries will be used without needing this startup installer script.
+This is often the easiest option when you already have a known-good FFmpeg build pipeline.
+
+## 1) Create `/config/startup.sh`
+
+Create or edit `/config/startup.sh` in your Unmanic config volume and paste this script:
+
+```bash
+#!/usr/bin/env bash
+
+# ============================================================
+# Custom FFmpeg installer for Unmanic container startup
+#
+# Configure these values directly in this script (do not rely on container env vars):
+#   INSTALL_CUSTOM_FFMPEG:
+#     - true: run install logic on startup
+#     - false: skip everything
+#   FFMPEG_BUILD_SOURCE:
+#     - jellyfin: install jellyfin-ffmpeg package (.deb) from Jellyfin repo
+#     - btbn: install static build from BtbN GitHub releases
+#     - johnvansickle: install static build from johnvansickle.com
+#     - custom: install from your own archive URL
+#   FFMPEG_VERSION:
+#     - jellyfin: major package version (e.g. 7, 8)
+#     - btbn: FFmpeg line selector (auto, master, 8.0, 7.1, 8, 7)
+#     - johnvansickle:
+#         - release or latest -> /ffmpeg/releases/ffmpeg-release-<arch>-static.tar.xz
+#         - git -> /ffmpeg/builds/ffmpeg-git-<arch>-static.tar.xz
+#         - <x.y.z> -> try /ffmpeg/releases/ffmpeg-<x.y.z>-<arch>-static.tar.xz, then fall back to /ffmpeg/old-releases/
+#     - custom: ignored (custom URL controls artifact)
+#   BTBN_RELEASE (used when FFMPEG_BUILD_SOURCE=btbn):
+#     - BtbN release tag (latest or autobuild-YYYY-MM-DD-HH-MM)
+#   BTBN_BUILD_FLAVOR (used when FFMPEG_BUILD_SOURCE=btbn):
+#     - gpl: includes full GPL dependency set (more features than lgpl)
+#     - lgpl: excludes GPL-only libs (notably libx264/libx265)
+#     - nonfree: built via BtbN source scripts for closer parity with official BtbN outputs
+#   BTBN_FFMPEG_LINE (deprecated alias):
+#     - if set, overrides FFMPEG_VERSION for BtbN line selection
+#   CUSTOM_FFMPEG_URL (used when FFMPEG_BUILD_SOURCE=custom):
+#     - must point to a .tar.gz, .tgz, .tar.xz, or .tar archive
+#     - archive must contain ffmpeg and ffprobe executables
+# Caching behavior:
+#   - downloaded archives are stored in /config/custom-ffmpeg
+#   - if archive already exists, download is skipped
+#   - if missing, archive is downloaded to /tmp then moved into /config/custom-ffmpeg
+#   - nonfree source-build artifacts are packaged and cached in /config/custom-ffmpeg
+#   - btbn nonfree mode installs a default dependency set + nv-codec-headers automatically
+#   - btbn-build-* paths are temporary build workspaces and may be recreated per build
+#
+# Version/reference links:
+#   Jellyfin packages: https://repo.jellyfin.org/files/ffmpeg/ubuntu/
+#   BtbN releases:     https://github.com/BtbN/FFmpeg-Builds/releases
+#   BtbN source tags:  https://github.com/BtbN/FFmpeg-Builds/tags
+#   John Van Sickle:   https://johnvansickle.com/ffmpeg/
+# ============================================================
+
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=btbn
+FFMPEG_VERSION=auto
+BTBN_RELEASE=latest
+BTBN_BUILD_FLAVOR=gpl
+CUSTOM_FFMPEG_URL=
+
+# ============================================================
+
+CUSTOM_FFMPEG_DIR=/config/custom-ffmpeg
+INTERNAL_ARCH="$(uname -m)"
+
+ffmpeg_startup_log() {
+    echo "**** (startup-ffmpeg) $*"
+}
+
+need_root() {
+    local action="${1:-this action}"
+    if [[ "${EUID}" -ne 0 ]]; then
+        ffmpeg_startup_log "Skipping ${action}: requires root, container is running as non-root"
+        return 1
+    fi
+    return 0
+}
+
+ensure_writable_dir() {
+    local dir_path="$1"
+    local action="${2:-write to directory}"
+
+    if ! mkdir -p "${dir_path}" 2>/dev/null; then
+        ffmpeg_startup_log "Skipping ${action}: unable to create ${dir_path}"
+        return 1
+    fi
+    if [[ ! -w "${dir_path}" ]]; then
+        ffmpeg_startup_log "Skipping ${action}: ${dir_path} is not writable"
+        return 1
+    fi
+    return 0
+}
+
+download_archive_to_cache() {
+    local download_url="$1"
+    local archive_name="$2"
+    local cache_path="${CUSTOM_FFMPEG_DIR}/${archive_name}"
+    local tmp_path="/tmp/${archive_name}.download"
+
+    if [[ -s "${cache_path}" ]]; then
+        ffmpeg_startup_log "Using cached archive ${cache_path}"
+        DOWNLOAD_ARCHIVE_PATH="${cache_path}"
+        return 0
+    fi
+
+    ffmpeg_startup_log "Downloading ${download_url}"
+    curl -fsSL -o "${tmp_path}" "${download_url}"
+    mv -f "${tmp_path}" "${cache_path}"
+    ffmpeg_startup_log "Cached archive at ${cache_path}"
+    DOWNLOAD_ARCHIVE_PATH="${cache_path}"
+    return 0
+}
+
+ff_line_to_int() {
+    local line="$1"
+    case "${line}" in
+    master) echo 9999 ;;
+    [0-9]*.[0-9]*) echo "${line}" | awk -F. '{printf "%d%02d\n", $1, $2}' ;;
+    [0-9]*) printf "%d00\n" "${line}" ;;
+    *) echo 0 ;;
+    esac
+}
+
+install_nv_codec_headers_for_line() {
+    local selected_line="$1"
+    local ffver_int nv_commit nv_tar_url nv_dir stamp_dir stamp_file
+    ffver_int="$(ff_line_to_int "${selected_line}")"
+
+    nv_commit="876af32a202d0de83bd1d36fe74ee0f7fcf86b0d"
+    if ((ffver_int < 700)); then
+        nv_commit="22441b505d9d9afc1e3002290820909846c24bdc"
+    elif ((ffver_int < 701)); then
+        nv_commit="75f032b24263c2b684b9921755cafc1c08e41b9d"
+    elif ((ffver_int < 800)); then
+        nv_commit="9934f17316b66ce6de12f3b82203a298bc9351d8"
+    fi
+
+    stamp_dir="/usr/local/share/startup-ffmpeg"
+    stamp_file="${stamp_dir}/nv-codec-headers.commit"
+    if [[ -f "${stamp_file}" ]] && [[ "$(cat "${stamp_file}" 2>/dev/null)" == "${nv_commit}" ]] && [[ -f /usr/local/include/ffnvcodec/nvEncodeAPI.h ]]; then
+        ffmpeg_startup_log "nv-codec-headers commit ${nv_commit} already installed"
+        return 0
+    fi
+
+    nv_tar_url="https://github.com/FFmpeg/nv-codec-headers/archive/${nv_commit}.tar.gz"
+    download_archive_to_cache "${nv_tar_url}" "nv-codec-headers-${nv_commit}.tar.gz"
+    nv_dir="/tmp/nv-codec-headers-${nv_commit}"
+    rm -rf "${nv_dir}"
+    mkdir -p "${nv_dir}"
+    tar -xzf "${DOWNLOAD_ARCHIVE_PATH}" -C "${nv_dir}" --strip-components=1
+
+    ffmpeg_startup_log "Installing nv-codec-headers commit ${nv_commit} for line ${selected_line}"
+    make -C "${nv_dir}" install PREFIX=/usr/local
+    mkdir -p "${stamp_dir}"
+    echo "${nv_commit}" >"${stamp_file}"
+}
+
+map_arch_to_btbn() {
+    case "$1" in
+    x86_64 | amd64) echo "64" ;;
+    aarch64 | arm64) echo "arm64" ;;
+    *) return 1 ;;
+    esac
+}
+
+map_arch_to_btbn_target() {
+    case "$1" in
+    64) echo "linux64" ;;
+    arm64) echo "linuxarm64" ;;
+    *) return 1 ;;
+    esac
+}
+
+resolve_btbn_source_tag() {
+    local requested_version="$1"
+    local tag_name=""
+
+    if [[ "${requested_version}" == "latest" ]]; then
+        tag_name="$(curl -fsSL "https://api.github.com/repos/BtbN/FFmpeg-Builds/tags?per_page=100" | jq -r '[.[].name | select(startswith("autobuild-"))][0] // empty')"
+        if [[ -z "${tag_name}" ]]; then
+            tag_name="$(curl -fsSL "https://api.github.com/repos/BtbN/FFmpeg-Builds/releases" | jq -r '[.[].tag_name | select(startswith("autobuild-"))][0] // empty')"
+        fi
+        if [[ -z "${tag_name}" ]]; then
+            ffmpeg_startup_log "Failed to resolve latest BtbN release tag for source build"
+            return 1
+        fi
+        echo "${tag_name}"
+        return 0
+    fi
+
+    if curl -fsSI "https://github.com/BtbN/FFmpeg-Builds/archive/refs/tags/${requested_version}.tar.gz" >/dev/null 2>&1; then
+        echo "${requested_version}"
+        return 0
+    fi
+
+    ffmpeg_startup_log "BTBN_RELEASE='${requested_version}' is not a valid BtbN source tag for nonfree build"
+    ffmpeg_startup_log "Use 'latest' or an autobuild tag such as 'autobuild-2026-03-04-13-03'"
+    return 1
+}
+
+patch_btbn_build_script_for_native() {
+    local build_script_path="$1"
+    local patched_path=""
+
+    if [[ ! -f "${build_script_path}" ]]; then
+        ffmpeg_startup_log "Unable to patch missing file ${build_script_path}"
+        return 1
+    fi
+
+    patched_path="$(mktemp)"
+    awk '
+    BEGIN {
+        skip_uid_block = 0
+        comment_tail = 0
+    }
+    {
+        line = $0
+
+        if (line ~ /^mkdir -p artifacts$/ || line ~ /^cd ffbuild\/pkgroot/) {
+            comment_tail = 1
+        }
+        if (comment_tail == 1) {
+            print "# " line
+            next
+        }
+
+        if (skip_uid_block == 1) {
+            if (line ~ /^fi$/) {
+                skip_uid_block = 0
+            }
+            next
+        }
+        if (line ~ /^if docker info -f /) {
+            skip_uid_block = 1
+            next
+        }
+
+        if (line ~ /^rm -rf ffbuild$/) {
+            print "FFBUILD_ROOT=\"${FFBUILD_ROOT:-/config/custom-ffmpeg/btbn-build}\""
+            print "rm -rf \"${FFBUILD_ROOT}\""
+            next
+        }
+        if (line ~ /^mkdir ffbuild$/) {
+            print "mkdir -p \"${FFBUILD_ROOT}\""
+            next
+        }
+
+        gsub(/cd \/ffbuild/, "cd \"${FFBUILD_ROOT}\"", line)
+        gsub(/--prefix=\/ffbuild\/prefix/, "--prefix=\"${FFBUILD_ROOT}/prefix\"", line)
+
+        if (line ~ /docker run --rm -i .*bash \/build\.sh/) {
+            print "# " line
+            print "bash \"$BUILD_SCRIPT\""
+            next
+        }
+        print line
+    }' "${build_script_path}" >"${patched_path}"
+
+    mv -f "${patched_path}" "${build_script_path}"
+}
+
+extract_btbn_lines() {
+    local release_json="$1"
+    local btbn_cpu="$2"
+    local flavor="$3"
+
+    echo "${release_json}" | jq -r --arg cpu "${btbn_cpu}" --arg flavor "${flavor}" '
+        .assets[]?.browser_download_url
+        | select(test("linux" + $cpu + ".*tar\\.xz$"))
+        | select(contains("linux" + $cpu + "-" + $flavor))
+        | select(contains("-shared") | not)
+        | (try capture("ffmpeg-n(?<line>[0-9]+\\.[0-9]+)-").line catch empty)
+    ' | sort -Vu
+}
+
+resolve_btbn_line() {
+    local release_json="$1"
+    local btbn_cpu="$2"
+    local flavor="$3"
+    local requested_line="$4"
+    local selected_line=""
+
+    case "${requested_line}" in
+    auto)
+        selected_line="$(extract_btbn_lines "${release_json}" "${btbn_cpu}" "${flavor}" | tail -n1)"
+        if [[ -n "${selected_line}" ]]; then
+            echo "${selected_line}"
+            return 0
+        fi
+        echo "master"
+        return 0
+        ;;
+    master)
+        echo "master"
+        return 0
+        ;;
+    [0-9]*.[0-9]*)
+        echo "${requested_line}"
+        return 0
+        ;;
+    [0-9]*)
+        selected_line="$(extract_btbn_lines "${release_json}" "${btbn_cpu}" "${flavor}" | grep -E "^${requested_line}\\." | tail -n1)"
+        if [[ -n "${selected_line}" ]]; then
+            echo "${selected_line}"
+            return 0
+        fi
+        ffmpeg_startup_log "No BtbN line found for major '${requested_line}'"
+        return 1
+        ;;
+    *)
+        ffmpeg_startup_log "Unsupported BtbN FFmpeg line selector='${requested_line}'. Use: auto, master, 8.0, 7.1, 8, 7"
+        return 1
+        ;;
+    esac
+}
+
+resolve_btbn_asset_url() {
+    local release_json="$1"
+    local btbn_cpu="$2"
+    local flavor="$3"
+    local selected_line="$4"
+
+    echo "${release_json}" | jq -r --arg cpu "${btbn_cpu}" --arg flavor "${flavor}" --arg line "${selected_line}" '
+        [
+            .assets[]?.browser_download_url
+            | select(test("linux" + $cpu + ".*tar\\.xz$"))
+            | select(contains("linux" + $cpu + "-" + $flavor))
+            | select(contains("-shared") | not)
+            | select(if $line == "master" then contains("ffmpeg-master-") else contains("ffmpeg-n" + $line + "-") end)
+        ][0] // empty
+    '
+}
+
+map_arch_to_jvs() {
+    case "$1" in
+    x86_64 | amd64) echo "amd64" ;;
+    aarch64 | arm64) echo "arm64" ;;
+    *) return 1 ;;
+    esac
+}
+
+replace_ffmpeg_symlinks() {
+    local ffmpeg_bin="$1"
+    local ffprobe_bin="$2"
+
+    if ! ensure_writable_dir "/config/.local/bin" "symlink setup"; then
+        return 1
+    fi
+    ln -sfn "${ffmpeg_bin}" /config/.local/bin/ffmpeg
+    ln -sfn "${ffprobe_bin}" /config/.local/bin/ffprobe
+
+    ffmpeg_startup_log "ffmpeg -> $(readlink -f /config/.local/bin/ffmpeg) (/config/.local/bin/ffmpeg)"
+    ffmpeg_startup_log "ffprobe -> $(readlink -f /config/.local/bin/ffprobe) (/config/.local/bin/ffprobe)"
+
+    if [[ -d /usr/local/bin && -w /usr/local/bin ]]; then
+        ln -sfn "${ffmpeg_bin}" /usr/local/bin/ffmpeg
+        ln -sfn "${ffprobe_bin}" /usr/local/bin/ffprobe
+        ffmpeg_startup_log "ffmpeg -> $(readlink -f /usr/local/bin/ffmpeg) (/usr/local/bin/ffmpeg)"
+        ffmpeg_startup_log "ffprobe -> $(readlink -f /usr/local/bin/ffprobe) (/usr/local/bin/ffprobe)"
+    else
+        ffmpeg_startup_log "/usr/local/bin is not writable, skipping /usr/local/bin symlinks"
+    fi
+}
+
+install_from_jellyfin() {
+    if ! need_root "jellyfin package installation"; then
+        return 0
+    fi
+
+    local codename arch index_url deb_name deb_url deb_path
+    codename="$(. /etc/os-release && echo "${VERSION_CODENAME:-noble}")"
+    arch="$(dpkg --print-architecture)"
+    index_url="https://repo.jellyfin.org/files/ffmpeg/ubuntu/${codename}/"
+
+    ffmpeg_startup_log "Resolving jellyfin-ffmpeg${FFMPEG_VERSION} package from ${index_url}"
+
+    deb_name="$(curl -fsSL "${index_url}" | grep -oE "jellyfin-ffmpeg${FFMPEG_VERSION}_[^\"]*_${arch}\\.deb" | sort -V | tail -n1)"
+    if [[ -z "${deb_name}" ]]; then
+        ffmpeg_startup_log "Unable to resolve Jellyfin package from ${index_url}"
+        ffmpeg_startup_log "Check available versions: https://repo.jellyfin.org/files/ffmpeg/ubuntu/"
+        return 1
+    fi
+
+    deb_url="${index_url}${deb_name}"
+    deb_path="/tmp/${deb_name}"
+
+    ffmpeg_startup_log "Downloading ${deb_url}"
+    curl -fsSL -o "${deb_path}" "${deb_url}"
+    dpkg -i "${deb_path}"
+
+    replace_ffmpeg_symlinks /usr/lib/jellyfin-ffmpeg/ffmpeg /usr/lib/jellyfin-ffmpeg/ffprobe
+}
+
+install_from_btbn() {
+    local btbn_cpu
+    btbn_cpu="$(map_arch_to_btbn "${INTERNAL_ARCH}")" || {
+        ffmpeg_startup_log "Unsupported architecture for BtbN: ${INTERNAL_ARCH}"
+        return 1
+    }
+
+    local btbn_release btbn_line_request
+    btbn_release="${BTBN_RELEASE:-latest}"
+    btbn_line_request="${FFMPEG_VERSION}"
+    if [[ -n "${BTBN_FFMPEG_LINE:-}" ]]; then
+        ffmpeg_startup_log "BTBN_FFMPEG_LINE is deprecated; use FFMPEG_VERSION for BtbN line selection"
+        btbn_line_request="${BTBN_FFMPEG_LINE}"
+    fi
+
+    local api_url release_json asset_url extract_dir archive_name cache_archive requested_flavor selected_line line_lookup_flavor
+    if [[ "${btbn_release}" == "latest" ]]; then
+        api_url="https://api.github.com/repos/BtbN/FFmpeg-Builds/releases/latest"
+    else
+        api_url="https://api.github.com/repos/BtbN/FFmpeg-Builds/releases/tags/${btbn_release}"
+    fi
+
+    requested_flavor="${BTBN_BUILD_FLAVOR}"
+    case "${requested_flavor}" in
+    gpl | lgpl | nonfree) ;;
+    *)
+        ffmpeg_startup_log "Unsupported BTBN_BUILD_FLAVOR='${requested_flavor}' for static mode. Use: gpl, lgpl, nonfree"
+        return 1
+        ;;
+    esac
+
+    release_json="$(curl -fsSL "${api_url}")"
+    line_lookup_flavor="${requested_flavor}"
+    if [[ "${requested_flavor}" == "nonfree" ]]; then
+        line_lookup_flavor="gpl"
+    fi
+    selected_line="$(resolve_btbn_line "${release_json}" "${btbn_cpu}" "${line_lookup_flavor}" "${btbn_line_request}")" || return 1
+
+    if [[ "${requested_flavor}" == "nonfree" ]]; then
+        local btbn_target source_tag source_url source_archive_name source_archive_path source_extract_dir artifact_path archive_name cache_archive extract_dir ffbuild_root
+        btbn_target="$(map_arch_to_btbn_target "${btbn_cpu}")" || {
+            ffmpeg_startup_log "Unsupported BtbN build target for architecture '${btbn_cpu}'"
+            return 1
+        }
+
+        if ! command -v git >/dev/null 2>&1; then
+            ffmpeg_startup_log "BtbN nonfree source build requires 'git' in the container"
+            return 1
+        fi
+
+        if ! ensure_writable_dir "${CUSTOM_FFMPEG_DIR}" "BtbN nonfree source build"; then
+            return 0
+        fi
+
+        source_tag="$(resolve_btbn_source_tag "${btbn_release}")" || return 1
+        archive_name="btbn-${source_tag}-${btbn_cpu}-nonfree-${selected_line}.tar.xz"
+        cache_archive="${CUSTOM_FFMPEG_DIR}/${archive_name}"
+        extract_dir="${CUSTOM_FFMPEG_DIR}/btbn-${source_tag}-${selected_line}"
+
+        if [[ -s "${cache_archive}" ]]; then
+            ffmpeg_startup_log "Using cached nonfree artifact ${cache_archive}"
+            rm -rf "${extract_dir}"
+            mkdir -p "${extract_dir}"
+            tar -xJf "${cache_archive}" -C "${extract_dir}"
+            replace_ffmpeg_symlinks "${extract_dir}/bin/ffmpeg" "${extract_dir}/bin/ffprobe"
+            return 0
+        fi
+
+        source_url="https://github.com/BtbN/FFmpeg-Builds/archive/refs/tags/${source_tag}.tar.gz"
+        source_archive_name="btbn-source-${source_tag}.tar.gz"
+        download_archive_to_cache "${source_url}" "${source_archive_name}"
+        source_archive_path="${DOWNLOAD_ARCHIVE_PATH}"
+
+        source_extract_dir="${CUSTOM_FFMPEG_DIR}/btbn-source-${source_tag}"
+        rm -rf "${source_extract_dir}"
+        mkdir -p "${source_extract_dir}"
+        tar -xzf "${source_archive_path}" -C "${source_extract_dir}" --strip-components=1
+        ffbuild_root="${CUSTOM_FFMPEG_DIR}/btbn-build-${source_tag}-${selected_line}"
+
+        ffmpeg_startup_log "Patching BtbN build.sh for native in-container execution (no docker run)"
+        if ! patch_btbn_build_script_for_native "${source_extract_dir}/build.sh"; then
+            ffmpeg_startup_log "Failed to patch ${source_extract_dir}/build.sh"
+            return 1
+        fi
+
+        ffmpeg_startup_log "Building BtbN nonfree via patched BtbN build.sh from tag '${source_tag}' (target ${btbn_target}, line ${selected_line})"
+        install_nv_codec_headers_for_line "${selected_line}" || return 1
+        (
+            cd "${source_extract_dir}"
+            chmod +x ./build.sh
+            if [[ "${selected_line}" == "master" ]]; then
+                FFBUILD_ROOT="${ffbuild_root}" ./build.sh "${btbn_target}" nonfree
+            else
+                if [[ ! -f "addins/${selected_line}.sh" ]]; then
+                    ffmpeg_startup_log "BtbN source does not have addin '${selected_line}'"
+                    exit 1
+                fi
+                FFBUILD_ROOT="${ffbuild_root}" ./build.sh "${btbn_target}" nonfree "${selected_line}"
+            fi
+        )
+
+        if [[ ! -x "${ffbuild_root}/prefix/bin/ffmpeg" || ! -x "${ffbuild_root}/prefix/bin/ffprobe" ]]; then
+            ffmpeg_startup_log "BtbN nonfree native build did not produce ffmpeg/ffprobe under ${ffbuild_root}/prefix/bin"
+            return 1
+        fi
+
+        tar -cJf "${cache_archive}" -C "${ffbuild_root}/prefix" .
+
+        rm -rf "${extract_dir}"
+        mkdir -p "${extract_dir}"
+        tar -xJf "${cache_archive}" -C "${extract_dir}"
+        replace_ffmpeg_symlinks "${extract_dir}/bin/ffmpeg" "${extract_dir}/bin/ffprobe"
+        return 0
+    fi
+
+    ffmpeg_startup_log "Resolving BtbN asset for tag '${btbn_release}' (${btbn_cpu}, flavor=${requested_flavor}, line=${selected_line})"
+    asset_url="$(resolve_btbn_asset_url "${release_json}" "${btbn_cpu}" "${requested_flavor}" "${selected_line}")"
+
+    if [[ -z "${asset_url}" || "${asset_url}" == "null" ]]; then
+        ffmpeg_startup_log "No matching BtbN asset found. Check tag, architecture, and flavor."
+        return 1
+    fi
+
+    archive_name="btbn-${btbn_release}-${btbn_cpu}-${requested_flavor}-${selected_line}.tar.xz"
+    extract_dir="${CUSTOM_FFMPEG_DIR}/btbn-${btbn_release}-${selected_line}"
+
+    if ! ensure_writable_dir "${CUSTOM_FFMPEG_DIR}" "BtbN install"; then
+        return 0
+    fi
+    download_archive_to_cache "${asset_url}" "${archive_name}"
+    cache_archive="${DOWNLOAD_ARCHIVE_PATH}"
+    rm -rf "${extract_dir}"
+    mkdir -p "${extract_dir}"
+
+    tar -xJf "${cache_archive}" -C "${extract_dir}" --strip-components=1
+
+    replace_ffmpeg_symlinks "${extract_dir}/bin/ffmpeg" "${extract_dir}/bin/ffprobe"
+}
+
+install_from_johnvansickle() {
+    local jvs_cpu
+    jvs_cpu="$(map_arch_to_jvs "${INTERNAL_ARCH}")" || {
+        ffmpeg_startup_log "Unsupported architecture for John Van Sickle static builds: ${INTERNAL_ARCH}"
+        return 1
+    }
+
+    local archive_name asset_url extract_dir cache_archive
+    archive_name="ffmpeg-${FFMPEG_VERSION}-${jvs_cpu}-static.tar.xz"
+    asset_url="https://johnvansickle.com/ffmpeg/releases/${archive_name}"
+
+    if [[ "${FFMPEG_VERSION}" == "release" || "${FFMPEG_VERSION}" == "latest" ]]; then
+        archive_name="ffmpeg-release-${jvs_cpu}-static.tar.xz"
+        asset_url="https://johnvansickle.com/ffmpeg/releases/${archive_name}"
+    elif [[ "${FFMPEG_VERSION}" == "git" ]]; then
+        archive_name="ffmpeg-git-${jvs_cpu}-static.tar.xz"
+        asset_url="https://johnvansickle.com/ffmpeg/builds/${archive_name}"
+    fi
+
+    extract_dir="${CUSTOM_FFMPEG_DIR}/johnvansickle-${FFMPEG_VERSION}"
+
+    if ! ensure_writable_dir "${CUSTOM_FFMPEG_DIR}" "John Van Sickle install"; then
+        return 0
+    fi
+    if [[ "${FFMPEG_VERSION}" != "release" && "${FFMPEG_VERSION}" != "latest" && "${FFMPEG_VERSION}" != "git" ]]; then
+        if ! curl -fsSI "${asset_url}" >/dev/null 2>&1; then
+            asset_url="https://johnvansickle.com/ffmpeg/old-releases/${archive_name}"
+        fi
+    fi
+
+    download_archive_to_cache "${asset_url}" "${archive_name}"
+    cache_archive="${DOWNLOAD_ARCHIVE_PATH}"
+    rm -rf "${extract_dir}"
+    mkdir -p "${extract_dir}"
+
+    tar -xJf "${cache_archive}" -C "${extract_dir}" --strip-components=1
+
+    replace_ffmpeg_symlinks "${extract_dir}/ffmpeg" "${extract_dir}/ffprobe"
+}
+
+install_from_custom_url() {
+    if [[ -z "${CUSTOM_FFMPEG_URL}" ]]; then
+        ffmpeg_startup_log "CUSTOM_FFMPEG_URL is required when FFMPEG_BUILD_SOURCE=custom"
+        return 1
+    fi
+
+    local extract_dir ffmpeg_path ffprobe_path archive_name cache_archive
+    extract_dir="${CUSTOM_FFMPEG_DIR}/custom-${FFMPEG_VERSION}"
+    archive_name="$(basename "${CUSTOM_FFMPEG_URL%%\?*}")"
+    if [[ -z "${archive_name}" ]]; then
+        archive_name="custom-${FFMPEG_VERSION}.tar.xz"
+    fi
+
+    if ! ensure_writable_dir "${CUSTOM_FFMPEG_DIR}" "custom source install"; then
+        return 0
+    fi
+    download_archive_to_cache "${CUSTOM_FFMPEG_URL}" "${archive_name}"
+    cache_archive="${DOWNLOAD_ARCHIVE_PATH}"
+    rm -rf "${extract_dir}"
+    mkdir -p "${extract_dir}"
+
+    case "${archive_name}" in
+    *.tar.gz | *.tgz)
+        tar -xzf "${cache_archive}" -C "${extract_dir}" --strip-components=1
+        ;;
+    *.tar.xz)
+        tar -xJf "${cache_archive}" -C "${extract_dir}" --strip-components=1
+        ;;
+    *.tar)
+        tar -xf "${cache_archive}" -C "${extract_dir}" --strip-components=1
+        ;;
+    *)
+        ffmpeg_startup_log "Unsupported archive type for CUSTOM_FFMPEG_URL. Use .tar.gz/.tgz/.tar.xz/.tar"
+        return 1
+        ;;
+    esac
+
+    ffmpeg_path="$(find "${extract_dir}" -type f -name "ffmpeg" -perm -u+x | head -n1)"
+    ffprobe_path="$(find "${extract_dir}" -type f -name "ffprobe" -perm -u+x | head -n1)"
+
+    if [[ -z "${ffmpeg_path}" || -z "${ffprobe_path}" ]]; then
+        ffmpeg_startup_log "Could not find executable ffmpeg/ffprobe in custom archive"
+        return 1
+    fi
+
+    replace_ffmpeg_symlinks "${ffmpeg_path}" "${ffprobe_path}"
+}
+
+main() {
+    local install_status=0
+
+    if [[ "${INSTALL_CUSTOM_FFMPEG}" != "true" ]]; then
+        ffmpeg_startup_log "INSTALL_CUSTOM_FFMPEG=${INSTALL_CUSTOM_FFMPEG}, skipping"
+        return 0
+    fi
+
+    case "${FFMPEG_BUILD_SOURCE}" in
+    jellyfin)
+        if install_from_jellyfin; then install_status=0; else install_status=$?; fi
+        ;;
+    btbn)
+        if install_from_btbn; then install_status=0; else install_status=$?; fi
+        ;;
+    johnvansickle)
+        if install_from_johnvansickle; then install_status=0; else install_status=$?; fi
+        ;;
+    custom)
+        if install_from_custom_url; then install_status=0; else install_status=$?; fi
+        ;;
+    *)
+        ffmpeg_startup_log "Unknown FFMPEG_BUILD_SOURCE='${FFMPEG_BUILD_SOURCE}'. Supported: jellyfin, btbn, johnvansickle, custom"
+        return 1
+        ;;
+    esac
+
+    if [[ "${install_status}" -ne 0 ]]; then
+        ffmpeg_startup_log "Selected source installer failed with exit code ${install_status}"
+        return "${install_status}"
+    fi
+
+    if ffmpeg_version_line="$(ffmpeg -version 2>/tmp/startup-ffmpeg-version.err | head -n1)" && [[ -n "${ffmpeg_version_line}" ]]; then
+        ffmpeg_startup_log "Installed FFmpeg version: ${ffmpeg_version_line}"
+    else
+        ffmpeg_startup_log "FFmpeg install/symlink completed, but ffmpeg failed to execute."
+        if [[ -s /tmp/startup-ffmpeg-version.err ]]; then
+            ffmpeg_startup_log "ffmpeg error: $(head -n1 /tmp/startup-ffmpeg-version.err)"
+        fi
+        return 1
+    fi
+}
+
+main "$@"
+
+```
+
+## 2) Configure variables at the top of the script
+
+Use these script variables (set directly in `/config/startup.sh`) to switch source/version without rewriting logic:
+
+| Variable                | Example                                    | Description                                                                                                              |
+| ----------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `INSTALL_CUSTOM_FFMPEG` | `true`                                     | Master on/off switch for the startup install                                                                             |
+| `FFMPEG_BUILD_SOURCE`   | `btbn`                                     | Source to install from: `jellyfin`, `btbn`, `johnvansickle`, or `custom`                                                 |
+| `FFMPEG_VERSION`        | `auto`                                     | Version selector interpreted by source; for BtbN this is FFmpeg line selector (`auto`, `master`, `8.0`, `7.1`, `8`, `7`) |
+| `BTBN_RELEASE`          | `latest`                                   | BtbN release tag (`latest` or `autobuild-...`)                                                                           |
+| `BTBN_BUILD_FLAVOR`     | `gpl`                                      | BtbN static flavor: `gpl` (most features), `lgpl`, or `nonfree` (`nonfree` builds from BtbN source tag)                  |
+| `CUSTOM_FFMPEG_URL`     | `https://example.org/ffmpeg-custom.tar.xz` | Required when `FFMPEG_BUILD_SOURCE=custom`                                                                               |
+
+Script defaults (BtbN latest):
+
+```bash
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=btbn
+FFMPEG_VERSION=auto
+BTBN_RELEASE=latest
+BTBN_BUILD_FLAVOR=gpl
+```
+
+BtbN example:
+
+```bash
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=btbn
+FFMPEG_VERSION=8.0
+BTBN_RELEASE=autobuild-2026-03-04-13-03
+BTBN_BUILD_FLAVOR=gpl
+```
+
+BtbN nonfree example:
+
+```bash
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=btbn
+FFMPEG_VERSION=8.0
+BTBN_RELEASE=autobuild-2026-03-04-13-03
+BTBN_BUILD_FLAVOR=nonfree
+```
+
+John Van Sickle example:
+
+```bash
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=johnvansickle
+FFMPEG_VERSION=release
+```
+
+John Van Sickle git build example:
+
+```bash
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=johnvansickle
+FFMPEG_VERSION=git
+```
+
+John Van Sickle pinned old-release example:
+
+```bash
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=johnvansickle
+FFMPEG_VERSION=6.0.1
+```
+
+Custom archive URL example:
+
+```bash
+INSTALL_CUSTOM_FFMPEG=true
+FFMPEG_BUILD_SOURCE=custom
+CUSTOM_FFMPEG_URL=https://example.org/path/to/ffmpeg-build.tar.xz
+```
+
+## 3) Restart the Unmanic container
+
+Restart Unmanic so `/config/startup.sh` is sourced during container init.
+The startup script runs before Unmanic starts, so FFmpeg replacement happens early in the boot sequence.
+
+:::note
+This installation can add noticeable startup time, especially on first run.
+`btbn`, `johnvansickle`, and `custom` modes do not require package manager installs.
+`jellyfin` mode installs a `.deb` via `dpkg`, so root is required for that mode; if not root, the script logs and skips that action.
+`btbn` with `BTBN_BUILD_FLAVOR=nonfree` patches BtbN's `build.sh` to run natively inside the Unmanic container (no `docker run`), then packages the build output into the same local cache flow.
+Static build modes also require `/config` to be writable for `/config/custom-ffmpeg` and `/config/.local/bin`; if not writable, those actions are skipped.
+Unmanic will continue startup after the script completes.
+:::
+
+## 4) Verify the active FFmpeg build
+
+Check logs for the `startup-ffmpeg` messages and then verify the binary:
+
+```bash
+ffmpeg -version
+which ffmpeg
+readlink -f /config/.local/bin/ffmpeg
+readlink -f /usr/local/bin/ffmpeg
+```
+
+If you need to roll back quickly, set `INSTALL_CUSTOM_FFMPEG=false` and restart the container.

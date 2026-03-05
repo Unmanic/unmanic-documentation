@@ -26,6 +26,9 @@ One particular focus of the documentation is how to create plugins.
 
 - Community guides belong in `./docs/guides`.
 - Each guide should include the three shields.io header chips for Difficulty, Setup Time, and Original Author.
+- Set the Original Author badge to the guide author's handle/name and link it to the author's profile page (typically their GitHub profile).
+- Difficulty badge colors must follow this convention: green for easy, orange for moderate, and red for difficult.
+- Setup Time badge colors must follow this convention: green for `5-10 minutes`, orange for mid-duration setup, and red for setups over one hour.
 
 ## Frontend conventions (home page)
 
