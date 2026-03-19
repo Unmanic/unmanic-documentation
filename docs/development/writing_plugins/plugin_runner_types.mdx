@@ -247,10 +247,15 @@ helper to perform complex or Python-only work in a separate process while still
 integrating with Unmanic’s log tail and progress reporting.
 
 ```python
+import time
+
 from unmanic.libs.unplugins.child_process import PluginChildProcess
 
-def child_work(log_queue, prog_queue):
-    # Any Python code here
+def child_work(source_path, log_queue=None, prog_queue=None):
+    # PluginChildProcess injects log_queue and prog_queue as keyword arguments.
+    # Any positional arguments should be passed to proc.run(...) first.
+    log_queue.put(f"Starting repair work for {source_path}")
+
     for i in range(10):
         # emit a UI log line:
         log_queue.put(f"step {i}/10 completed")
@@ -259,18 +264,21 @@ def child_work(log_queue, prog_queue):
         time.sleep(1)
 
 def on_worker_process(data):
-    # Runs child_work in its own process, returns True if exit code==0
     proc = PluginChildProcess(plugin_id="<your_plugin_id>", data=data)
-    success = proc.run(child_work)
+    # Runs child_work in its own process, returns True if exit code == 0.
+    # "data" still carries the worker state, including worker_log/current_command.
+    success = proc.run(child_work, data["file_in"])
 ```
 
 In this mode the `PluginChildProcess` helper:
 
 1. Spawns the child via `multiprocessing.Process`.
-2. Registers its PID & start time with the worker’s `default_progress_parser`.
-3. Drains `log_queue` → appends to `data["worker_log"]` for UI tail.
-4. Drains `prog_queue` → passes to `command_progress_parser(line_text)` to update the progress bar.
-5. Automatically unsets the child process PID on exit to reset all tracked subprocess metrics
+2. Calls your target with `target(*args, **kwargs)` after injecting `log_queue` and
+   `prog_queue` into the keyword arguments.
+3. Registers its PID & start time with the worker’s `default_progress_parser`.
+4. Drains `log_queue` → appends to `data["worker_log"]` for UI tail.
+5. Drains `prog_queue` → passes to `command_progress_parser(line_text)` to update the progress bar.
+6. Automatically unsets the child process PID on exit to reset all tracked subprocess metrics
    in the Unmanic Worker (CPU, memory, progress, etc.).
 
 This approach is useful when you need more control than an external command, or when your
