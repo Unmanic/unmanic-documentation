@@ -22,6 +22,7 @@ my_new_plugin
 ├── lib
 ├── package.json
 ├── plugin.py
+├── requirements.post-install.txt
 ├── requirements.txt
 └── static
 ```
@@ -54,6 +55,7 @@ This JSON file should contain the following data:
   - **`platform`** - Platform compatibility of this plugin. Can be any combination of ["all", "linux", "windows", "mac"].
   - **`priorities`** - A dictionary of the initial priority that this Plugin's runners within the Plugin flow.
   - **`tags`** - A comma separated list able to be used as keywords when searching for Plugins.
+  - **`defer_dependency_install`** - Optional boolean. When `true`, Unmanic will install this plugin's `requirements.txt` and `package.json` dependencies during plugin installation instead of assuming they were already bundled with the plugin package.
   - **`version`** - The version of your Plugin.
 
 ##### Example:
@@ -65,6 +67,7 @@ This JSON file should contain the following data:
         2
     ],
     "description": "Specify a language tag for Unmanic to try and put as 1st subtitle track.",
+    "defer_dependency_install": false,
     "icon": "https://raw.githubusercontent.com/Josh5/unmanic.plugin.reorder_subtitle_streams_by_language/master/icon.png",
     "id": "reorder_subtitle_streams_by_language",
     "name": "Re-order subtitle streams by language",
@@ -117,6 +120,96 @@ This file will be imported and it's functions called by the main Unmanic process
 This file will be read during the plugin build in GitHub. Any Python modules listed will be installed and packaged with the plugin.
 
 Python modules will be installed to `{plugin root}/site-packages`.
+
+
+---
+### File: `requirements.post-install.txt` *(optional)*
+
+This file may be used when a packaged plugin needs to install Python dependencies at plugin install time.
+
+When a plugin zip is installed, Unmanic checks for `requirements.post-install.txt` and, if present, installs the listed Python modules into `{plugin root}/site-packages`.
+
+Use this file for dependencies that should be resolved on the target Unmanic system during installation rather than being pre-bundled into the plugin package.
+
+This file is processed during packaged plugin installation whether or not `defer_dependency_install` is set.
+
+
+## Dependency Installation Modes
+
+Unmanic supports two dependency installation patterns for plugin authors.
+
+### 1. Bundled dependencies
+
+This is the default plugin packaging model.
+
+- Add Python dependencies to `requirements.txt`.
+- Add frontend dependencies to `package.json` if needed.
+- Build/package the plugin so those dependencies are bundled with the plugin.
+- Do not set `defer_dependency_install` unless you explicitly want the target Unmanic instance to install dependencies during plugin installation.
+
+### 2. Deferred dependency installation
+
+Set `"defer_dependency_install": true` in `info.json` when you want Unmanic to install dependencies during plugin installation.
+
+This option exists primarily for plugins whose packaged dependencies would be too large to reasonably ship inside the plugin repository.
+
+In practice, this matters most for plugins intended for the official plugin repository hosted on GitHub. If bundling the built plugin with all of its dependencies would create artifacts that are too large for GitHub's storage limits or generally too large to manage well in the repository, you can defer dependency installation and let the target Unmanic instance install them after the plugin itself has been installed.
+
+This allows the plugin source and package metadata to remain small while still making large Python or frontend dependency sets available on the destination system at install time.
+
+When this flag is enabled during packaged plugin installation:
+
+- `requirements.post-install.txt` is installed first, if present.
+- `requirements.txt` is then installed into the plugin's `site-packages` directory.
+- `package.json` dependencies are then installed and built.
+- The `requirements.txt` install recreates `site-packages`, so any Python packages installed only by `requirements.post-install.txt` will be replaced unless they are also present in `requirements.txt`.
+
+Example:
+
+```json
+{
+    "id": "my_plugin",
+    "name": "My Plugin",
+    "author": "Example Author",
+    "version": "0.0.1",
+    "description": "Example plugin using deferred dependency installation.",
+    "defer_dependency_install": true,
+    "compatibility": [2]
+}
+```
+
+### When To Use `defer_dependency_install`
+
+Use `defer_dependency_install` when:
+
+- the plugin's bundled Python or Node dependencies would make the packaged plugin too large to store comfortably in a Git-based plugin repository
+- the plugin is intended for the official repository and packaging everything into the published plugin would exceed practical GitHub size limits
+- installing dependencies on the destination Unmanic system is a better tradeoff than committing large built dependency payloads to the repository
+
+Do not use `defer_dependency_install` when:
+
+- your dependency set is reasonably small and can be bundled normally
+- you do not need to work around repository size constraints
+- you want the most predictable install behavior with dependencies already packaged with the plugin
+
+For most plugins, it is better to leave `defer_dependency_install` unset or `false` and ship the plugin with its dependencies bundled normally.
+
+### Choosing Between `requirements.txt` and `requirements.post-install.txt`
+
+- Use `requirements.txt` for the main Python dependencies of your plugin.
+- Use `requirements.post-install.txt` for Python dependencies that should be installed during packaged plugin installation even when `defer_dependency_install` is not enabled.
+- If both files exist and the plugin is installed from a package, `requirements.post-install.txt` is processed first.
+- If `defer_dependency_install` is also enabled, ensure packages required after installation are present in `requirements.txt`, because that later install rebuilds `site-packages`.
+
+### Development Caveat
+
+At the time of writing, the local plugin reload workflow used during development installs `requirements.txt` directly when you reload plugins from disk. The `requirements.post-install.txt` behavior described above is part of the packaged plugin install path.
+
+Because of this:
+
+- Keep development dependencies in `requirements.txt` if you rely on `--reload-plugins` during local plugin development.
+- Treat `requirements.post-install.txt` as an install-time feature for packaged plugin installs.
+- If you use `defer_dependency_install`, test both local development reloads and packaged plugin installation so you verify the behavior you expect in both paths.
 
 
 ---
