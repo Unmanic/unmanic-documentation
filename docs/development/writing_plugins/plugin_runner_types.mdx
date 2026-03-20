@@ -268,6 +268,12 @@ def on_worker_process(data):
     # Runs child_work in its own process, returns True if exit code == 0.
     # "data" still carries the worker state, including worker_log/current_command.
     success = proc.run(child_work, data["file_in"])
+    if success:
+        repaired_cache_path = data["file_out"]
+        # Child-process plugins should publish the new cache artifact as both
+        # file_out and file_in when later worker plugins in the chain need to
+        # consume it.
+        data["file_in"] = repaired_cache_path
 ```
 
 In this mode the `PluginChildProcess` helper:
@@ -280,6 +286,16 @@ In this mode the `PluginChildProcess` helper:
 5. Drains `prog_queue` → passes to `command_progress_parser(line_text)` to update the progress bar.
 6. Automatically unsets the child process PID on exit to reset all tracked subprocess metrics
    in the Unmanic Worker (CPU, memory, progress, etc.).
+
+When using `PluginChildProcess`, Unmanic does not automatically promote a newly
+created `file_out` into `file_in` for later worker plugins in the chain. If
+your child process creates a new cache artifact that subsequent worker plugins
+should process, update both:
+
+- `data["file_out"]` to the new cache artifact path
+- `data["file_in"]` to that same path
+
+This keeps the worker chain aligned with the file your plugin actually produced.
 
 This approach is useful when you need more control than an external command, or when your
 plugin logic is entirely in Python but you still want progress feedback and log visibility
