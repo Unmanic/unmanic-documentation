@@ -718,7 +718,9 @@ After a task is fully post-processed and recorded in history.
 - **`task_type`** _[string]_ - Indicates how this task is being processed ("local" or "remote").
 - **`source_data`** _[dictionary]_ - Information about the source file for the task.
 - **`destination_data`** _[dictionary]_ - Information about the final output file after postprocessing for the task.
+- **`destination_files`** _[list]_ - List containing all file paths created by postprocessor file movements.
 - **`task_success`** _[boolean]_ - True if the task succeeded.
+- **`file_move_processes_success`** _[boolean]_ - True if all postprocessor movement tasks completed successfully.
 - **`start_time`** _[float]_ - UNIX timestamp when the task began.
 - **`finish_time`** _[float]_ - UNIX timestamp when the task completed.
 - **`processed_by_worker`** _[string]_ - String, identifier of the worker that processed it.
