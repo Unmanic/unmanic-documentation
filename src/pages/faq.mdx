@@ -11,16 +11,20 @@ import styles from "./faq.module.css";
 
 ## I sponsored Unmanic on Patreon. Why am I still not seeing supporter status in the app?
 
-After you become a supporter on Patreon, there are a few steps behind the scenes before your Unmanic account is marked as a current supporter. Patreon needs to confirm the pledge, then Unmanic periodically checks Patreon and matches that pledge to your Unmanic account. Because parts of this happen on a schedule, it can take a short while for the status to sync.
+After you become a supporter on Patreon, there are a few steps behind the scenes before your Unmanic account is marked as a current supporter. Patreon needs to confirm the pledge, then Unmanic refreshes your linked support data when you visit the user details page, log in there, or log out there. In 99% of cases, the delay is simply Patreon still processing the payment. Patreon can sometimes take an hour or more to register the payment, and there is nothing we can do until Patreon marks that payment as paid.
 
 Try this troubleshooting flow:
 
 1. Visit the [User Details page](https://api.unmanic.app/support-auth-api/user_details) and log in (log out first if you were already logged in).
-2. Open the avatar dropdown to check your supporter status.
-3. If it has not updated yet, wait about 15 minutes, then log out and log back in to refresh the link.
-4. Restarting your container is not usually required, but you can do so after you have completed the steps above.
+2. Check the supportership details section on that page.
+3. For Patreon, you should see your last amount paid, `Last charge status: paid`, and a green `Current` label in the top-right of the supportership card.
+4. If you see those details, your Patreon support is synced correctly and supporter status in the app should start working.
+5. If you do not see those details yet, Patreon has not finished processing the payment and there is nothing else to fix on the Unmanic side. Wait about 15 minutes, then refresh by logging out and logging back in on the user details page. In some cases, this can still take an hour or more.
+6. Restarting your container is not usually required, but you can do so after you have completed the steps above.
 
-If your status still has not updated after trying the steps above, message `Josh.5` on [Discord](https://unmanic.app/discord) with your Unmanic account email and Patreon email, and it will be resolved within 24 hours.
+If the supportership details page shows `Current` with `Last charge status: paid` and the app still does not reflect supporter status after you refresh, message `Josh.5` on [Discord](https://unmanic.app/discord) with your Unmanic account email and Patreon email, and it will be resolved within 24 hours.
+
+If the supportership details still do not show `Last charge status: paid` after about 6 hours, message `Josh.5` on [Discord](https://unmanic.app/discord) as well. That usually still means Patreon has not completed processing yet, but there have been rare edge cases where a bug on our side needed to be fixed manually.
 
 ## How can I unlock supporter features?
 
