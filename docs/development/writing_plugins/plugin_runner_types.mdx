@@ -164,12 +164,19 @@ Just prior to the execution of the command subprocess within an Unmanic Worker p
 - **`task_id`** _[integer]_ - A unique identifier of the task.
 - **`worker_log`** _[list]_ - The log lines that are being tailed by the frontend. Can be left empty.
 - **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
-- **`exec_command`** _[list or string]_ - A subprocess command that Unmanic should execute. Can be left empty.
+- **`exec_command`** _[list]_ - A subprocess command that Unmanic should execute. Can be left empty.
 - **`command_progress_parser`** _[callable or None]_ - Function, a function that Unmanic can use to parse the STDOUT of the command to collect progress stats. Can be empty.
 - **`file_in`** _[string]_ - String, the source file to be processed by the command.
 - **`file_out`** _[string]_ - String, the destination that the command should output (may be the same as the file_in if necessary).
 - **`original_file_path`** _[string]_ - String, the absolute path to the original file.
 - **`repeat`** _[boolean]_ - Boolean, should this runner be executed again once completed with the same variables.
+
+:::info[Deprecation Notice]
+`exec_command` should be returned as an argv-style list. Older plugins may still return a string for compatibility,
+but this is deprecated and may still be executed via a shell during the transition period.
+If your plugin needs shell features such as pipes, redirects, or multi-step shell logic, prefer running an explicit
+wrapper script or use `PluginChildProcess` rather than relying on this compatibility behaviour long-term.
+:::
 
 #### Example:
 

@@ -192,7 +192,16 @@ set -eo pipefail
 echo
 echo "Building ffmpeg args..."
 echo
-args="-hide_banner -loglevel info -i '${__source_file}' -strict -2 -max_muxing_queue_size 10240 -map 0 -c:v copy -c:a copy"
+args=(
+  -hide_banner
+  -loglevel info
+  -i "${__source_file}"
+  -strict -2
+  -max_muxing_queue_size 10240
+  -map 0
+  -c:v copy
+  -c:a copy
+)
 subtitle_streams_count=0
 found_things_to_do="false"
 for stream in $(echo "${probe}" | jq -r '.streams[] | @base64'); do
@@ -206,10 +215,10 @@ for stream in $(echo "${probe}" | jq -r '.streams[] | @base64'); do
         echo "    - Subtitile Info: {language:${sub_language}, title:${sub_title}}"
         if [[ "${subtitle_streams_count}" -ge "${NUMBER_OF_SUB_STREAMS_TO_KEEP}" ]]; then
             echo "      - MARKING FOR REMOVAL"
-            args="${args} -map -0:s:${subtitle_streams_count}"
+            args+=(-map "-0:s:${subtitle_streams_count}")
             found_things_to_do="true"
         else
-            args="${args} -c:s:${subtitle_streams_count} copy"
+            args+=("-c:s:${subtitle_streams_count}" copy)
             echo "      - MARKING FOR COPY"
         fi
         ((subtitle_streams_count+=1))
@@ -229,17 +238,18 @@ for stream in $(echo "${probe}" | jq -r '.streams[] | @base64'); do
 done
 # Only provide a command to execute if streams were found to need modifying
 if [[ "${found_things_to_do}" ]]; then
-    exec_command="ffmpeg ${args} -y '${__output_cache_file}'"
+    exec_command_json=$(printf '%s\n' ffmpeg "${args[@]}" -y "${__output_cache_file}" | jq -R . | jq -s .)
 else
-    exec_command=""
+    exec_command_json='[]'
 fi
 echo
-echo "Command: ${exec_command}"
+echo "Command: $(printf '%q ' ffmpeg "${args[@]}" -y "${__output_cache_file}")"
 
-# Generate return object for Unmanic to execute the command
-# This script could also execute the command from here if you wish, but Unmanic will process the log differently
+# Generate return object for Unmanic to execute the command as an argv list.
+# If you need more complex shell behaviour, execute it directly in this script
+# or invoke a dedicated wrapper script explicitly.
 return_object=$(jq --null-input \
-  --arg exec_command "${exec_command}" \
+  --argjson exec_command "${exec_command_json}" \
   --arg file_out "${__output_cache_file}" \
   '{"exec_command": $exec_command, "file_out": $file_out}')
 if [[ ! -z ${__return_data_file} ]]; then
