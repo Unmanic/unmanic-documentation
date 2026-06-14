@@ -3,8 +3,9 @@ title: Docker Hardware Acceleration - NVIDIA NVENC/NVDEC
 description: Unmanic Advanced Installation - Docker Hardware Acceleration - NVIDIA NVENC/NVDEC
 id: docker_hardware_accelerated_encoding_nvidia
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## Overview
 
@@ -35,7 +36,7 @@ docker run --rm --gpus all --entrypoint="" josh5/unmanic nvidia-smi
 You should see the following output:
 
 ```
-Sun Apr 17 05:31:44 2022       
+Sun Apr 17 05:31:44 2022
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 510.54       Driver Version: 510.54       CUDA Version: 11.6     |
 |-------------------------------+----------------------+----------------------|
@@ -47,7 +48,7 @@ Sun Apr 17 05:31:44 2022
 |  0%   34C    P8    N/A / 120W |    185MiB /  4096MiB |      0%      Default |
 |                               |                      |                  N/A |
 +-------------------------------+----------------------+----------------------+
-                                                                               
+
 +-----------------------------------------------------------------------------+
 | Processes:                                                                  |
 |  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
@@ -69,66 +70,66 @@ We can now pass the `--runtime=nvidia` (or `runtime: nvidia` in compose) as a pa
   ]}>
   <TabItem value="docker_run">
 
-  ```bash
-    PUID=$(id -u)
-    PGID=$(id -g)
+```bash
+  PUID=$(id -u)
+  PGID=$(id -g)
 
-    # CONFIG_DIR - Where you settings are saved
-    CONFIG_DIR=/config
+  # CONFIG_DIR - Where you settings are saved
+  CONFIG_DIR=/config
 
-    # LIBRARY_DIR - The location/locations of your library
-    LIBRARY_DIR=/library
+  # LIBRARY_DIR - The location/locations of your library
+  LIBRARY_DIR=/library
 
-    # CACHE_DIR - A tmpfs or and folder for temporary conversion files
-    CACHE_DIR=/tmp/unmanic
-    
-    # NVIDIA_VISIBLE_DEVICES - The GPUs that will be accessible to the container
-    NVIDIA_VISIBLE_DEVICES=all
+  # CACHE_DIR - A tmpfs or and folder for temporary conversion files
+  CACHE_DIR=/tmp/unmanic
 
-    docker run -ti --rm \
-        --runtime=nvidia \
-        -e NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES} \
-        -e PUID=${PUID} \
-        -e PGID=${PGID} \
-        -p 8888:8888 \
-        -v ${CONFIG_DIR}:/config \
-        -v ${LIBRARY_DIR}:/library \
-        -v ${CACHE_DIR}:/tmp/unmanic \
-        josh5/unmanic:latest
-  ```
+  # NVIDIA_VISIBLE_DEVICES - The GPUs that will be accessible to the container
+  NVIDIA_VISIBLE_DEVICES=all
+
+  docker run -ti --rm \
+      --runtime=nvidia \
+      -e NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES} \
+      -e PUID=${PUID} \
+      -e PGID=${PGID} \
+      -p 8888:8888 \
+      -v ${CONFIG_DIR}:/config \
+      -v ${LIBRARY_DIR}:/library \
+      -v ${CACHE_DIR}:/tmp/unmanic \
+      josh5/unmanic:latest
+```
 
   </TabItem>
   <TabItem value="docker_compose">
 
-  ```yaml
-    # Variables that will need to be changed:
-    #     <PUID>                            -  User id for folder/file permissions
-    #     <PGID>                            -  Group id for folder/file permissions
-    #     <NVIDIA_VISIBLE_DEVICES>          -  The GPUs that will be accessible to the container
-    #                                          Options: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html#gpu-enumeration
-    #     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
-    #     <PATH_TO_LIBRARY>                 -  Path where you store the files that Unmanic will scan
-    #     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
-    #
+```yaml
+# Variables that will need to be changed:
+#     <PUID>                            -  User id for folder/file permissions
+#     <PGID>                            -  Group id for folder/file permissions
+#     <NVIDIA_VISIBLE_DEVICES>          -  The GPUs that will be accessible to the container
+#                                          Options: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html#gpu-enumeration
+#     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
+#     <PATH_TO_LIBRARY>                 -  Path where you store the files that Unmanic will scan
+#     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
+#
 
-    ---
-    version: '2.4'
-    services:
-      unmanic:
-        runtime: nvidia       # For H/W transcoding using the NVENC encoder
-        container_name: unmanic
-        image: josh5/unmanic:latest
-        ports:
-          - 8888:8888
-        environment:
-          - PUID=<PUID>
-          - PGID=<PGID>
-          - NVIDIA_VISIBLE_DEVICES=<NVIDIA_VISIBLE_DEVICES>
-        volumes:
-          - <PATH_TO_CONFIG>:/config
-          - <PATH_TO_LIBRARY>:/library
-          - <PATH_TO_ENCODE_CACHE>:/tmp/unmanic
-  ```
+---
+version: "2.4"
+services:
+  unmanic:
+    runtime: nvidia # For H/W transcoding using the NVENC encoder
+    container_name: unmanic
+    image: josh5/unmanic:latest
+    ports:
+      - 8888:8888
+    environment:
+      - PUID=<PUID>
+      - PGID=<PGID>
+      - NVIDIA_VISIBLE_DEVICES=<NVIDIA_VISIBLE_DEVICES>
+    volumes:
+      - <PATH_TO_CONFIG>:/config
+      - <PATH_TO_LIBRARY>:/library
+      - <PATH_TO_ENCODE_CACHE>:/tmp/unmanic
+```
 
   </TabItem>
 </Tabs>

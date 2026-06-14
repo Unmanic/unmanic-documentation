@@ -3,8 +3,9 @@ title: Installation via Docker
 description: Unmanic Installation via Docker
 id: docker
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## Supported Architectures
 
@@ -17,17 +18,15 @@ Follow the [Windows 10/11 (WSL + Docker) installation guide](/docs/advanced/wind
 attempt installing and running Unmanic on Windows 10 or 11.
 :::
 
-* linux/amd64
-* linux/armv7
-* linux/arm64
-
+- linux/amd64
+- linux/armv7
+- linux/arm64
 
 ## Running Unmanic
 
 There are a number of ways you may start Unmanic with Docker.
 
 The most basic method is shown below:
-
 
 <Tabs
   defaultValue="docker_run"
@@ -37,63 +36,63 @@ The most basic method is shown below:
   ]}>
   <TabItem value="docker_run">
 
-  ```bash
-    PUID=$(id -u)
-    PGID=$(id -g)
+```bash
+PUID=$(id -u)
+PGID=$(id -g)
 
-    # CONFIG_DIR - Where you settings are saved
-    CONFIG_DIR=/config
+# CONFIG_DIR - Where you settings are saved
+CONFIG_DIR=/config
 
-    # LIBRARY_DIR - The location/locations of your library
-    LIBRARY_DIR=/library
+# LIBRARY_DIR - The location/locations of your library
+LIBRARY_DIR=/library
 
-    # CACHE_DIR - A tmpfs or and folder for temporary conversion files
-    CACHE_DIR=/tmp/unmanic
+# CACHE_DIR - A tmpfs or and folder for temporary conversion files
+CACHE_DIR=/tmp/unmanic
 
-    docker run -ti --rm \
-        -e PUID=${PUID} \
-        -e PGID=${PGID} \
-        -p 8888:8888 \
-        -v ${CONFIG_DIR}:/config \
-        -v ${LIBRARY_DIR}:/library \
-        -v ${CACHE_DIR}:/tmp/unmanic \
-        josh5/unmanic:latest
-  ```
+docker run -ti --rm \
+  -e PUID=${PUID} \
+  -e PGID=${PGID} \
+  -p 8888:8888 \
+  -v ${CONFIG_DIR}:/config \
+  -v ${LIBRARY_DIR}:/library \
+  -v ${CACHE_DIR}:/tmp/unmanic \
+  josh5/unmanic:latest
+```
 
   </TabItem>
   <TabItem value="docker_compose">
 
-  ```yaml
-    # Variables that will need to be changed:
-    #     <PUID>                            -  User id for folder/file permissions
-    #     <PGID>                            -  Group id for folder/file permissions
-    #     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
-    #     <PATH_TO_LIBRARY>                 -  Path where you store the files that Unmanic will scan
-    #     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
-    #
+```yaml
+# Variables that will need to be changed:
+#     <PUID>                            -  User id for folder/file permissions
+#     <PGID>                            -  Group id for folder/file permissions
+#     <PATH_TO_CONFIG>                  -  Path where Unmanic will store config files
+#     <PATH_TO_LIBRARY>                 -  Path where you store the files that Unmanic will scan
+#     <PATH_TO_ENCODE_CACHE>            -  Cache path for in-progress encoding tasks
+#
 
-    ---
-    version: '2.4'
-    services:
-      unmanic:
-        container_name: unmanic
-        image: josh5/unmanic:latest
-        ports:
-          - 8888:8888
-        environment:
-          - PUID=<PUID>
-          - PGID=<PGID>
-        volumes:
-          - <PATH_TO_CONFIG>:/config
-          - <PATH_TO_LIBRARY>:/library
-          - <PATH_TO_ENCODE_CACHE>:/tmp/unmanic
-  ```
+---
+version: "2.4"
+services:
+  unmanic:
+    container_name: unmanic
+    image: josh5/unmanic:latest
+    ports:
+      - 8888:8888
+    environment:
+      - PUID=<PUID>
+      - PGID=<PGID>
+    volumes:
+      - <PATH_TO_CONFIG>:/config
+      - <PATH_TO_LIBRARY>:/library
+      - <PATH_TO_ENCODE_CACHE>:/tmp/unmanic
+```
 
   </TabItem>
 </Tabs>
 
 For more advanced methods using hardware acceleration, see these articles:
 
-* [NVIDIA Hardware Acceleration](/docs/advanced/docker_hardware_accelerated_encoding_nvidia)
-* [VAAPI Hardware Acceleration](/docs/advanced/docker_hardware_accelerated_encoding_vaapi)
-* [Mounting Windows Samba/CIFS Shares](/docs/advanced/docker_compose_cifs_mounts)
+- [NVIDIA Hardware Acceleration](/docs/advanced/docker_hardware_accelerated_encoding_nvidia)
+- [VAAPI Hardware Acceleration](/docs/advanced/docker_hardware_accelerated_encoding_vaapi)
+- [Mounting Windows Samba/CIFS Shares](/docs/advanced/docker_compose_cifs_mounts)
