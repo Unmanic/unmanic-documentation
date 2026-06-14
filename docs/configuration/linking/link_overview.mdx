@@ -170,7 +170,9 @@ Use the same library name on each installation, for example `Media`, but configu
 With this setup, the local installation can send any `Media` tasks to any linked installation that has the `Media` library. Each remote installation will process the task using its own plugin settings, so the same library can be optimized for Apple, NVIDIA, or Intel hardware depending on where the task lands.
 
 :::tip
-You can still use "Automatically configure missing libraries on the remote installation" if you want a one-time push of the local library configuration to a new remote installation, then edit plugin settings independently on each install. That option only creates missing libraries and does not keep them in sync after the initial push. See [Remote Installation Configuration](./link_remote_configuration).
+You can still use "Automatically configure missing libraries on the remote installation" if you want a one-time push of the local library configuration to a new remote installation, then edit plugin settings independently on each install.
+
+If you also enable "Keep remote library and plugin configuration up to date for every sent file", Unmanic will re-sync that matching remote library before each file transfer so both installations continue using the same library and plugin configuration. See [Remote Installation Configuration](./link_remote_configuration).
 :::
 
 :::warning
@@ -201,7 +203,14 @@ Example 3: Auto-configure enabled
 - The task is sent and processed, and the transfer uses the HTTP upload/download flow instead of a shared library path.
 - If you want shared library path behavior, then you would need to manually configure the remote library with the correct path.
 
-Example 4: Different path strings, same shared storage
+Example 4: Auto-configure plus keep-updated enabled
+
+- Local `Media` library queues a task.
+- Link manager finds a matching `Media` library on the remote installation.
+- Before the file is sent, Unmanic re-imports the local `Media` library configuration and plugin stack onto the remote `Media` library.
+- The task is then sent and processed using the refreshed remote library configuration.
+
+Example 5: Different path strings, same shared storage
 
 - Local `Media` library path is `/mnt/media/library`.
 - Remote `Media` library path is `/media/library`.

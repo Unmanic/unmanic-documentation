@@ -62,10 +62,24 @@ When enabled, Unmanic will validate checksums for files transferred to and from 
 
 ## Auto-configure missing libraries on the remote installation
 
-When enabled, Unmanic will import any missing library configurations to the remote installation. This only creates libraries that do not already exist on the remote installation; it does not update or sync existing library configuration after the initial import. Imported libraries are configured as remote-only with scanning disabled.
+When enabled, Unmanic will import any missing library configurations to the remote installation. Imported libraries are configured as remote-only with scanning disabled.
+
+This option is responsible for creating the first matching library on the remote installation. Once the library exists, Unmanic can route tasks for that library to the remote installation.
 
 :::warning
 If this option is enabled, every local library can be created on the remote installation, which effectively allows tasks from all libraries to be sent there. If you need to prevent certain libraries from ever routing tasks to a remote installation, leave this option off and create only the libraries you want on that remote.
+:::
+
+### Keep remote library and plugin configuration up to date for every sent file
+
+When this option is enabled, Unmanic will re-push the local library and plugin configuration to the matching remote library every time it sends a file to that remote installation.
+
+This option is only available when **Auto-configure missing libraries on the remote installation** is enabled. If auto-configure is disabled, this option is hidden and disabled as well.
+
+Use this when you want the remote installation to always process tasks with the same library settings and enabled plugin configuration as the local installation. Leave it disabled if you want the remote installation to keep its own independent plugin settings after the initial library import.
+
+:::warning
+This option will overwrite the remote installation's settings. If you need to configure plugins differently across your hosts (eg. different HW acceleration settings), then this option should not be enabled.
 :::
 
 ## Enable distributed worker count for this link
