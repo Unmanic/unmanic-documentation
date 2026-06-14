@@ -12,6 +12,35 @@ This page outlines the various Plugin types and their
 
 ---
 
+## Optional Helper Kwargs
+
+Some runner types can opt into helper classes that Unmanic injects by keyword. Only declare the helpers your runner actually uses.
+
+```python
+from unmanic.libs.metadata import UnmanicFileMetadata
+from unmanic.libs.task import TaskDataStore
+
+
+def on_worker_process(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+):
+    ...
+
+
+def on_postprocessor_file_movement(
+    data,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
+    ...
+```
+
+- `task_data_store` provides task-scoped shared state between runners and plugins.
+- `file_metadata` provides persistent file-scoped metadata lookups and writes.
+- See [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins) for usage patterns and API details.
+
+---
+
 ## Library Management
 
 Library Management plugins run during scans and file tests. Use them to **decide what should be processed** (queue/skip), adjust priority, or annotate reasons to ignore a file. They shape the workload **before** any heavy processing occurs and can share small snippets of context for later runners.
@@ -29,6 +58,20 @@ After Unmanic carries out tests on a file to determine if it should be added to 
 #### Function:
 
 `on_library_management_file_test(data)`
+
+If your file test runner needs persistent file-scoped decisions from earlier tasks, it may also declare:
+
+```python
+from unmanic.libs.metadata import UnmanicFileMetadata
+
+def on_library_management_file_test(
+    data,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
+    ...
+```
+
+Use `file_metadata` here for read-only lookups by path. See [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins#file-metadata-helper).
 
 #### Provided data:
 
@@ -158,6 +201,22 @@ Just prior to the execution of the command subprocess within an Unmanic Worker p
 #### Function:
 
 `on_worker_process(data)`
+
+If your worker runner needs shared task state or persistent file metadata, declare the helpers it uses:
+
+```python
+from unmanic.libs.metadata import UnmanicFileMetadata
+from unmanic.libs.task import TaskDataStore
+
+def on_worker_process(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
+    ...
+```
+
+See [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins).
 
 #### Provided data:
 
@@ -328,6 +387,22 @@ Just prior to file copy operation from cached output file to source file's direc
 
 `on_postprocessor_file_movement(data)`
 
+If your postprocessor needs task-scoped shared state or source/destination file metadata, declare the helper kwargs it uses:
+
+```python
+from unmanic.libs.metadata import UnmanicFileMetadata
+from unmanic.libs.task import TaskDataStore
+
+def on_postprocessor_file_movement(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
+    ...
+```
+
+See [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins).
+
 #### Provided data:
 
 - **`library_id`** _[integer]_ - The ID of the library that the current task is associated with.
@@ -389,6 +464,22 @@ Just prior to the task cache directory cleanup.
 #### Function:
 
 `on_postprocessor_task_results(data)`
+
+If your task-result runner needs task-scoped shared state or persistent file metadata, declare the helper kwargs it uses:
+
+```python
+from unmanic.libs.metadata import UnmanicFileMetadata
+from unmanic.libs.task import TaskDataStore
+
+def on_postprocessor_task_results(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
+    ...
+```
+
+See [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins).
 
 #### Provided data:
 
@@ -465,6 +556,8 @@ From front-end URL
 
 `render_frontend_panel(data)`
 
+Frontend panel runners usually only need `data`. Only declare helper kwargs if you have a concrete need for them, and prefer the patterns documented in [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins) for task/file state rather than inventing your own storage.
+
 #### Provided data:
 
 - **`content_type`** _[string]_ - The content type to be set when writing back to the browser.
@@ -518,6 +611,8 @@ From front-end URL
 #### Function:
 
 `render_plugin_api(data)`
+
+Plugin API runners usually only need `data`. Only declare helper kwargs if you have a concrete need for them, and prefer the patterns documented in [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins) for task/file state rather than inventing your own storage.
 
 #### Provided data:
 

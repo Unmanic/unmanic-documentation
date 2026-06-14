@@ -243,10 +243,27 @@ A plugin runner may fail if data is removed from that data dictionary.
 Plugins should be tested with the [**Plugin Manager CLI**](/docs/development/plugin_manager_cli) before publishing changes to ensure
 that the returned data matches the required schema for all included runner functions.
 
+If a runner needs Unmanic's shared helper classes, declare only the helpers it actually uses and let Unmanic inject them by keyword. See [Sharing Data Between Plugins](/docs/development/writing_plugins/sharing_data_between_plugins).
+
 
 ##### Example:
 ```python
 def on_worker_process(data):
+    ...
+    return
+```
+
+##### Helper-aware example:
+```python
+from unmanic.libs.metadata import UnmanicFileMetadata
+from unmanic.libs.task import TaskDataStore
+
+
+def on_worker_process(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
     ...
     return
 ```

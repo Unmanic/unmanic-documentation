@@ -5,6 +5,8 @@ title: Sharing Data Between Plugins
 
 Plugin workflows often need to share state between runners and between different plugins in a single task. Unmanic provides helper classes to make this safe and consistent without plugins needing to manage their own storage.
 
+Unmanic injects these helpers as keyword arguments. Only declare the helpers your runner actually uses, and type them as helper classes rather than instances.
+
 ## Task Data Store helper
 
 The **Task Data Store** helper is a task-scoped, in-memory store that allows plugins to share data during the lifecycle of a task. Use it when the data only matters while a task is active and should not persist once the task is complete.
@@ -47,30 +49,56 @@ Task state (mutable):
 Immutable runner value:
 
 ```python
-def emit_task_scheduled(data, task_data_store=None):
+from unmanic.libs.task import TaskDataStore
+
+
+def emit_task_scheduled(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+):
     task_data_store.set_runner_value("source_size", data["source_data"]["size"])
 ```
 
 Reading the value later in the same task:
 
 ```python
-def on_postprocessor_task_results(data, task_data_store=None):
+from unmanic.libs.task import TaskDataStore
+
+
+def on_postprocessor_task_results(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+):
     source_size = task_data_store.get_runner_value("source_size", runner="emit_task_scheduled")
 ```
 
 Mutable task state:
 
 ```python
-def on_worker_process(data, task_data_store=None):
+from unmanic.libs.task import TaskDataStore
+
+
+def on_worker_process(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+):
     task_data_store.set_task_state("progress_marker", "stage_1_complete")
 ```
 
 ### Recommended signature style
 
-New plugins should use keyword arguments so Unmanic can pass helpers by name:
+New plugins should use keyword arguments so Unmanic can pass helpers by name. Only declare the helpers your runner actually uses:
 
 ```python
-def on_worker_process(data, task_data_store=None, file_metadata=None):
+from unmanic.libs.metadata import UnmanicFileMetadata
+from unmanic.libs.task import TaskDataStore
+
+
+def on_worker_process(
+    data,
+    task_data_store: type[TaskDataStore] | None = None,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
     task_data_store.set_task_state("source_file_size", source_file_size)
 ```
 
@@ -166,7 +194,13 @@ The Mover2 and Video Transcoder plugins are good references:
 File test runners can read metadata by path but cannot write because no task exists yet.
 
 ```python
-def on_library_management_file_test(data, file_metadata=None):
+from unmanic.libs.metadata import UnmanicFileMetadata
+
+
+def on_library_management_file_test(
+    data,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
     existing = file_metadata.get()
     if existing.get("ignore"):
         data["add_file_to_pending_tasks"] = False
@@ -176,7 +210,13 @@ def on_library_management_file_test(data, file_metadata=None):
 ### Read/write during task processing
 
 ```python
-def on_worker_process(data, file_metadata=None):
+from unmanic.libs.metadata import UnmanicFileMetadata
+
+
+def on_worker_process(
+    data,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
     current = file_metadata.get()
     if current.get("ignore"):
         return
@@ -190,25 +230,16 @@ def on_worker_process(data, file_metadata=None):
 By default, `set()` writes metadata that will be committed against destination fingerprints on success. If your plugin needs to persist metadata for the original source file, pass `use_source_scope=True`. A plugin can write both scopes by calling `set()` twice with different `use_source_scope` values.
 
 ```python
-def on_postprocessor_file_movement(data, file_metadata=None):
+from unmanic.libs.metadata import UnmanicFileMetadata
+
+
+def on_postprocessor_file_movement(
+    data,
+    file_metadata: type[UnmanicFileMetadata] | None = None,
+):
     # Persist metadata for the original source file, even if a new destination file is created.
     file_metadata.set({"status": "Ignoring"}, use_source_scope=True)
     return
-```
-
-### Backward compatibility with `.unmanic`
-
-If your plugin needs to remain compatible with older Unmanic versions that do not expose `file_metadata`, use a fallback to `.unmanic` only when the helper is unavailable. This mirrors the approach in Mover2.
-
-```python
-def on_postprocessor_file_movement(data, file_metadata=None):
-    source_path = data.get("source_data", {}).get("abspath")
-    if file_metadata:
-        file_metadata.set({"status": "Ignoring"}, use_source_scope=True)
-    else:
-        directory_info = UnmanicDirectoryInfo(os.path.dirname(source_path))
-        directory_info.set("mover2", os.path.basename(source_path), "Ignoring")
-        directory_info.save()
 ```
 
 ### API summary
