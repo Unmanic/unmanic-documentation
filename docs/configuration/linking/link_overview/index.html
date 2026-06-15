@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Link Overview | Unmanic</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="http://docs.unmanic.app/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="http://docs.unmanic.app/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="http://docs.unmanic.app/docs/configuration/linking/link_overview"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Link Overview | Unmanic"><meta data-rh="true" name="description" content="Unmanic Configuration - Link - Overview"><meta data-rh="true" property="og:description" content="Unmanic Configuration - Link - Overview"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="http://docs.unmanic.app/docs/configuration/linking/link_overview"><link data-rh="true" rel="alternate" href="http://docs.unmanic.app/docs/configuration/linking/link_overview" hreflang="en"><link data-rh="true" rel="alternate" href="http://docs.unmanic.app/docs/configuration/linking/link_overview" hreflang="x-default"><link data-rh="true" rel="preconnect" href="https://GW4VW2R433-dsn.algolia.net" crossorigin="anonymous"><link rel="search" type="application/opensearchdescription+xml" title="Unmanic" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.05d697cb.css">
-<script src="/assets/js/runtime~main.560b927c.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.e64772fb.js" defer="defer"></script>
 <script src="/assets/js/main.ead9d751.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -77,9 +77,10 @@
 <ul>
 <li class="">Local <code>Media</code> library queues a task.</li>
 <li class="">Link manager sees auto-configure enabled and creates the missing <code>Media</code> library on the remote installation.</li>
-<li class="">The auto-configured library is set to receive remote-only tasks with scanning disabled, so no library path is configured.</li>
-<li class="">The task is sent and processed, and the transfer uses the HTTP upload/download flow instead of a shared library path.</li>
-<li class="">If you want shared library path behavior, then you would need to manually configure the remote library with the correct path.</li>
+<li class="">The auto-configured library is configured as remote-only with scanning disabled.</li>
+<li class="">The task is still first attempted by resolving the relative file path under the remote library path.</li>
+<li class="">If the remote installation can resolve that path on shared storage, the task is created and processed directly from that path.</li>
+<li class="">If the remote installation cannot resolve the path, Unmanic falls back to the HTTP upload/download flow.</li>
 </ul>
 <p>Example 4: Auto-configure plus keep-updated enabled</p>
 <ul>

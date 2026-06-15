@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Configuring Libraries | Unmanic</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="http://docs.unmanic.app/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="http://docs.unmanic.app/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="http://docs.unmanic.app/docs/configuration/libraries/configure_libraries"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Configuring Libraries | Unmanic"><meta data-rh="true" name="description" content="Unmanic Configuration - Configuring Libraries"><meta data-rh="true" property="og:description" content="Unmanic Configuration - Configuring Libraries"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="http://docs.unmanic.app/docs/configuration/libraries/configure_libraries"><link data-rh="true" rel="alternate" href="http://docs.unmanic.app/docs/configuration/libraries/configure_libraries" hreflang="en"><link data-rh="true" rel="alternate" href="http://docs.unmanic.app/docs/configuration/libraries/configure_libraries" hreflang="x-default"><link data-rh="true" rel="preconnect" href="https://GW4VW2R433-dsn.algolia.net" crossorigin="anonymous"><link rel="search" type="application/opensearchdescription+xml" title="Unmanic" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.05d697cb.css">
-<script src="/assets/js/runtime~main.560b927c.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.e64772fb.js" defer="defer"></script>
 <script src="/assets/js/main.ead9d751.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -17,6 +17,26 @@
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="library-configuration">Library Configuration<a href="#library-configuration" class="hash-link" aria-label="Direct link to Library Configuration" title="Direct link to Library Configuration" translate="no">​</a></h3>
 <img class="screenshot" style="width:400px" src="/assets/images/unmanic-settings-library-configuration-fa88a256e60dabf1ffd6861d57b48d3b.png">
 <p>This dialog allows you to configure how the library should behave. Here you can modify the library&#x27;s name and path.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="use-this-library-only-for-linked-remote-tasks">Use this library only for linked remote tasks<a href="#use-this-library-only-for-linked-remote-tasks" class="hash-link" aria-label="Direct link to Use this library only for linked remote tasks" title="Direct link to Use this library only for linked remote tasks" translate="no">​</a></h4>
+<p>Enable this on libraries that should accept tasks from a linked installation but should not discover files on their own.</p>
+<p>When enabled:</p>
+<ul>
+<li class="">The library scanner will not scan this library.</li>
+<li class="">The file monitor will not watch this library path.</li>
+<li class="">The library is treated as a remote-target library in the UI.</li>
+</ul>
+<p>When disabled:</p>
+<ul>
+<li class="">The library can be scanned and monitored normally, depending on the other library settings.</li>
+</ul>
+<p>Important notes:</p>
+<ul>
+<li class="">This option does not prevent pending tasks from being created against the library.</li>
+<li class="">This option does not force linked tasks to be uploaded over HTTP.</li>
+<li class="">If a linked installation sends a task for a file and the remote host can resolve that file under this library&#x27;s configured path, Unmanic will still create the remote pending task by path and process it directly from shared storage.</li>
+<li class="">If the remote host cannot resolve the file path, Unmanic falls back to the upload/download transfer flow.</li>
+</ul>
+<p>This setting is mainly useful for linked installations where the remote host should act as a worker target for tasks sent from another Unmanic instance, rather than scanning the library independently.</p>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="enable-library-scanner-for-this-library">Enable library scanner for this library<a href="#enable-library-scanner-for-this-library" class="hash-link" aria-label="Direct link to Enable library scanner for this library" title="Direct link to Enable library scanner for this library" translate="no">​</a></h4>
 <p>When this is selected, the library scanner will also include the path given by this library.</p>
 <p>If you leave this option unselected, the library scanner will ignore this library when carrying out automated and manually triggered scans.</p>
