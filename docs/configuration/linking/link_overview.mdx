@@ -199,9 +199,10 @@ Example 3: Auto-configure enabled
 
 - Local `Media` library queues a task.
 - Link manager sees auto-configure enabled and creates the missing `Media` library on the remote installation.
-- The auto-configured library is set to receive remote-only tasks with scanning disabled, so no library path is configured.
-- The task is sent and processed, and the transfer uses the HTTP upload/download flow instead of a shared library path.
-- If you want shared library path behavior, then you would need to manually configure the remote library with the correct path.
+- The auto-configured library is configured as remote-only with scanning disabled.
+- The task is still first attempted by resolving the relative file path under the remote library path.
+- If the remote installation can resolve that path on shared storage, the task is created and processed directly from that path.
+- If the remote installation cannot resolve the path, Unmanic falls back to the HTTP upload/download flow.
 
 Example 4: Auto-configure plus keep-updated enabled
 

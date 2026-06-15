@@ -64,6 +64,8 @@ When enabled, Unmanic will validate checksums for files transferred to and from 
 
 When enabled, Unmanic will import any missing library configurations to the remote installation. Imported libraries are configured as remote-only with scanning disabled.
 
+Remote-only here controls scanning and file monitoring on the remote installation. It does not prevent linked tasks from being created against that remote library by path when the remote host can resolve the file on shared storage. If the file is not reachable at the resolved path, Unmanic falls back to the HTTP upload/download flow.
+
 This option is responsible for creating the first matching library on the remote installation. Once the library exists, Unmanic can route tasks for that library to the remote installation.
 
 :::warning
