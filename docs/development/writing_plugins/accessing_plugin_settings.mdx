@@ -365,6 +365,65 @@ class Settings(PluginSettings):
     }
 ```
 
+### Admonitions and Informational Sections
+
+You can render non-input UI elements inside plugin settings forms by using one of the section-style `input_type` values.
+These are useful when a plugin needs to explain a warning, group related settings, or show contextual notes without storing additional user input.
+
+Available section input types include:
+
+- `section_header`
+- `section_subheader`
+- `section_details`
+- `section_admonition`
+
+Use `section_admonition` when you need a visible warning, note, or tip banner in the settings UI.
+The banner type is derived from the `label`, so values such as `Warning`, `Info`, or `Note` are appropriate.
+The `description` value supports HTML and is rendered in the WebUI.
+
+##### Example:
+
+```python
+class Settings(PluginSettings):
+    settings = {
+        "audio_codec":            "mp3",
+        "audio_codec_admonition": "",
+    }
+
+    form_settings = {
+        "audio_codec": {
+            "label":      "Audio Codec",
+            "input_type": "select",
+            "select_options": [
+                {"value": "aac", "label": "AAC"},
+                {"value": "mp3", "label": "MP3"},
+            ],
+        },
+        "audio_codec_admonition": {
+            "label":       "Warning",
+            "input_type":  "section_admonition",
+            "description": (
+                "Selected codec supports up to <code>2</code> channels.<br>"
+                "Using MP3 on multichannel movie audio will downmix the output stream."
+            ),
+        },
+    }
+```
+
+If you only want the admonition to appear for certain states, combine it with the normal dynamic display behavior:
+
+```python
+def __set_audio_codec_admonition_form_settings(self):
+    values = {
+        "label":      "Warning",
+        "input_type": "section_admonition",
+        "description": "This codec is limited to stereo output.",
+    }
+    if self.get_setting('audio_codec') != 'mp3':
+        values["display"] = 'hidden'
+    return values
+```
+
 ### Overwriting labels
 
 You may wish to have a long, descriptive label for your input field.
